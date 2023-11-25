@@ -20,13 +20,13 @@ int main() {
     vector<string> regularDefinitionsVector = regularExpressions[1];
 
     cout << "Regular Expressions: \n";
-    for (int i = 0; i < regularExpressionsVector.size(); i++) {
-        cout << regularExpressionsVector[i] << endl;
+    for (auto & i : regularExpressionsVector) {
+        cout << i << endl;
     }
 
     cout << "Regular Definitions: \n";
-    for (int i = 0; i < regularDefinitionsVector.size(); i++) {
-        cout << regularDefinitionsVector[i] << endl;
+    for (auto & i : regularDefinitionsVector) {
+        cout << i << endl;
     }
 
 
