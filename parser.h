@@ -7,6 +7,9 @@ using namespace std;
 #define COMPILERGENERATOR_PARSER_H
 
 vector<string> readInputFile(const string& filepath);
-unordered_map<int, vector<string>> getRegularExpressionsAndDefinition(const vector<string>& lines);
+vector<string> getRegularExpressions(const vector<string>& lines);
+vector<string> getRegularDefinitions(const vector<string>& lines);
+vector<string> getKeywords(const vector<string>& lines);
+vector<string> getPunctuations(const vector<string>& lines);
 
 #endif //COMPILERGENERATOR_PARSER_H

@@ -15,9 +15,11 @@ int main() {
     cout << "The first line is in the file is: \n" << lines[0] << endl;
 
     // Get the regular expressions from the file.
-    unordered_map<int, vector<string>> regularExpressions = getRegularExpressionsAndDefinition(lines);
-    vector<string> regularExpressionsVector = regularExpressions[0];
-    vector<string> regularDefinitionsVector = regularExpressions[1];
+    vector<string> regularExpressionsVector = getRegularExpressions(lines);
+    vector<string> regularDefinitionsVector = getRegularDefinitions(lines);
+    vector<string> keywordsVector = getKeywords(lines);
+    vector<string> punctuationsVector = getPunctuations(lines);
+
 
     cout << "Regular Expressions: \n";
     for (auto & i : regularExpressionsVector) {
@@ -26,6 +28,16 @@ int main() {
 
     cout << "Regular Definitions: \n";
     for (auto & i : regularDefinitionsVector) {
+        cout << i << endl;
+    }
+
+    cout << "Keywords: \n";
+    for (auto & i : keywordsVector) {
+        cout << i << endl;
+    }
+
+    cout << "Punctuations: \n";
+    for (auto & i : punctuationsVector) {
         cout << i << endl;
     }
 
