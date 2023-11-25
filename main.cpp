@@ -1,7 +1,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
-#include <unordered_map>
+#include <set>
 
 #include "parser.h"
 
@@ -19,6 +19,7 @@ int main() {
     vector<string> regularDefinitionsVector = getRegularDefinitions(lines);
     vector<string> keywordsVector = getKeywords(lines);
     vector<string> punctuationsVector = getPunctuations(lines);
+    set<char> reservedSymbolsSet = getReservedSymbols(lines);
 
 
     cout << "Regular Expressions: \n";
@@ -40,6 +41,15 @@ int main() {
     for (auto & i : punctuationsVector) {
         cout << i << endl;
     }
+
+    cout << "Reserved Symbols: \n";
+    for (auto & i : reservedSymbolsSet) {
+        cout << i << endl;
+    }
+
+
+
+
 
 
     return 0;
