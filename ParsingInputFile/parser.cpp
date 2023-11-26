@@ -3,6 +3,7 @@
 #include <vector>
 #include <fstream>
 #include <sstream>
+#include <unordered_map>
 #include <set>
 
 using namespace std;
@@ -47,7 +48,7 @@ vector<string> getRegularExpressions(const vector<string>& lines) {
 vector<string> getRegularDefinitions(const vector<string>& lines) {
     vector<string> regularDefinitions;
     for (const auto& line : lines) {
-        if (line.find('=') != string::npos) {
+        if (line.find('=') != string::npos && line.find(':') == string::npos) {
             regularDefinitions.push_back(line);
         }
     }
@@ -116,6 +117,24 @@ set<char> getReservedSymbols(const vector<string>& lines) {
 
 
     return reservedSymbols;
+}
+
+unordered_map<string, vector<string>> getRegularDefinitionsMap(const vector<string>& regularDefinitions) {
+    unordered_map<string, vector<string>> regularDefinitionsMap;
+
+    for (const auto& regularDefinition : regularDefinitions) {
+        string regularDefinitionName = regularDefinition.substr(0, regularDefinition.find('='));
+        string regularDefinitionExpression = regularDefinition.substr(regularDefinition.find('=') + 1);
+        // split the regularDefinitionExpression by the | character.
+        istringstream iss(regularDefinitionExpression);
+        string word;
+        while (iss >> word) {
+            if(word != "|")
+                regularDefinitionsMap[regularDefinitionName].push_back(word);
+        }
+
+    }
+    return regularDefinitionsMap;
 }
 
 

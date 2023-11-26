@@ -3,7 +3,10 @@
 #include <vector>
 #include <set>
 
-#include "parser.h"
+#include "ParsingInputFile/parser.h"
+#include "AutomatonDataStructure/Node.h"
+#include "AutomatonDataStructure/Automaton.h"
+#include "AutomatonDataStructure/automatonGenerator.h"
 
 using namespace std;
 
@@ -12,7 +15,6 @@ int main() {
     // Read the file into a string.
     string filepath = "D:\\.CSED\\CompilerGenerator\\input.txt";
     vector<string> lines = readInputFile(filepath);
-    cout << "The first line is in the file is: \n" << lines[0] << endl;
 
     // Get the regular expressions from the file.
     vector<string> regularExpressionsVector = getRegularExpressions(lines);
@@ -47,10 +49,23 @@ int main() {
         cout << i << endl;
     }
 
+    unordered_map<string, vector<string>> regularDefinitionsMap = getRegularDefinitionsMap(regularDefinitionsVector);
+
+    cout << "Regular Definitions Map: \n";
+    for (auto & i : regularDefinitionsMap) {
+        cout << i.first << " : ";
+        for (auto & j : i.second) {
+            cout << j << " ";
+        }
+        cout << endl;
+    }
 
 
+    unordered_map<string, Automaton> automatonMap = generateAutomatonFromRegularDefinitions(regularDefinitionsMap);
 
+    cout << "Automaton Map: \n";
 
+    printAutomatonMap(automatonMap);
 
     return 0;
 }
