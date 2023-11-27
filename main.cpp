@@ -10,7 +10,7 @@
 
 using namespace std;
 
-
+int Node::nodeCounter = 0;
 int main() {
     // Read the file into a string.
     string filepath = "D:\\.CSED\\CompilerGenerator\\input.txt";

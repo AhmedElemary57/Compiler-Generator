@@ -16,6 +16,7 @@ class Automaton {
 
     public:
         Automaton();
+        //Automaton(const Automaton& other) noexcept;
         Automaton(Node* startNode,Node* finalNode);
         void setStartNode(Node* startNode);
         void setFinalNode(Node* finalNode);

@@ -14,9 +14,12 @@ class Node {
     private:
         unordered_map<char,vector<Node*>> nextNodes;
         bool isFinal;
+        static int nodeCounter;
+        int nodeNumber;
 
     public:
         Node();
+        Node(const Node& other);
         Node(unordered_map<char,vector<Node*> > nextNodes,bool isFinal);
         void addNextNode(Node* nextNode,char input);
         unordered_map<char,vector<Node*> > getNextNodes();

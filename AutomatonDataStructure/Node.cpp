@@ -1,7 +1,3 @@
-//
-// Created by USER on 11/26/2023.
-//
-
 #include "Node.h"
 
 using namespace std;
@@ -9,11 +5,31 @@ using namespace std;
 Node::Node() {
     this->nextNodes = {};
     this->isFinal = false;
+    this->nodeNumber = nodeCounter++;
+}
+
+// Deep copy constructor
+Node::Node(const Node& other)  {
+    // Deep copy the nextNodes map
+    for (const auto& entry : other.nextNodes) { // entry is a pair of (char, vector<Node*>)
+        char input = entry.first;
+        const auto& nextNodesForInput = entry.second; // nextNodesForInput is a vector<Node*>
+
+        for (const auto& nextNode : nextNodesForInput) {
+            // Recursively deep copy each nextNode
+            Node* copiedNextNode = new Node(*nextNode);
+            addNextNode(copiedNextNode, input);
+        }
+    }
+
+    // Set the isFinal flag
+    isFinal = other.isFinal;
 }
 
 Node::Node(unordered_map<char, vector<Node *>> nextNodes, bool isFinal) {
     this->nextNodes = nextNodes;
     this->isFinal = isFinal;
+    this->nodeNumber = nodeCounter++;
 }
 
 void Node::addNextNode(Node *nextNode, char input) {
@@ -37,7 +53,7 @@ void Node::setIsFinal(bool isFinal) {
 }
 
 void Node::printNode() {
-    cout << "Node: " << this << endl;
+    cout << "Node: " << this->nodeNumber << endl;
     cout << "Is final: " << this->isFinal << endl;
     cout << "Next nodes: " << endl;
     for (const auto &nextNode : this->nextNodes) {

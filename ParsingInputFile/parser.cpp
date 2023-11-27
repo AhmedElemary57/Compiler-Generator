@@ -18,6 +18,7 @@ using namespace std;
  * 7- The following symbols are used in regular definitions and regular expressions with the meaning discussed in class: - | + * ( )
  * 8- Any reserved symbol needed to be used within the language, is preceded by an escape backslash character.
  * ***/
+
 vector<string> readInputFile(const string& filepath) {
     ifstream file(filepath);
 
@@ -136,9 +137,3 @@ unordered_map<string, vector<string>> getRegularDefinitionsMap(const vector<stri
     }
     return regularDefinitionsMap;
 }
-
-
-
-
-
-

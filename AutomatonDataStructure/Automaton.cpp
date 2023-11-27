@@ -11,6 +11,15 @@ Automaton::Automaton() {
     this->finalNode = nullptr;
 }
 
+// Deep copy constructor
+/*
+Automaton::Automaton(const Automaton& other) noexcept {
+    // Perform deep copy for startNode and finalNode
+    startNode = new Node(*(other.startNode));
+    finalNode = new Node(*(other.finalNode));
+}
+ */
+
 Automaton::Automaton(Node *startNode, Node *finalNode) {
     this->startNode = startNode;
     this->finalNode = finalNode;
@@ -40,4 +49,8 @@ void Automaton::printAutomaton(){
     this->startNode->printNode(); // print the start node of the automaton (which will print all inputs and next nodes)
 
 }
+
+
+
+
 

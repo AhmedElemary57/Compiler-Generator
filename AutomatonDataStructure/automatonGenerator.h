@@ -12,7 +12,9 @@
 #define COMPILERGENERATOR_AUTOMATONGENERATOR_H
 
 
-unordered_map<string, Automaton> generateAutomatonFromRegularDefinitions(const unordered_map<string, vector<string>>& regularDefinitionsMap);
+unordered_map<string, Automaton> generateAutomatonFromRegularDefinitions(unordered_map<string, vector<string>>& regularDefinitionsMap);
 void printAutomatonMap(const unordered_map<string, Automaton>& automatonMap);
+void handleRegularDefinitionsInTermsOfOtherRegularDefinitions(unordered_map<string, vector<string>>& regularDefinitionsMap, unordered_map<string, Automaton>& automatonMap);
+
 
 #endif //COMPILERGENERATOR_AUTOMATONGENERATOR_H
