@@ -17,6 +17,7 @@ using namespace std;
  * 7- The following symbols are used in regular definitions and regular expressions with the meaning discussed in class: - | + * ( )
  * 8- Any reserved symbol needed to be used within the language, is preceded by an escape backslash character.
  * ***/
+
 vector<string> readInputFile(const string& filepath) {
     ifstream file(filepath);
 
@@ -37,7 +38,9 @@ vector<string> readInputFile(const string& filepath) {
 vector<string> getRegularExpressions(const vector<string>& lines) {
     vector<string> regularExpressions;
     for (const auto& line : lines) {
-        if (line.find(':') != string::npos) {
+        if (   line.find(':') != string::npos
+            && line[0] != '[' && line[line.size() - 1] != ']'
+            && line[0] != '{' && line[line.size() - 1] != '}') {
             regularExpressions.push_back(line);
         }
     }
@@ -47,7 +50,9 @@ vector<string> getRegularExpressions(const vector<string>& lines) {
 vector<string> getRegularDefinitions(const vector<string>& lines) {
     vector<string> regularDefinitions;
     for (const auto& line : lines) {
-        if (line.find('=') != string::npos) {
+        if (line.find('=') != string::npos && line.find(':') == string::npos
+        && line[0] != '[' && line[line.size() - 1] != ']'
+        && line[0] != '{' && line[line.size() - 1] != '}') {
             regularDefinitions.push_back(line);
         }
     }
@@ -57,7 +62,7 @@ vector<string> getRegularDefinitions(const vector<string>& lines) {
 vector<string> getKeywords(const vector<string>& lines) {
     vector<string> keywords;
     for (const auto& line : lines) {
-        if (line.find('{') != string::npos && line.find('}') != string::npos && line[0] == '{' && line[line.size() - 1] == '}') {
+        if (line[0] == '{' && line[line.size() - 1] == '}') {
             istringstream iss(line);
             string word;
             while (iss >> word) {
