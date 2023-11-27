@@ -13,5 +13,6 @@ vector<string> getRegularDefinitions(const vector<string>& lines);
 vector<string> getKeywords(const vector<string>& lines);
 vector<string> getPunctuations(const vector<string>& lines);
 set<char> getReservedSymbols(const vector<string>& lines);
+unordered_map<string, vector<string> > getRegularDefinitionsMap(const vector<string>& regularDefinitions);
 
 #endif //COMPILERGENERATOR_PARSER_H
