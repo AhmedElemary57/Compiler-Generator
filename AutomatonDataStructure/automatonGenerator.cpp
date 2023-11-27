@@ -69,6 +69,7 @@ Automaton closure(const Automaton& automaton) {
      * @param automaton: an automaton.
      * @return an automaton that represents the closure operation on the automaton.
      */
+
     Automaton newAutomaton = plusOperation(automaton);
     newAutomaton.getStartNode()->addNextNode(newAutomaton.getFinalNode(), char(238));
 

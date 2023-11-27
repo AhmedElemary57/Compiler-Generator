@@ -19,7 +19,7 @@ class Node {
 
     public:
         Node();
-        Node(const Node& other);
+        Node(const Node& other, unordered_map<int, Node*> nextNodes);
         Node(unordered_map<char,vector<Node*> > nextNodes,bool isFinal);
         void addNextNode(Node* nextNode,char input);
         unordered_map<char,vector<Node*> > getNextNodes();
@@ -27,7 +27,9 @@ class Node {
 
         void setIsFinal(bool isFinal);
         void printNode();
-
+    int getNodeNumber() const {
+        return nodeNumber;
+    }
 
 };
 

@@ -9,21 +9,30 @@ Node::Node() {
 }
 
 // Deep copy constructor
-Node::Node(const Node& other)  {
+Node::Node(const Node& other, unordered_map<int, Node*> unique_next)  {
     // Deep copy the nextNodes map
+    nodeNumber = other.nodeNumber;
+    unique_next[this->nodeNumber] = this;
     for (const auto& entry : other.nextNodes) { // entry is a pair of (char, vector<Node*>)
         char input = entry.first;
         const auto& nextNodesForInput = entry.second; // nextNodesForInput is a vector<Node*>
 
         for (const auto& nextNode : nextNodesForInput) {
             // Recursively deep copy each nextNode
-            Node* copiedNextNode = new Node(*nextNode);
-            addNextNode(copiedNextNode, input);
+            if(unique_next.find(nextNode->nodeNumber) == unique_next.end()) {
+                Node *copiedNextNode = new Node(*nextNode, unique_next);
+                unique_next[nextNode->nodeNumber] = copiedNextNode;
+            }
+            else {
+                Node *copiedNextNode = unique_next.at(nextNode->nodeNumber);
+                addNextNode(copiedNextNode, input);
+            }
         }
     }
 
     // Set the isFinal flag
     isFinal = other.isFinal;
+
 }
 
 Node::Node(unordered_map<char, vector<Node *>> nextNodes, bool isFinal) {

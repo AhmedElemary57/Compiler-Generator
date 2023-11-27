@@ -13,7 +13,7 @@ using namespace std;
 int Node::nodeCounter = 0;
 int main() {
     // Read the file into a string.
-    string filepath = "D:\\.CSED\\CompilerGenerator\\input.txt";
+    string filepath = "/home/elsaber/compilers/Compiler-Generator/input.txt";
     vector<string> lines = readInputFile(filepath);
 
     // Get the regular expressions from the file.

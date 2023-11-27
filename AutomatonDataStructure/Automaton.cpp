@@ -12,13 +12,15 @@ Automaton::Automaton() {
 }
 
 // Deep copy constructor
-/*
 Automaton::Automaton(const Automaton& other) noexcept {
     // Perform deep copy for startNode and finalNode
-    startNode = new Node(*(other.startNode));
-    finalNode = new Node(*(other.finalNode));
+
+    unordered_map<int, Node*> unique_next;
+    finalNode = new Node(*(other.finalNode), unique_next);
+    unique_next[finalNode->getNodeNumber()] = finalNode;
+    startNode = new Node(*(other.startNode), unique_next);
 }
- */
+
 
 Automaton::Automaton(Node *startNode, Node *finalNode) {
     this->startNode = startNode;
