@@ -87,15 +87,15 @@ void handleRegularDefinitionsInTermsOfOtherRegularDefinitions(unordered_map<stri
             if (j.find('+') != string::npos) {
                 string regularDefinitionName = j.substr(0, j.length() - 1); // get the name of the regular definition
                 vector<string> regularDefinition = regularDefinitionsMap[regularDefinitionName];
-                auto* oldAutomaton = new Automaton(automatonMap[regularDefinitionName]);
-                automatonMap[i.first] = plusOperation(*oldAutomaton);
+                Automaton oldAutomaton = automatonMap[regularDefinitionName];
+                automatonMap[i.first] = plusOperation(oldAutomaton);
                 regularDefinitionsMap[i.first].insert(regularDefinitionsMap[i.first].end(), regularDefinition.begin(), regularDefinition.end());
             }
             else if (j.find('*') != string::npos) {
                 string regularDefinitionName = j.substr(1, j.length() - 2); // get the name of the regular definition
                 vector<string> regularDefinition = regularDefinitionsMap[regularDefinitionName];
-                auto* oldAutomaton = new Automaton(automatonMap[regularDefinitionName]);
-                automatonMap[i.first] = closure(*oldAutomaton);
+                Automaton oldAutomaton = automatonMap[regularDefinitionName];
+                automatonMap[i.first] = closure(oldAutomaton);
                 regularDefinitionsMap[i.first].insert(regularDefinitionsMap[i.first].end(), regularDefinition.begin(), regularDefinition.end());
             }
         }

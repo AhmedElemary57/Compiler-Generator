@@ -2,7 +2,10 @@
 #include <vector>
 #include <unordered_map>
 #include <set>
-
+#include <iostream>
+#include <fstream>
+#include <sstream>
+#include <set>
 using namespace std;
 #ifndef COMPILERGENERATOR_PARSER_H
 #define COMPILERGENERATOR_PARSER_H
