@@ -76,6 +76,43 @@ Automaton closure(const Automaton& automaton) {
     return newAutomaton;
 }
 
+Automaton union(const Automaton& automaton1, const Automaton& automaton2) {
+    /**
+     * This function generates an automaton that represents the union operation on two automata.
+     * @param automaton1: an automaton.
+     * @param automaton2: an automaton.
+     * @return an automaton that represents the union operation on the two automata.
+     */
+    Automaton newAutomaton;
+    newAutomaton.setStartNode(new Node());
+    newAutomaton.setFinalNode(new Node());
+
+    newAutomaton.getStartNode()->addNextNode(automaton1.getStartNode(), char(238));
+    newAutomaton.getStartNode()->addNextNode(automaton2.getStartNode(), char(238));
+
+    automaton1.getFinalNode()->addNextNode(newAutomaton.getFinalNode(), char(238));
+    automaton2.getFinalNode()->addNextNode(newAutomaton.getFinalNode(), char(238));
+
+    return newAutomaton;
+}
+
+Automaton concatenate(const Automaton& automaton1, const Automaton& automaton2) {
+    /**
+     * This function generates an automaton that represents the concatenation operation on two automata.
+     * @param automaton1: an automaton.
+     * @param automaton2: an automaton.
+     * @return an automaton that represents the concatenation operation on the two automata.
+     */
+    Automaton newAutomaton;
+    newAutomaton.setStartNode(new Node());
+    newAutomaton.setFinalNode(new Node());
+
+    newAutomaton.getStartNode()->addNextNode(automaton1.getStartNode(), char(238));
+    automaton1.getFinalNode()->addNextNode(automaton2.getStartNode(), char(238));
+    automaton2.getFinalNode()->addNextNode(newAutomaton.getFinalNode(), char(238));
+
+    return newAutomaton;
+}
 
 void handleRegularDefinitionsInTermsOfOtherRegularDefinitions(unordered_map<string, vector<string>>& regularDefinitionsMap, unordered_map<string, Automaton>& automatonMap) {
     /**
