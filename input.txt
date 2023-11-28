@@ -1,2 +1,3 @@
 digit = 0-9
 digits = digit+
+int : digit| (digit|letter) | letter
