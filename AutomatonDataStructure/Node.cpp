@@ -9,7 +9,7 @@ Node::Node() {
 }
 
 // Deep copy constructor
-Node::Node(const Node& other, unordered_map<int, Node*> unique_next)  {
+Node::Node(const Node& other, unordered_map<char, Node*> unique_next)  {
     // Deep copy the nextNodes map
     nodeNumber = other.nodeNumber;
     unique_next[this->nodeNumber] = this;
