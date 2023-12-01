@@ -153,4 +153,19 @@ unordered_map<string, string> getRegularExpressionsMap(const vector<string>& reg
     return regularExpressionsMap;
 }
 
+// This function returns priority map for the regular expressions.
+unordered_map<string, int> getRegularExpressionsPriorityMap(const vector<string>& regularExpressions) {
+    unordered_map<string, int> regularExpressionsPriorityMap;
+    int priority = 1;
+    for (const auto& regularExpression : regularExpressions) {
+        string regularExpressionName = regularExpression.substr(0, regularExpression.find(':'));
+        // remove the spaces from regularExpressionName .
+        regularExpressionName.erase(remove_if(regularExpressionName.begin(), regularExpressionName.end(), ::isspace), regularExpressionName.end());
+        regularExpressionsPriorityMap[regularExpressionName] = priority++;
+    }
+
+    return regularExpressionsPriorityMap;
+}
+
+
 

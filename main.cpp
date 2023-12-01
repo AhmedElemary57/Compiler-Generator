@@ -144,9 +144,16 @@ int main(){
     // get regular expression  map
     unordered_map<string, string> regularExpressionsMap = getRegularExpressionsMap(regularExpressionsVector);
     unordered_map<string, Automaton> regularExpressionsAutomatonMap = generateAutomatonFromRegularExpressions(regularExpressionsMap, automatonMap);
+    unordered_map<string, int> regularExpressionsPriorityMap = getRegularExpressionsPriorityMap(regularExpressionsVector);
 
     cout << "Regular Expressions Automaton Map: \n";
     printAutomatonMap(regularExpressionsAutomatonMap);
+
+    cout << "Regular Expressions Priority Map: \n";
+    for (auto & i : regularExpressionsPriorityMap) {
+        cout << i.first << " : " << i.second << endl;
+    }
+
     vector<string> v;
     v.emplace_back("0-9");
     unordered_map<string, Automaton> regularDef;
@@ -158,6 +165,5 @@ int main(){
     num.printAutomaton();
     return 0;
 
-    return 0;
 
 }

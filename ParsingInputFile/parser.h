@@ -18,5 +18,6 @@ vector<string> getPunctuations(const vector<string>& lines);
 set<char> getReservedSymbols(const vector<string>& lines);
 unordered_map<string, vector<string> > getRegularDefinitionsMap(const vector<string>& regularDefinitions);
 unordered_map<string, string> getRegularExpressionsMap(const vector<string>& regularExpressions);
+unordered_map<string, int> getRegularExpressionsPriorityMap(const vector<string>& regularExpressions);
 
 #endif //COMPILERGENERATOR_PARSER_H
