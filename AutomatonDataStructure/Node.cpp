@@ -63,15 +63,20 @@ void Node::setIsFinal(bool isFinal) {
 }
 
 void Node::printNode() {
-    cout << "Node: " << this->nodeNumber << endl;
-    cout << "Is final: " << this->isFinal << endl;
-    cout << "Next nodes: " << endl;
-    for (const auto &nextNode : this->nextNodes) {
-        cout << "Input: " << nextNode.first << endl;
-        cout << "Nodes: " << endl;
-        for (const auto &node : nextNode.second) {
-            cout << node << endl;
+    cout << "Node " << nodeNumber << " - Is Final: " << (isFinal ? "Yes" : "No") << endl;
+
+    for (const auto& entry : nextNodes) {
+        char input = entry.first;
+        const auto& nextNodesForInput = entry.second;
+
+        cout << "  Input '" << input << "': ";
+
+        for (const auto& nextNode : nextNodesForInput) {
+            cout << nextNode->nodeNumber << " ";
         }
+
+        cout << endl;
     }
+    cout << endl;
 }
 

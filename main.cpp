@@ -79,15 +79,85 @@
 #include "AutomatonDataStructure/Automaton.h"
 #include "AutomatonDataStructure/automatonGenerator.h"
 #include "Postfix-expression/Postfix_expression.h"
+
 int Node::nodeCounter = 0;
 int main(){
+    // get current path of the project
+    std::string current_path = __FILE__;
+    current_path = current_path.substr(0, current_path.find_last_of('\\')) ;
+
+    // Read the file into a string.
+    std::string filepath = current_path + "\\input.txt";
+    vector<string> lines = readInputFile(filepath);
+
+    // Get the regular expressions from the file.
+    vector<string> regularExpressionsVector = getRegularExpressions(lines);
+    vector<string> regularDefinitionsVector = getRegularDefinitions(lines);
+    vector<string> keywordsVector = getKeywords(lines);
+    vector<string> punctuationsVector = getPunctuations(lines);
+    set<char> reservedSymbolsSet = getReservedSymbols(lines);
+
+
+    cout << "Regular Expressions: \n";
+    for (auto & i : regularExpressionsVector) {
+        cout << i << endl;
+    }
+
+    cout << "Regular Definitions: \n";
+    for (auto & i : regularDefinitionsVector) {
+        cout << i << endl;
+    }
+
+    cout << "Keywords: \n";
+    for (auto & i : keywordsVector) {
+        cout << i << endl;
+    }
+
+    cout << "Punctuations: \n";
+    for (auto & i : punctuationsVector) {
+        cout << i << endl;
+    }
+
+    cout << "Reserved Symbols: \n";
+    for (auto & i : reservedSymbolsSet) {
+        cout << i << endl;
+    }
+
+    unordered_map<string, vector<string>> regularDefinitionsMap = getRegularDefinitionsMap(regularDefinitionsVector);
+
+    cout << "Regular Definitions Map: \n";
+    for (auto & i : regularDefinitionsMap) {
+        cout << i.first << " : ";
+        for (auto & j : i.second) {
+            cout << j << " ";
+        }
+        cout << endl;
+    }
+
+
+    unordered_map<string, Automaton> automatonMap = generateAutomatonFromRegularDefinitions(regularDefinitionsMap);
+
+    cout << "Automaton Map: \n";
+
+    printAutomatonMap(automatonMap);
+
+    // get regular expression  map
+    unordered_map<string, string> regularExpressionsMap = getRegularExpressionsMap(regularExpressionsVector);
+    unordered_map<string, Automaton> regularExpressionsAutomatonMap = generateAutomatonFromRegularExpressions(regularExpressionsMap, automatonMap);
+
+    cout << "Regular Expressions Automaton Map: \n";
+    printAutomatonMap(regularExpressionsAutomatonMap);
     vector<string> v;
     v.emplace_back("0-9");
     unordered_map<string, Automaton> regularDef;
     regularDef["digit"] = generateAutomatonFromRegularDefinition(v);
     regularDef["digits"] = positiveClosure(regularDef["digit"]);
     Postfix_expression postfixExpression;
-    Automaton num = postfixExpression.postfix("digit a-c", regularDef);
+    Automaton num = postfixExpression.postfix("digit+|digit+ . digits (\\L|E digits)", regularDef);
+    cout << "num: \n";
+    num.printAutomaton();
+    return 0;
 
     return 0;
+
 }

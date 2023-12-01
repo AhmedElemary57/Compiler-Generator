@@ -138,4 +138,19 @@ unordered_map<string, vector<string>> getRegularDefinitionsMap(const vector<stri
     return regularDefinitionsMap;
 }
 
+unordered_map<string, string> getRegularExpressionsMap(const vector<string>& regularExpressions) {
+    unordered_map<string, string> regularExpressionsMap;
+
+    for (const auto& regularExpression : regularExpressions) {
+        string regularExpressionName = regularExpression.substr(0, regularExpression.find(':'));
+        string regularExpressionExpression = regularExpression.substr(regularExpression.find(':') + 1);
+        // remove the spaces from regularExpressionName .
+        regularExpressionName.erase(remove_if(regularExpressionName.begin(), regularExpressionName.end(), ::isspace), regularExpressionName.end());
+        // remove the spaces from regularExpressionExpression .
+        regularExpressionExpression.erase(remove_if(regularExpressionExpression.begin(), regularExpressionExpression.end(), ::isspace), regularExpressionExpression.end());
+        regularExpressionsMap[regularExpressionName] = regularExpressionExpression;
+    }
+    return regularExpressionsMap;
+}
+
 

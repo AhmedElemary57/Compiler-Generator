@@ -1,8 +1,7 @@
 #include "automatonGenerator.h"
+#include "../Postfix-expression/Postfix_expression.h"
 
 using namespace std;
-
-
 
 Automaton generateAutomatonFromRegularDefinition(vector<string> regularDefinition) {
     /**
@@ -14,8 +13,7 @@ Automaton generateAutomatonFromRegularDefinition(vector<string> regularDefinitio
     automaton.setStartNode(new Node());
     automaton.setFinalNode(new Node());
 
-    for( auto & i : regularDefinition ) {
-
+    for (auto & i : regularDefinition) {
         if (i == "\\L") {
             automaton.getStartNode()->addNextNode(automaton.getFinalNode(), char(238));
             continue;
@@ -37,11 +35,9 @@ Automaton generateAutomatonFromRegularDefinition(vector<string> regularDefinitio
             }
             continue;
         }
-
     }
     return automaton;
 }
-
 
 Automaton positiveClosure(Automaton automaton) {
     /**
@@ -54,7 +50,7 @@ Automaton positiveClosure(Automaton automaton) {
     newAutomaton.setStartNode(new Node());
     newAutomaton.setFinalNode(new Node());
 
-    // define the next stet of the start node of the new automaton. which is the start node of the automaton.
+    // define the next state of the start node of the new automaton, which is the start node of the automaton.
     newAutomaton.getStartNode()->addNextNode(automaton.getStartNode(), char(238)); // 238 is the epsilon input.
 
     automaton.getFinalNode()->addNextNode(newAutomaton.getFinalNode(), char(238));
@@ -135,10 +131,9 @@ void handleRegularDefinitionsInTermsOfOtherRegularDefinitions(unordered_map<stri
     }
 }
 
-// function to generate the automaton from the regular definitions map.
 unordered_map<string, Automaton> generateAutomatonFromRegularDefinitions(unordered_map<string, vector<string>>& regularDefinitionsMap) {
     /**
-     * This function generates an automaton map from a regular definitions map. eg. {letter:  +[a-zA-Z], digit: [0-9]} -> {letter: automaton, digit: automaton}
+     * This function generates an automaton map from a regular definitions map.
      * @param regularDefinitionsMap: a map of strings to vectors of strings that represents the regular definitions.
      * @return a map of strings to automata that represents the regular definitions.
      */
@@ -153,18 +148,41 @@ unordered_map<string, Automaton> generateAutomatonFromRegularDefinitions(unorder
     return automatonMap;
 }
 
+unordered_map<string, Automaton> generateAutomatonFromRegularExpressions(unordered_map<string, string>& regularExpressionsMap, unordered_map<string, Automaton>& regularDefinitionsAutoMap) {
+    /**
+     * This function generates an automaton map from regular expressions.
+     * @param regularExpressionsMap: a map of strings to regular expressions.
+     * @param regularDefinitionsAutoMap: a map of strings to automata that represents the regular definitions.
+     * @return a map of strings to automata that represents the regular expressions.
+     */
+    unordered_map<string, Automaton> automatonMap;
+    for (auto & i : regularExpressionsMap) {
+        Postfix_expression postfixExpression;
+        string  regularExpressions = i.second;
+        Automaton newAutomaton = postfixExpression.postfix(regularExpressions, regularDefinitionsAutoMap);
+        automatonMap[i.first] = newAutomaton;
+    }
 
-
-
+    return automatonMap;
+}
 
 void printAutomatonMap(const unordered_map<string, Automaton>& automatonMap) {
     /**
-     * This function prints the automaton map.
-     * @param automatonMap: a map of strings to automata that represents the regular definitions.
+     * This function prints information about the automaton map.
+     * @param automatonMap: a map of strings to automata.
      */
-    for (auto & i : automatonMap) {
-        cout << i.first << " : " << endl;
-        Automaton x =i.second;
-        x.printAutomaton();
+    cout << "Automaton Map:" << endl;
+
+    for (const auto& entry : automatonMap) {
+        const string& automatonName = entry.first;
+        Automaton automaton = entry.second;
+
+        cout << "Automaton Name: " << automatonName << endl;
+        cout << "Start Node: " << automaton.getStartNode()->getNodeNumber() << endl;
+        cout << "Final Node: " << automaton.getFinalNode()->getNodeNumber() << endl;
+
+        // Optionally, you can print more information about the automaton, depending on your needs.
+
+        cout << endl;
     }
 }
