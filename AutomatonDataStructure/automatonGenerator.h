@@ -11,17 +11,14 @@
 #ifndef COMPILERGENERATOR_AUTOMATONGENERATOR_H
 #define COMPILERGENERATOR_AUTOMATONGENERATOR_H
 
-
-unordered_map<string, Automaton> generateAutomatonFromRegularDefinitions(unordered_map<string, vector<string>> &regularDefinitionsMap);
-void printAutomatonMap(const unordered_map<string, Automaton> &automatonMap);
-void handleRegularDefinitionsInTermsOfOtherRegularDefinitions(unordered_map<string, vector<string>> &regularDefinitionsMap, unordered_map<string, Automaton> &automatonMap);
-Automaton plusOperation(Automaton automaton);
+Automaton generateAutomatonFromRegularDefinition(vector<string> regularDefinition);
+unordered_map<string, Automaton> generateAutomatonFromRegularDefinitions(unordered_map<string, vector<string>>& regularDefinitionsMap);
+void printAutomatonMap(const unordered_map<string, Automaton>& automatonMap);
+void handleRegularDefinitionsInTermsOfOtherRegularDefinitions(unordered_map<string, vector<string>>& regularDefinitionsMap, unordered_map<string, Automaton>& automatonMap);
+Automaton positiveClosure(Automaton automaton);
 Automaton closure(const Automaton& automaton);
-Automaton unionOperation(Automaton automaton1, Automaton automaton2);
-Automaton concatenation(Automaton automaton1, Automaton automaton2);
+Automaton union_op(Automaton& automaton1, Automaton& automaton2);
+Automaton concatenate(Automaton& automaton1, Automaton& automaton2);
+unordered_map<string, Automaton> generateAutomatonFromRegularExpressions(unordered_map<string, string>& regularExpressionsMap, unordered_map<string, Automaton>& regularDefinitionsAutoMap);
 
 #endif //COMPILERGENERATOR_AUTOMATONGENERATOR_H
-
-Automaton closure(const Automaton &automaton);
-
-#endif // COMPILERGENERATOR_AUTOMATONGENERATOR_H

@@ -11,9 +11,13 @@
 using namespace std;
 
 int Node::nodeCounter = 0;
-int main() {
+int main(){
+    // get current path of the project
+    std::string current_path = __FILE__;
+    current_path = current_path.substr(0, current_path.find_last_of('\\')) ;
+
     // Read the file into a string.
-    string filepath = "C:\\Users\\USER\\Desktop\\New folder\\Compiler-Generator\\input.txt";
+    std::string filepath = current_path + "\\input.txt";
     vector<string> lines = readInputFile(filepath);
 
     // Get the regular expressions from the file.
@@ -67,19 +71,29 @@ int main() {
 
     printAutomatonMap(automatonMap);
 
-    // Test the automaton union operation on two automata.
-    Automaton automaton1 = automatonMap["digit"];
-    Automaton automaton2 = automatonMap["letter"];
+    // get regular expression  map
+    unordered_map<string, string> regularExpressionsMap = getRegularExpressionsMap(regularExpressionsVector);
+    unordered_map<string, Automaton> regularExpressionsAutomatonMap = generateAutomatonFromRegularExpressions(regularExpressionsMap, automatonMap);
+    unordered_map<string, int> regularExpressionsPriorityMap = getRegularExpressionsPriorityMap(regularExpressionsVector);
 
-    Automaton newAutomaton = unionOperation(automaton1, automaton2);
-    newAutomaton.printAutomaton();
+    cout << "Regular Expressions Automaton Map: \n";
+    printAutomatonMap(regularExpressionsAutomatonMap);
 
-    // Test the automaton concatenation operation on two automata.
-    Automaton automaton3 = automatonMap["digit"];
-    Automaton automaton4 = automatonMap["letter"];
+    cout << "Regular Expressions Priority Map: \n";
+    for (auto & i : regularExpressionsPriorityMap) {
+        cout << i.first << " : " << i.second << endl;
+    }
 
-    Automaton newAutomaton2 = concatenation(automaton3, automaton4);
-    newAutomaton2.printAutomaton();
-
+    vector<string> v;
+    v.emplace_back("0-9");
+    unordered_map<string, Automaton> regularDef;
+    regularDef["digit"] = generateAutomatonFromRegularDefinition(v);
+    regularDef["digits"] = positiveClosure(regularDef["digit"]);
+    Postfix_expression postfixExpression;
+    Automaton num = postfixExpression.postfix("digit+|digit+ . digits (\\L|E digits)", regularDef);
+    cout << "num: \n";
+    num.printAutomaton();
     return 0;
+
+
 }
