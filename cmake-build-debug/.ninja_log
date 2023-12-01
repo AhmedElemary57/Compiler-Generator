@@ -1,7 +1,0 @@
-# ninja log v5
-4	3047	1701102089291315351	CMakeFiles/CompilerGenerator.dir/AutomatonDataStructure/automatonGenerator.cpp.o	a626be1306b8d2c0
-4	1525	1701102087771268437	CMakeFiles/CompilerGenerator.dir/ParsingInputFile/parser.cpp.o	c705eb24e8989589
-3072	3275	1701102089515322262	CompilerGenerator	ec91b74c390d301
-4	3072	1701102089315316091	CMakeFiles/CompilerGenerator.dir/AutomatonDataStructure/Node.cpp.o	77bc378d83744c30
-2	2765	1701102089007306588	CMakeFiles/CompilerGenerator.dir/main.cpp.o	1ea4d29bfaebb520
-3	2836	1701102089079308811	CMakeFiles/CompilerGenerator.dir/AutomatonDataStructure/Automaton.cpp.o	2bb40336a72df656

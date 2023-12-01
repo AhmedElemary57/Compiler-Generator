@@ -1,7 +1,3 @@
-//
-// Created by USER on 11/26/2023.
-//
-
 #include "Automaton.h"
 
 using namespace std;
@@ -15,7 +11,7 @@ Automaton::Automaton() {
 Automaton::Automaton(const Automaton& other) noexcept {
     // Perform deep copy for startNode and finalNode
 
-    unordered_map<int, Node*> unique_next;
+    unordered_map<char, Node*> unique_next;
     finalNode = new Node(*(other.finalNode), unique_next);
     unique_next[finalNode->getNodeNumber()] = finalNode;
     startNode = new Node(*(other.startNode), unique_next);
