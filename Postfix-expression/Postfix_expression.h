@@ -10,7 +10,7 @@ class Postfix_expression {
 
 
 public:
-    Automaton postfix(string expression, unordered_map<string, Automaton> &automatons);
+    Automaton postfix(string expression, unordered_map<string, Automaton> automatons);
     string prepareCharacters(string str, unordered_map<string, Automaton> &automatons);
 };
 

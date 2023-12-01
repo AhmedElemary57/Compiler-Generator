@@ -1,7 +1,18 @@
 # ninja log v5
-4	3047	1701102089291315351	CMakeFiles/CompilerGenerator.dir/AutomatonDataStructure/automatonGenerator.cpp.o	a626be1306b8d2c0
-4	1525	1701102087771268437	CMakeFiles/CompilerGenerator.dir/ParsingInputFile/parser.cpp.o	c705eb24e8989589
-3072	3275	1701102089515322262	CompilerGenerator	ec91b74c390d301
-4	3072	1701102089315316091	CMakeFiles/CompilerGenerator.dir/AutomatonDataStructure/Node.cpp.o	77bc378d83744c30
-2	2765	1701102089007306588	CMakeFiles/CompilerGenerator.dir/main.cpp.o	1ea4d29bfaebb520
-3	2836	1701102089079308811	CMakeFiles/CompilerGenerator.dir/AutomatonDataStructure/Automaton.cpp.o	2bb40336a72df656
+2	1450	1701396705494014431	CMakeFiles/CompilerGenerator.dir/AutomatonDataStructure/automatonGenerator.cpp.o	a626be1306b8d2c0
+1	1483	1701382046456053512	CMakeFiles/CompilerGenerator.dir/ParsingInputFile/parser.cpp.o	c705eb24e8989589
+1320	1464	1701397174355270344	CompilerGenerator	c06f2db03c6d8ac6
+1	1419	1701396588055555377	CMakeFiles/CompilerGenerator.dir/Postfix-expression/Postfix_expression.cpp.o	e73b7be86d135d99
+2	1561	1701386800665240990	CMakeFiles/CompilerGenerator.dir/AutomatonDataStructure/Node.cpp.o	77bc378d83744c30
+2	1320	1701397174211267595	CMakeFiles/CompilerGenerator.dir/main.cpp.o	1ea4d29bfaebb520
+2	1491	1701394133633224557	CMakeFiles/CompilerGenerator.dir/AutomatonDataStructure/Automaton.cpp.o	2bb40336a72df656
+1	1289	1701397274117165571	CMakeFiles/CompilerGenerator.dir/main.cpp.o	1ea4d29bfaebb520
+1289	1420	1701397274245167991	CompilerGenerator	c06f2db03c6d8ac6
+2	1323	1701397655232278085	CMakeFiles/CompilerGenerator.dir/main.cpp.o	1ea4d29bfaebb520
+1323	1459	1701397655368280597	CompilerGenerator	c06f2db03c6d8ac6
+1	1298	1701397761522237037	CMakeFiles/CompilerGenerator.dir/main.cpp.o	1ea4d29bfaebb520
+1298	1435	1701397761658239539	CompilerGenerator	c06f2db03c6d8ac6
+1	1431	1701397813967200874	CMakeFiles/CompilerGenerator.dir/main.cpp.o	1ea4d29bfaebb520
+1431	1560	1701397814095203224	CompilerGenerator	c06f2db03c6d8ac6
+1	1339	1701397824199388725	CMakeFiles/CompilerGenerator.dir/main.cpp.o	1ea4d29bfaebb520
+1339	1467	1701397824327391075	CompilerGenerator	c06f2db03c6d8ac6

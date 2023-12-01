@@ -43,7 +43,7 @@ Automaton generateAutomatonFromRegularDefinition(vector<string> regularDefinitio
 }
 
 
-Automaton plusOperation(Automaton automaton) {
+Automaton positiveClosure(Automaton automaton) {
     /**
      * This function generates an automaton that represents the plus operation on an automaton.
      * @param automaton: an automaton.
@@ -70,13 +70,13 @@ Automaton closure(const Automaton& automaton) {
      * @return an automaton that represents the closure operation on the automaton.
      */
 
-    Automaton newAutomaton = plusOperation(automaton);
+    Automaton newAutomaton = positiveClosure(automaton);
     newAutomaton.getStartNode()->addNextNode(newAutomaton.getFinalNode(), char(238));
 
     return newAutomaton;
 }
 
-Automaton union(const Automaton& automaton1, const Automaton& automaton2) {
+Automaton union_op(Automaton& automaton1, Automaton& automaton2) {
     /**
      * This function generates an automaton that represents the union operation on two automata.
      * @param automaton1: an automaton.
@@ -96,21 +96,16 @@ Automaton union(const Automaton& automaton1, const Automaton& automaton2) {
     return newAutomaton;
 }
 
-Automaton concatenate(const Automaton& automaton1, const Automaton& automaton2) {
+Automaton concatenate(Automaton& automaton1, Automaton& automaton2) {
     /**
      * This function generates an automaton that represents the concatenation operation on two automata.
      * @param automaton1: an automaton.
      * @param automaton2: an automaton.
      * @return an automaton that represents the concatenation operation on the two automata.
      */
-    Automaton newAutomaton;
-    newAutomaton.setStartNode(new Node());
-    newAutomaton.setFinalNode(new Node());
-
-    newAutomaton.getStartNode()->addNextNode(automaton1.getStartNode(), char(238));
-    automaton1.getFinalNode()->addNextNode(automaton2.getStartNode(), char(238));
-    automaton2.getFinalNode()->addNextNode(newAutomaton.getFinalNode(), char(238));
-
+    Automaton newAutomaton = *new Automaton(automaton1);
+    newAutomaton.getFinalNode()->addNextNode(automaton2.getStartNode(), char(238));
+    newAutomaton.setFinalNode(automaton2.getFinalNode());
     return newAutomaton;
 }
 
@@ -126,7 +121,7 @@ void handleRegularDefinitionsInTermsOfOtherRegularDefinitions(unordered_map<stri
                 string regularDefinitionName = j.substr(0, j.length() - 1); // get the name of the regular definition
                 vector<string> regularDefinition = regularDefinitionsMap[regularDefinitionName];
                 Automaton oldAutomaton = automatonMap[regularDefinitionName];
-                automatonMap[i.first] = plusOperation(oldAutomaton);
+                automatonMap[i.first] = positiveClosure(oldAutomaton);
                 regularDefinitionsMap[i.first].insert(regularDefinitionsMap[i.first].end(), regularDefinition.begin(), regularDefinition.end());
             }
             else if (j.find('*') != string::npos) {

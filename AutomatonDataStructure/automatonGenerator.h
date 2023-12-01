@@ -11,10 +11,12 @@
 #ifndef COMPILERGENERATOR_AUTOMATONGENERATOR_H
 #define COMPILERGENERATOR_AUTOMATONGENERATOR_H
 
-
+Automaton generateAutomatonFromRegularDefinition(vector<string> regularDefinition);
 unordered_map<string, Automaton> generateAutomatonFromRegularDefinitions(unordered_map<string, vector<string>>& regularDefinitionsMap);
 void printAutomatonMap(const unordered_map<string, Automaton>& automatonMap);
 void handleRegularDefinitionsInTermsOfOtherRegularDefinitions(unordered_map<string, vector<string>>& regularDefinitionsMap, unordered_map<string, Automaton>& automatonMap);
-Automaton plusOperation(Automaton automaton);
+Automaton positiveClosure(Automaton automaton);
 Automaton closure(const Automaton& automaton);
+Automaton union_op(Automaton& automaton1, Automaton& automaton2);
+Automaton concatenate(Automaton& automaton1, Automaton& automaton2);
 #endif //COMPILERGENERATOR_AUTOMATONGENERATOR_H

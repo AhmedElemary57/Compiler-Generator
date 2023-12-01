@@ -22,6 +22,7 @@ Node::Node(const Node& other, unordered_map<int, Node*> unique_next)  {
             if(unique_next.find(nextNode->nodeNumber) == unique_next.end()) {
                 Node *copiedNextNode = new Node(*nextNode, unique_next);
                 unique_next[nextNode->nodeNumber] = copiedNextNode;
+                addNextNode(copiedNextNode, input);
             }
             else {
                 Node *copiedNextNode = unique_next.at(nextNode->nodeNumber);
