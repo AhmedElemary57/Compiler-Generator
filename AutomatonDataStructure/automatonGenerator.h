@@ -17,4 +17,7 @@ void printAutomatonMap(const unordered_map<string, Automaton>& automatonMap);
 void handleRegularDefinitionsInTermsOfOtherRegularDefinitions(unordered_map<string, vector<string>>& regularDefinitionsMap, unordered_map<string, Automaton>& automatonMap);
 Automaton plusOperation(Automaton automaton);
 Automaton closure(const Automaton& automaton);
+Automaton unionOperation(Automaton automaton1, Automaton automaton2);
+Automaton concatenation(Automaton automaton1, Automaton automaton2);
+
 #endif //COMPILERGENERATOR_AUTOMATONGENERATOR_H

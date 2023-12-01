@@ -42,7 +42,6 @@ Automaton generateAutomatonFromRegularDefinition(vector<string> regularDefinitio
     return automaton;
 }
 
-
 Automaton plusOperation(Automaton automaton) {
     /**
      * This function generates an automaton that represents the plus operation on an automaton.
@@ -76,7 +75,7 @@ Automaton closure(const Automaton& automaton) {
     return newAutomaton;
 }
 
-Automaton union(const Automaton& automaton1, const Automaton& automaton2) {
+Automaton unionOperation(Automaton automaton1, Automaton automaton2) {
     /**
      * This function generates an automaton that represents the union operation on two automata.
      * @param automaton1: an automaton.
@@ -84,19 +83,22 @@ Automaton union(const Automaton& automaton1, const Automaton& automaton2) {
      * @return an automaton that represents the union operation on the two automata.
      */
     Automaton newAutomaton;
+    // define a new automaton that represents the union operation on the two automata.
     newAutomaton.setStartNode(new Node());
     newAutomaton.setFinalNode(new Node());
 
-    newAutomaton.getStartNode()->addNextNode(automaton1.getStartNode(), char(238));
-    newAutomaton.getStartNode()->addNextNode(automaton2.getStartNode(), char(238));
+    // define the next stet of the start node of the new automaton. which is the start node of the two automata.
+    newAutomaton.getStartNode()->addNextNode(automaton1.getStartNode(), char(238)); // 238 is the epsilon input.
+    newAutomaton.getStartNode()->addNextNode(automaton2.getStartNode(), char(238)); // 238 is the epsilon input.
 
+    // define the next stet of the final node of the two automata. which is the final node of the new automaton.
     automaton1.getFinalNode()->addNextNode(newAutomaton.getFinalNode(), char(238));
     automaton2.getFinalNode()->addNextNode(newAutomaton.getFinalNode(), char(238));
 
     return newAutomaton;
 }
 
-Automaton concatenate(const Automaton& automaton1, const Automaton& automaton2) {
+Automaton concatenation(Automaton automaton1, Automaton automaton2) {
     /**
      * This function generates an automaton that represents the concatenation operation on two automata.
      * @param automaton1: an automaton.
@@ -104,11 +106,17 @@ Automaton concatenate(const Automaton& automaton1, const Automaton& automaton2) 
      * @return an automaton that represents the concatenation operation on the two automata.
      */
     Automaton newAutomaton;
+    // define a new automaton that represents the concatenation operation on the two automata.
     newAutomaton.setStartNode(new Node());
     newAutomaton.setFinalNode(new Node());
 
-    newAutomaton.getStartNode()->addNextNode(automaton1.getStartNode(), char(238));
+    // define the next stet of the start node of the new automaton. which is the start node of the first automaton.
+    newAutomaton.getStartNode()->addNextNode(automaton1.getStartNode(), char(238)); // 238 is the epsilon input.
+
+    // define the next stet of the final node of the first automaton. which is the start node of the second automaton.
     automaton1.getFinalNode()->addNextNode(automaton2.getStartNode(), char(238));
+
+    // define the next stet of the final node of the second automaton. which is the final node of the new automaton.
     automaton2.getFinalNode()->addNextNode(newAutomaton.getFinalNode(), char(238));
 
     return newAutomaton;
@@ -157,10 +165,6 @@ unordered_map<string, Automaton> generateAutomatonFromRegularDefinitions(unorder
 
     return automatonMap;
 }
-
-
-
-
 
 void printAutomatonMap(const unordered_map<string, Automaton>& automatonMap) {
     /**

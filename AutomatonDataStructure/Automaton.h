@@ -25,9 +25,6 @@ class Automaton {
         void printAutomaton();
 
 
-
-
-
 };
 
 

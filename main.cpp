@@ -13,7 +13,7 @@ using namespace std;
 int Node::nodeCounter = 0;
 int main() {
     // Read the file into a string.
-    string filepath = "/home/elsaber/compilers/Compiler-Generator/input.txt";
+    string filepath = "C:\\Users\\USER\\Desktop\\New folder\\Compiler-Generator\\input.txt";
     vector<string> lines = readInputFile(filepath);
 
     // Get the regular expressions from the file.
@@ -66,6 +66,20 @@ int main() {
     cout << "Automaton Map: \n";
 
     printAutomatonMap(automatonMap);
+
+    // Test the automaton union operation on two automata.
+    Automaton automaton1 = automatonMap["digit"];
+    Automaton automaton2 = automatonMap["letter"];
+
+    Automaton newAutomaton = unionOperation(automaton1, automaton2);
+    newAutomaton.printAutomaton();
+
+    // Test the automaton concatenation operation on two automata.
+    Automaton automaton3 = automatonMap["digit"];
+    Automaton automaton4 = automatonMap["letter"];
+
+    Automaton newAutomaton2 = concatenation(automaton3, automaton4);
+    newAutomaton2.printAutomaton();
 
     return 0;
 }
