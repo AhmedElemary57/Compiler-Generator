@@ -127,7 +127,7 @@ unordered_map<string, vector<string>> getRegularDefinitionsMap(const vector<stri
         // split the regularDefinitionExpression by the | character.
         istringstream iss(regularDefinitionExpression);
         // remove the spaces from regularDefinitionName .
-        regularDefinitionName.erase(remove_if(regularDefinitionName.begin(), regularDefinitionName.end(), ::isspace), regularDefinitionName.end());
+        remove_if(regularDefinitionName.begin(), regularDefinitionName.end(), ::isspace);
         string word;
         while (iss >> word) {
             if(word != "|")
