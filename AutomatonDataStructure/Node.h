@@ -33,4 +33,17 @@ public:
     }
 };
 
+struct HashUnorderedSetNodePointers
+{
+    size_t operator()(const unordered_set<Node *> &unorderedSet) const
+    {
+        size_t ret = 0;
+        for (Node *nodePointer : unorderedSet)
+        {
+            ret ^= hash<Node *>()(nodePointer);
+        }
+        return ret;
+    }
+};
+
 #endif // COMPILERGENERATOR_NODE_H

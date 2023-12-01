@@ -5,9 +5,6 @@
 
 class NFADFAConverter
 {
-private:
-    vector<Node *> EClosure(vector<Node *> nodes);
-
 public:
     static Automaton convertNFAToDFA(Automaton nfa);
 };
