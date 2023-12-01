@@ -54,7 +54,7 @@ Automaton plusOperation(Automaton automaton) {
     newAutomaton.setStartNode(new Node());
     newAutomaton.setFinalNode(new Node());
 
-    // define the next stet of the start node of the new automaton. which is the start node of the automaton.
+    // define the next state of the start node of the new automaton, which is the start node of the automaton.
     newAutomaton.getStartNode()->addNextNode(automaton.getStartNode(), char(238)); // 238 is the epsilon input.
 
     automaton.getFinalNode()->addNextNode(newAutomaton.getFinalNode(), char(238));
@@ -70,13 +70,13 @@ Automaton closure(const Automaton& automaton) {
      * @return an automaton that represents the closure operation on the automaton.
      */
 
-    Automaton newAutomaton = plusOperation(automaton);
+    Automaton newAutomaton = positiveClosure(automaton);
     newAutomaton.getStartNode()->addNextNode(newAutomaton.getFinalNode(), char(238));
 
     return newAutomaton;
 }
 
-Automaton union(const Automaton& automaton1, const Automaton& automaton2) {
+Automaton union_op(Automaton& automaton1, Automaton& automaton2) {
     /**
      * This function generates an automaton that represents the union operation on two automata.
      * @param automaton1: an automaton.
@@ -96,21 +96,16 @@ Automaton union(const Automaton& automaton1, const Automaton& automaton2) {
     return newAutomaton;
 }
 
-Automaton concatenate(const Automaton& automaton1, const Automaton& automaton2) {
+Automaton concatenate(Automaton& automaton1, Automaton& automaton2) {
     /**
      * This function generates an automaton that represents the concatenation operation on two automata.
      * @param automaton1: an automaton.
      * @param automaton2: an automaton.
      * @return an automaton that represents the concatenation operation on the two automata.
      */
-    Automaton newAutomaton;
-    newAutomaton.setStartNode(new Node());
-    newAutomaton.setFinalNode(new Node());
-
-    newAutomaton.getStartNode()->addNextNode(automaton1.getStartNode(), char(238));
-    automaton1.getFinalNode()->addNextNode(automaton2.getStartNode(), char(238));
-    automaton2.getFinalNode()->addNextNode(newAutomaton.getFinalNode(), char(238));
-
+    Automaton newAutomaton = *new Automaton(automaton1);
+    newAutomaton.getFinalNode()->addNextNode(automaton2.getStartNode(), char(238));
+    newAutomaton.setFinalNode(automaton2.getFinalNode());
     return newAutomaton;
 }
 
@@ -126,7 +121,7 @@ void handleRegularDefinitionsInTermsOfOtherRegularDefinitions(unordered_map<stri
                 string regularDefinitionName = j.substr(0, j.length() - 1); // get the name of the regular definition
                 vector<string> regularDefinition = regularDefinitionsMap[regularDefinitionName];
                 Automaton oldAutomaton = automatonMap[regularDefinitionName];
-                automatonMap[i.first] = plusOperation(oldAutomaton);
+                automatonMap[i.first] = positiveClosure(oldAutomaton);
                 regularDefinitionsMap[i.first].insert(regularDefinitionsMap[i.first].end(), regularDefinition.begin(), regularDefinition.end());
             }
             else if (j.find('*') != string::npos) {
@@ -143,7 +138,7 @@ void handleRegularDefinitionsInTermsOfOtherRegularDefinitions(unordered_map<stri
 // function to generate the automaton from the regular definitions map.
 unordered_map<string, Automaton> generateAutomatonFromRegularDefinitions(unordered_map<string, vector<string>>& regularDefinitionsMap) {
     /**
-     * This function generates an automaton map from a regular definitions map. eg. {letter:  +[a-zA-Z], digit: [0-9]} -> {letter: automaton, digit: automaton}
+     * This function generates an automaton map from a regular definitions map.
      * @param regularDefinitionsMap: a map of strings to vectors of strings that represents the regular definitions.
      * @return a map of strings to automata that represents the regular definitions.
      */
@@ -158,18 +153,41 @@ unordered_map<string, Automaton> generateAutomatonFromRegularDefinitions(unorder
     return automatonMap;
 }
 
+unordered_map<string, Automaton> generateAutomatonFromRegularExpressions(unordered_map<string, string>& regularExpressionsMap, unordered_map<string, Automaton>& regularDefinitionsAutoMap) {
+    /**
+     * This function generates an automaton map from regular expressions.
+     * @param regularExpressionsMap: a map of strings to regular expressions.
+     * @param regularDefinitionsAutoMap: a map of strings to automata that represents the regular definitions.
+     * @return a map of strings to automata that represents the regular expressions.
+     */
+    unordered_map<string, Automaton> automatonMap;
+    for (auto & i : regularExpressionsMap) {
+        Postfix_expression postfixExpression;
+        string  regularExpressions = i.second;
+        Automaton newAutomaton = postfixExpression.postfix(regularExpressions, regularDefinitionsAutoMap);
+        automatonMap[i.first] = newAutomaton;
+    }
 
-
-
+    return automatonMap;
+}
 
 void printAutomatonMap(const unordered_map<string, Automaton>& automatonMap) {
     /**
-     * This function prints the automaton map.
-     * @param automatonMap: a map of strings to automata that represents the regular definitions.
+     * This function prints information about the automaton map.
+     * @param automatonMap: a map of strings to automata.
      */
-    for (auto & i : automatonMap) {
-        cout << i.first << " : " << endl;
-        Automaton x =i.second;
-        x.printAutomaton();
+    cout << "Automaton Map:" << endl;
+
+    for (const auto& entry : automatonMap) {
+        const string& automatonName = entry.first;
+        Automaton automaton = entry.second;
+
+        cout << "Automaton Name: " << automatonName << endl;
+        cout << "Start Node: " << automaton.getStartNode()->getNodeNumber() << endl;
+        cout << "Final Node: " << automaton.getFinalNode()->getNodeNumber() << endl;
+
+        // Optionally, you can print more information about the automaton, depending on your needs.
+
+        cout << endl;
     }
 }

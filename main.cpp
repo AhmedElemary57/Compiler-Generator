@@ -11,9 +11,13 @@
 using namespace std;
 
 int Node::nodeCounter = 0;
-int main() {
+int main(){
+    // get current path of the project
+    std::string current_path = __FILE__;
+    current_path = current_path.substr(0, current_path.find_last_of('\\')) ;
+
     // Read the file into a string.
-    string filepath = "/home/elsaber/compilers/Compiler-Generator/input.txt";
+    std::string filepath = current_path + "\\input.txt";
     vector<string> lines = readInputFile(filepath);
 
     // Get the regular expressions from the file.
@@ -67,5 +71,29 @@ int main() {
 
     printAutomatonMap(automatonMap);
 
+    // get regular expression  map
+    unordered_map<string, string> regularExpressionsMap = getRegularExpressionsMap(regularExpressionsVector);
+    unordered_map<string, Automaton> regularExpressionsAutomatonMap = generateAutomatonFromRegularExpressions(regularExpressionsMap, automatonMap);
+    unordered_map<string, int> regularExpressionsPriorityMap = getRegularExpressionsPriorityMap(regularExpressionsVector);
+
+    cout << "Regular Expressions Automaton Map: \n";
+    printAutomatonMap(regularExpressionsAutomatonMap);
+
+    cout << "Regular Expressions Priority Map: \n";
+    for (auto & i : regularExpressionsPriorityMap) {
+        cout << i.first << " : " << i.second << endl;
+    }
+
+    vector<string> v;
+    v.emplace_back("0-9");
+    unordered_map<string, Automaton> regularDef;
+    regularDef["digit"] = generateAutomatonFromRegularDefinition(v);
+    regularDef["digits"] = positiveClosure(regularDef["digit"]);
+    Postfix_expression postfixExpression;
+    Automaton num = postfixExpression.postfix("digit+|digit+ . digits (\\L|E digits)", regularDef);
+    cout << "num: \n";
+    num.printAutomaton();
     return 0;
+
+
 }
