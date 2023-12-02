@@ -1,15 +1,14 @@
 #ifndef COMPILERGENERATOR_NFADFACONVERTER_H
 #define COMPILERGENERATOR_NFADFACONVERTER_H
 
-#include "../AutomatonDataStructure/Automaton.h"
+#include "../AutomatonDataStructure/CombinedAutomaton.h"
+
+// TODO: check if it is better to make this a namespace and extract common reusable functions.
 
 class NFADFAConverter
 {
-private:
-    vector<Node *> EClosure(vector<Node *> nodes);
-
 public:
-    static Automaton convertNFAToDFA(Automaton nfa);
+    static CombinedAutomaton convertNFAToDFA(CombinedAutomaton nfa, unordered_map<string, int> &regularExpressionsPriorityMap);
 };
 
 #endif
