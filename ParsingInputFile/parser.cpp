@@ -1,4 +1,5 @@
 #include <algorithm>
+#include "../Postfix-expression/Postfix_expression.h"
 #include "parser.h"
 
 using namespace std;
@@ -13,6 +14,128 @@ using namespace std;
  * 7- The following symbols are used in regular definitions and regular expressions with the meaning discussed in class: - | + * ( )
  * 8- Any reserved symbol needed to be used within the language, is preceded by an escape backslash character.
  * ***/
+void add_space(string &str,char next){
+    if(str.empty()){
+        return;
+    }
+    char c= str[str.length()-1];
+    if(c == ' ' && (next == '*'|| next == '+')){
+        str.pop_back();
+    }
+    if(c == ' ' || c == '(' || c == '|') {
+        return;
+    }
+    else if(next == ')' || next == '|' || next == '*'){
+        return;
+    }
+    else{
+        str.push_back(' ');
+    }
+}
+bool is_range(char before, char after){
+    return before < after;
+}
+std::vector<std::string> split_string(const std::string& inputString) {
+    std::istringstream iss(inputString);
+    std::vector<std::string> tokens;
+
+    std::string word;
+    while (iss >> word) {
+        tokens.push_back(word);
+    }
+    return tokens;
+}
+// Function to handle ranges in a string
+std::string handle_range(const std::string& str) {
+    std::vector<std::string> tokens = split_string(str);
+    std::string new_str;
+
+    for (size_t i = 0; i < tokens.size(); ++i) {
+        if (tokens[i].size() == 1 && tokens[i] == "-") {
+            if (i > 0 && i + 1 < tokens.size() &&
+                tokens[i - 1].size() == 1 && tokens[i + 1].size() == 1 &&
+                is_range(tokens[i - 1][0], tokens[i + 1][0])) {
+                new_str.push_back('-');
+                new_str.append(tokens[i + 1]);
+                ++i;
+            } else {
+                new_str.push_back(' ');
+                new_str.push_back('-');
+            }
+        } else if (tokens[i].size() == 2 && tokens[i][0] == '-') {
+            if (i > 0 && tokens[i - 1].size() == 1 &&
+                is_range(tokens[i - 1][0], tokens[i][1])) {
+                new_str.append(tokens[i]);
+            } else {
+                new_str.push_back(' ');
+                new_str.append(tokens[i]);
+            }
+        } else if (tokens[i].size() == 2 && tokens[i][1] == '-') {
+            if (i + 1 < tokens.size() && tokens[i + 1].size() == 1 &&
+                is_range(tokens[i][0], tokens[i + 1][0])) {
+                new_str.append(tokens[i]);
+                new_str.append(tokens[i + 1]);
+                ++i;
+            } else {
+                new_str.push_back(' ');
+                new_str.append(tokens[i]);
+            }
+        } else {
+            if (i != 0) {
+                new_str.push_back(' ');
+            }
+            new_str.append(tokens[i]);
+
+        }
+    }
+
+    return new_str;
+}
+string handle_spaces(string str){
+    str = handle_range(str);
+    string new_str = "";
+    for (int i = 0; i < str.length(); ++i) {
+        char c = str[i];
+        if(c == ' ' && i + 1 < str.length()){
+            add_space(new_str, str[i + 1]);
+        }
+        else if(is_special(c) && (i - 1 < 0 || str[i  - 1] != '\\')){
+            if(c=='|'){
+                if(new_str[new_str.length() - 1] ==' '){
+                    new_str.pop_back();
+                }
+                new_str.push_back(c);
+
+                continue;
+            }
+            else if(is_special(c) && c != '('){
+                if(i + 1 < str.length() ) {
+                    new_str.push_back(c);
+                    add_space(new_str, str[i + 1]);
+                }
+                else{
+                    new_str.push_back(c);
+
+                }
+            }
+            else{
+                if(i + 1 < str.length()) {
+                    add_space(new_str, str[i + 1]);
+                    new_str.push_back(c);
+                }
+                else{
+                    new_str.push_back(c);
+
+                }
+            }
+        }
+        else{
+            new_str.push_back(c);
+        }
+    }
+
+    return  new_str;
+}
 vector<string> readInputFile(const string& filepath) {
     ifstream file(filepath);
 
