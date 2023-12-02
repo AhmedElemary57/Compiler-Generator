@@ -1,7 +1,14 @@
+//
+// Created by USER on 12/2/2023.
+//
+
+#include "Node.h"
+#include <bits/stdc++.h>    // for string, vector, set, and unordered_map
+#include "Automaton.h"
+
 #ifndef COMPILERGENERATOR_COMBINEDAUTOMATON_H
 #define COMPILERGENERATOR_COMBINEDAUTOMATON_H
 
-#include "Node.h"
 
 class CombinedAutomaton
 {
@@ -16,6 +23,9 @@ public:
     void setFinalNodesMap(unordered_map<Node *, string> finalNodesMap);
     Node* getStartNode();
     unordered_map<Node *, string> getFinalNodesMap();
+    void generateCombinedAutomaton(unordered_map<string, Automaton> &automatonMap);
 };
 
-#endif // COMPILERGENERATOR_COMBINEDAUTOMATON_H
+
+
+#endif //COMPILERGENERATOR_COMBINEDAUTOMATON_H
