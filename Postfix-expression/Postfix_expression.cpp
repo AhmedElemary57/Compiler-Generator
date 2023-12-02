@@ -29,10 +29,16 @@ void handle_operation(stack<Automaton> &automaton_stack, char op) {
 
     if (op == ' ') {
         // To be implemented: Concatenation operation
+        Automaton sec= automaton_stack.top();
+        automaton_stack.pop();
+        res = concatenate(sec, top);
     } else if (op == '|') {
         // To be implemented: Parallel operation
+        Automaton sec= automaton_stack.top();
+        automaton_stack.pop();
+        res = union_op(sec, top);
     } else if (op == '+') {
-        res = plusOperation(top);
+        res = positiveClosure(top);
     } else if (op == '*') {
         res = closure(top);
     }
@@ -41,7 +47,7 @@ void handle_operation(stack<Automaton> &automaton_stack, char op) {
 }
 
 // Function to convert a postfix expression to an automaton
-Automaton Postfix_expression::postfix(std::string expression, unordered_map<std::string, Automaton> &automatons) {
+Automaton Postfix_expression::postfix(std::string expression, unordered_map<std::string, Automaton> automatons) {
     stack<char> op;
     stack<Automaton> automaton_stack;
 
@@ -51,7 +57,7 @@ Automaton Postfix_expression::postfix(std::string expression, unordered_map<std:
     string cur = "";
     for (int i = 0; i < expression.length(); ++i) {
         // Extract current Automation
-        while (!is_special(expression[i])) {
+        while (!is_special(expression[i])&& (i >= 0 || expression[i - 1] != '\\')) {
             if (expression[i] == '\\' && i + 1 < expression.length() && is_special(expression[i + 1])) {
                 cur.push_back('\\');
                 cur.push_back(expression[i + 1]);
@@ -59,6 +65,13 @@ Automaton Postfix_expression::postfix(std::string expression, unordered_map<std:
             } else {
                 cur.push_back(expression[i]);
                 i++;
+            }
+            if((is_special(expression[i])&& (i >= 0 || expression[i - 1] != '\\'))){
+                i--;
+                break;
+            }
+            if(i >= expression.length()){
+                break;
             }
         }
 
@@ -129,8 +142,11 @@ Automaton make_simple_automaton(char a) {
 Automaton case2(string str) {
     bool first = true;
     Automaton result;
-
+    if (str == "\\L") {
+        return make_simple_automaton(char(238));
+    }
     for (int i = 0; i < str.length(); ++i) {
+
         if (str[i] == '\\' && i + 1 < str.length() && is_special(str[i + 1])) {
             i++;
         }
@@ -139,7 +155,8 @@ Automaton case2(string str) {
             first = false;
         } else {
             // TO DO: Concatenate operation
-            // result = concatenate(result, make_simple_automaton(str[i]));
+            Automaton sample = make_simple_automaton(str[i]);
+            result = concatenate(result, sample);
         }
     }
 
@@ -160,24 +177,18 @@ string Postfix_expression::prepareCharacters(string str, unordered_map<string, A
     unsigned long n = str.length();
     string cur;
 
-    for (auto i = n - 1; i >= 0; --i) {
-        if (is_special(str[i]) && i - 1 >= 0 && str[i - 1] == '\\') {
-            cur.push_back(str[i]);
-            cur.push_back(str[i - 1]);
-            i--;
-            continue;
-        }
-        if (is_special(str[i])) {
+    for(int i = 0; i < n; i++){
+        if(is_special(str[i])&& (i == 0 || str[i - 1] != '\\')) {
             if (cur.length() != 0 && automatons.find(cur) == automatons.end()) {
                 // Key not found, handle the simple expression
                 handle_simple_expression(cur, automatons);
             }
             cur.clear();
-        } else {
+        }
+        else{
             cur.push_back(str[i]);
         }
     }
-
     if (cur.length() != 0 && automatons.find(cur) == automatons.end()) {
         // Handle the last part of the string
         handle_simple_expression(cur, automatons);
