@@ -137,7 +137,9 @@ Automaton make_simple_automaton(char a) {
     automaton.getStartNode()->addNextNode(automaton.getFinalNode(), a);
     return automaton;
 }
-
+bool reserved_symbol(char c){
+    return c=='=' || c==':'|| c == '{' || c == '}' || c == '[' || c == ']';
+}
 // Function to create an automaton for a sequence of characters (case 2)
 Automaton case2(string str) {
     bool first = true;
@@ -147,7 +149,7 @@ Automaton case2(string str) {
     }
     for (int i = 0; i < str.length(); ++i) {
 
-        if (str[i] == '\\' && i + 1 < str.length() && is_special(str[i + 1])) {
+        if (str[i] == '\\' && i + 1 < str.length() && is_special(str[i + 1]) ||reserved_symbol(str[i + 1])) {
             i++;
         }
         if (first) {
