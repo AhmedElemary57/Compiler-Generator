@@ -165,9 +165,8 @@ unordered_map<string, Automaton> generateAutomatonFromRegularExpressions(unorder
      */
     unordered_map<string, Automaton> automatonMap;
     for (auto & i : regularExpressionsMap) {
-        Postfix_expression postfixExpression;
         string  regularExpressions = i.second;
-        Automaton newAutomaton = postfixExpression.postfix(regularExpressions, regularDefinitionsAutoMap);
+        Automaton newAutomaton = postfix(regularExpressions, regularDefinitionsAutoMap);
         automatonMap[i.first] = newAutomaton;
     }
 

@@ -1,3 +1,3 @@
-/home/elsaber/compilers/New/Compiler-Generator/cmake-build-debug/CMakeFiles/CompilerGenerator.dir
-/home/elsaber/compilers/New/Compiler-Generator/cmake-build-debug/CMakeFiles/edit_cache.dir
-/home/elsaber/compilers/New/Compiler-Generator/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+C:/Users/USER/Desktop/New folder/Compiler-Generator/cmake-build-debug/CMakeFiles/CompilerGenerator.dir
+C:/Users/USER/Desktop/New folder/Compiler-Generator/cmake-build-debug/CMakeFiles/edit_cache.dir
+C:/Users/USER/Desktop/New folder/Compiler-Generator/cmake-build-debug/CMakeFiles/rebuild_cache.dir

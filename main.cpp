@@ -9,6 +9,7 @@
 #include "AutomatonDataStructure/automatonGenerator.h"
 #include "Postfix-expression/Postfix_expression.h"
 
+
 #include "AutomatonDataStructure/CombinedAutomaton.h"
 
 using namespace std;
@@ -92,8 +93,7 @@ int main(){
     unordered_map<string, Automaton> regularDef;
     regularDef["digit"] = generateAutomatonFromRegularDefinition(v);
     regularDef["digits"] = positiveClosure(regularDef["digit"]);
-    Postfix_expression postfixExpression;
-    Automaton num = postfixExpression.postfix("digit+|digit+ . digits (\\L|E digits)", regularDef);
+    Automaton num = postfix("digit+ | digit+ . digits (\\L | E digits)", regularDef);
     cout << "num: \n";
     num.printAutomaton();
 
