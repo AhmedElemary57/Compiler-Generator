@@ -1,8 +1,7 @@
 #include "automatonGenerator.h"
+#include "../Postfix-expression/Postfix_expression.h"
 
 using namespace std;
-
-
 
 Automaton generateAutomatonFromRegularDefinition(vector<string> regularDefinition) {
     /**
@@ -14,8 +13,7 @@ Automaton generateAutomatonFromRegularDefinition(vector<string> regularDefinitio
     automaton.setStartNode(new Node());
     automaton.setFinalNode(new Node());
 
-    for( auto & i : regularDefinition ) {
-
+    for (auto & i : regularDefinition) {
         if (i == "\\L") {
             automaton.getStartNode()->addNextNode(automaton.getFinalNode(), char(238));
             continue;
@@ -37,13 +35,11 @@ Automaton generateAutomatonFromRegularDefinition(vector<string> regularDefinitio
             }
             continue;
         }
-
     }
     return automaton;
 }
 
-
-Automaton plusOperation(Automaton automaton) {
+Automaton positiveClosure(Automaton automaton) {
     /**
      * This function generates an automaton that represents the plus operation on an automaton.
      * @param automaton: an automaton.
@@ -135,7 +131,6 @@ void handleRegularDefinitionsInTermsOfOtherRegularDefinitions(unordered_map<stri
     }
 }
 
-// function to generate the automaton from the regular definitions map.
 unordered_map<string, Automaton> generateAutomatonFromRegularDefinitions(unordered_map<string, vector<string>>& regularDefinitionsMap) {
     /**
      * This function generates an automaton map from a regular definitions map.

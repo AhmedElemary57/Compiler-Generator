@@ -9,7 +9,7 @@ Node::Node() {
 }
 
 // Deep copy constructor
-Node::Node(const Node& other, unordered_map<char, Node*> unique_next)  {
+Node::Node(const Node& other, unordered_map<int, Node*> unique_next)  {
     // Deep copy the nextNodes map
     nodeNumber = other.nodeNumber;
     unique_next[this->nodeNumber] = this;
@@ -22,6 +22,7 @@ Node::Node(const Node& other, unordered_map<char, Node*> unique_next)  {
             if(unique_next.find(nextNode->nodeNumber) == unique_next.end()) {
                 Node *copiedNextNode = new Node(*nextNode, unique_next);
                 unique_next[nextNode->nodeNumber] = copiedNextNode;
+                addNextNode(copiedNextNode, input);
             }
             else {
                 Node *copiedNextNode = unique_next.at(nextNode->nodeNumber);
@@ -62,15 +63,20 @@ void Node::setIsFinal(bool isFinal) {
 }
 
 void Node::printNode() {
-    cout << "Node: " << this->nodeNumber << endl;
-    cout << "Is final: " << this->isFinal << endl;
-    cout << "Next nodes: " << endl;
-    for (const auto &nextNode : this->nextNodes) {
-        cout << "Input: " << nextNode.first << endl;
-        cout << "Nodes: " << endl;
-        for (const auto &node : nextNode.second) {
-            cout << node << endl;
+    cout << "Node " << nodeNumber << " - Is Final: " << (isFinal ? "Yes" : "No") << endl;
+
+    for (const auto& entry : nextNodes) {
+        char input = entry.first;
+        const auto& nextNodesForInput = entry.second;
+
+        cout << "  Input '" << input << "': ";
+
+        for (const auto& nextNode : nextNodesForInput) {
+            cout << nextNode->nodeNumber << " ";
         }
+
+        cout << endl;
     }
+    cout << endl;
 }
 

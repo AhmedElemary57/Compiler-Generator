@@ -7,6 +7,7 @@
 #include "AutomatonDataStructure/Node.h"
 #include "AutomatonDataStructure/Automaton.h"
 #include "AutomatonDataStructure/automatonGenerator.h"
+#include "Postfix-expression/Postfix_expression.h"
 
 using namespace std;
 
