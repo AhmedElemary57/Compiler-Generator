@@ -138,7 +138,8 @@ Automaton make_simple_automaton(char a) {
     return automaton;
 }
 bool reserved_symbol(char c){
-    return c=='=' || c==':'|| c == '{' || c == '}' || c == '[' || c == ']';
+    //return c=='=' || c==':'|| c == '{' || c == '}' || c == '[' || c == ']';
+    return c=='=' || c==':';
 }
 // Function to create an automaton for a sequence of characters (case 2)
 Automaton case2(string str) {
