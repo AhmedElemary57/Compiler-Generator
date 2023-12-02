@@ -24,6 +24,10 @@ class Automaton {
         Node* getFinalNode();
         void printAutomaton();
 
+
+
+
+
 };
 
 
