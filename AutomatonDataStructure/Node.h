@@ -47,4 +47,4 @@ struct HashUnorderedSetNodePointers
 };
 
 
-#endif //COMPILERGENERATOR_NODE_H
+#endif // COMPILERGENERATOR_NODE_H
