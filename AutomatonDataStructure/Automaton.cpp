@@ -37,7 +37,11 @@ void Automaton::setStartNode(Node* startNode) {
 
 // Function to set the finalNode
 void Automaton::setFinalNode(Node* finalNode) {
+    if (this->finalNode != nullptr){
+        this->finalNode->setIsFinal(false); // set the old finalNode to be not final
+    }
     this->finalNode = finalNode;
+    this->finalNode->setIsFinal(true); // set the new finalNode to be final
 }
 
 // Function to get the startNode

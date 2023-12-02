@@ -89,6 +89,9 @@ Automaton union_op(Automaton& automaton1, Automaton& automaton2) {
     automaton1.getFinalNode()->addNextNode(newAutomaton.getFinalNode(), char(238));
     automaton2.getFinalNode()->addNextNode(newAutomaton.getFinalNode(), char(238));
 
+    automaton1.getFinalNode()->setIsFinal(false);
+    automaton2.getFinalNode()->setIsFinal(false);
+
     return newAutomaton;
 }
 
@@ -102,6 +105,7 @@ Automaton concatenate(Automaton& automaton1, Automaton& automaton2) {
     Automaton newAutomaton = *new Automaton(automaton1);
     newAutomaton.getFinalNode()->addNextNode(automaton2.getStartNode(), char(238));
     newAutomaton.setFinalNode(automaton2.getFinalNode());
+
     return newAutomaton;
 }
 

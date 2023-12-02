@@ -59,6 +59,7 @@ vector<Node *> Node::getNextNodes(char input) {
 }
 
 void Node::setIsFinal(bool isFinal) {
+
     this->isFinal = isFinal;
 }
 

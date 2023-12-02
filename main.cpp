@@ -9,6 +9,8 @@
 #include "AutomatonDataStructure/automatonGenerator.h"
 #include "Postfix-expression/Postfix_expression.h"
 
+#include "AutomatonDataStructure/CombinedAutomaton.h"
+
 using namespace std;
 
 int Node::nodeCounter = 0;
@@ -94,6 +96,18 @@ int main(){
     Automaton num = postfixExpression.postfix("digit+|digit+ . digits (\\L|E digits)", regularDef);
     cout << "num: \n";
     num.printAutomaton();
+
+    // test the combined automaton
+    CombinedAutomaton combinedAutomaton;
+
+
+    combinedAutomaton.generateCombinedAutomaton(regularExpressionsAutomatonMap);
+
+    combinedAutomaton.getFinalNodesMap();
+    combinedAutomaton.getStartNode();
+
+
+
     return 0;
 
 

@@ -12,7 +12,10 @@ add_executable(
         AutomatonDataStructure/Automaton.cpp
         AutomatonDataStructure/Automaton.h
         AutomatonDataStructure/automatonGenerator.cpp
+        AutomatonDataStructure/CombinedAutomaton.h
+        AutomatonDataStructure/CombinedAutomaton.cpp
         AutomatonDataStructure/automatonGenerator.h
         Postfix-expression/Postfix_expression.h
         Postfix-expression/Postfix_expression.cpp
+
         )
