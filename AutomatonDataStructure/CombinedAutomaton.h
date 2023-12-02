@@ -15,14 +15,20 @@ class CombinedAutomaton
 private:
     Node* startNode;
     unordered_map<Node *, string> finalNodesMap;
+    unordered_map<string, int> priorityMap;
+
 
 public:
     CombinedAutomaton();
-    CombinedAutomaton(Node* startNode, unordered_map<Node *, string> finalNodesMap);
+    CombinedAutomaton(Node *startNode, unordered_map<Node *, string> finalNodesMap, unordered_map<string, int> priorityMap);
+    void setPriorityMap(unordered_map<string, int> &priorityMap);
     void setStartNode(Node* startNode);
     void setFinalNodesMap(unordered_map<Node *, string> finalNodesMap);
     Node* getStartNode();
     unordered_map<Node *, string> getFinalNodesMap();
+    int getPriority(Node* node);
+    string getTokenName(Node* node);
+    int getPriority(string token);
     void generateCombinedAutomaton(unordered_map<string, Automaton> &automatonMap);
 };
 

@@ -17,13 +17,12 @@ Automaton generateAutomatonFromRegularDefinition(vector<string> regularDefinitio
 
     for( auto & i : regularDefinition ) {
 
+        i = handle_spaces(i);
+
         if (i == "\\L") {
             automaton.getStartNode()->addNextNode(automaton.getFinalNode(), char(238));
             continue;
         }
-
-        // remove spaces from the regular definition
-        i.erase(remove(i.begin(), i.end(), ' '), i.end());
 
         // if the regular definition is a single character
         if (i.length() == 1) {

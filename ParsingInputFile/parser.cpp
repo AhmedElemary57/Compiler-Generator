@@ -153,14 +153,36 @@ vector<string> readInputFile(const string& filepath) {
     return lines;
 }
 
+int getLineType(const string& line) {
+
+    // 1 - Regular Expression  2 - Regular Definition
+
+    if(  (line[0] == '[' && line[line.size() - 1] == ']' )|| (line[0] == '{' && line[line.size() - 1] == '}')) {
+        return -1;
+    }
+    int expressionIndex = line.find(':');
+    int definitionIndex = line.find('=');
+
+    if (expressionIndex != string::npos && definitionIndex == string::npos) {
+        return 1;
+    } else if (expressionIndex == string::npos && definitionIndex != string::npos) {
+        return 2;
+    } else if (expressionIndex != string::npos && definitionIndex != string::npos){
+        return expressionIndex < definitionIndex?1:2;
+    } else{
+        return -1;
+    }
+
+}
+
 vector<string> getRegularExpressions(const vector<string>& lines) {
     vector<string> regularExpressions;
     for (const auto& line : lines) {
-        if (   line.find(':') != string::npos
-            && line[0] != '[' && line[line.size() - 1] != ']'
-            && line[0] != '{' && line[line.size() - 1] != '}') {
+
+        if (getLineType(line) == 1) {
             regularExpressions.push_back(line);
         }
+
     }
     return regularExpressions;
 }
@@ -168,9 +190,7 @@ vector<string> getRegularExpressions(const vector<string>& lines) {
 vector<string> getRegularDefinitions(const vector<string>& lines) {
     vector<string> regularDefinitions;
     for (const auto& line : lines) {
-        if (line.find('=') != string::npos && line.find(':') == string::npos
-        && line[0] != '[' && line[line.size() - 1] != ']'
-        && line[0] != '{' && line[line.size() - 1] != '}') {
+        if (getLineType(line) == 2) {
             regularDefinitions.push_back(line);
         }
     }
@@ -269,8 +289,7 @@ unordered_map<string, string> getRegularExpressionsMap(const vector<string>& reg
         string regularExpressionExpression = regularExpression.substr(regularExpression.find(':') + 1);
         // remove the spaces from regularExpressionName .
         regularExpressionName.erase(remove_if(regularExpressionName.begin(), regularExpressionName.end(), ::isspace), regularExpressionName.end());
-        // remove the spaces from regularExpressionExpression .
-        regularExpressionExpression.erase(remove_if(regularExpressionExpression.begin(), regularExpressionExpression.end(), ::isspace), regularExpressionExpression.end());
+
         regularExpressionsMap[regularExpressionName] = regularExpressionExpression;
     }
     return regularExpressionsMap;

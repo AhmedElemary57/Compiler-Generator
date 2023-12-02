@@ -98,15 +98,38 @@ int main(){
     num.printAutomaton();
 
     // test the combined automaton
-    CombinedAutomaton combinedAutomaton;
+    CombinedAutomaton combinedAutomaton = *new CombinedAutomaton();
 
 
     combinedAutomaton.generateCombinedAutomaton(regularExpressionsAutomatonMap);
 
+    combinedAutomaton.setPriorityMap(regularExpressionsPriorityMap);
+
+
     combinedAutomaton.getFinalNodesMap();
+
     combinedAutomaton.getStartNode();
 
+    int x= combinedAutomaton.getPriority(regularExpressionsAutomatonMap["id"].getFinalNode());
+    int y= combinedAutomaton.getPriority("id");
 
+    cout << "x: " << x << endl;
+    cout << "y: " << y << endl;
+
+
+
+    // test string. find and print the output
+    string i
+    = "int main(){\n"
+      "int x = 5;\n"
+      "int y = 6;\n"
+      "int z = x + y;\n"
+      "cout << z;\n"
+      "return 0;\n"
+      "}\n";
+
+    i.find("int");
+    cout <<  i.find("m") << endl;
 
     return 0;
 

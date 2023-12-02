@@ -27,9 +27,12 @@ class Node {
 
         void setIsFinal(bool isFinal);
         void printNode();
-    int getNodeNumber() const {
+        int getNodeNumber() const {
         return nodeNumber;
-    }
+        }
+        bool getIsFinal() const {
+            return isFinal;
+        }
 
 };
 
