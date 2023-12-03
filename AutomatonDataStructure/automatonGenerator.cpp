@@ -63,14 +63,16 @@ unordered_map<string, Automaton> generateAutomatonFromKeyWords(const vector<stri
 
     return automatonMap;
 }
-Automaton generateAutomatonFromPunctuations(const vector<char>& keywordsVector){
-    Automaton punctuationsAutomaton;
-    punctuationsAutomaton.setStartNode(new Node());
-    punctuationsAutomaton.setFinalNode(new Node());
+unordered_map<char,Automaton> generateAutomatonFromPunctuations(const vector<char>& keywordsVector){
+    unordered_map<char,Automaton> punctuationsAutomatonMap;
     for (auto & i : keywordsVector) {
-        punctuationsAutomaton.getStartNode()->addNextNode(punctuationsAutomaton.getFinalNode(), i);
+        Automaton newAutomaton;
+        newAutomaton.setStartNode(new Node());
+        newAutomaton.setFinalNode(new Node());
+        newAutomaton.getStartNode()->addNextNode(newAutomaton.getFinalNode(), i);
+        punctuationsAutomatonMap[i] = newAutomaton;
     }
-    return punctuationsAutomaton;
+    return punctuationsAutomatonMap;
 }
 
 

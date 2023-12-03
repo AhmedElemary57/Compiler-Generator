@@ -20,5 +20,5 @@ Automaton union_op(Automaton& automaton1, Automaton& automaton2);
 Automaton concatenate(Automaton& automaton1, Automaton& automaton2);
 unordered_map<string, Automaton> generateAutomatonFromRegularExpressions(unordered_map<string, string>& regularExpressionsMap, unordered_map<string, Automaton>& regularDefinitionsAutoMap);
 unordered_map<string, Automaton> generateAutomatonFromKeyWords(const vector<string>& keywordsVector);
-Automaton generateAutomatonFromPunctuations(const vector<char>& keywordsVector);
+unordered_map<char,Automaton> generateAutomatonFromPunctuations(const vector<char>& keywordsVector);
 #endif //COMPILERGENERATOR_AUTOMATONGENERATOR_H

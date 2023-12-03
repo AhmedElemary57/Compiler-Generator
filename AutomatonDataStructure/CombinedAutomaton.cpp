@@ -71,14 +71,16 @@ void CombinedAutomaton::generateCombinedAutomaton(unordered_map<string, Automato
 
 }
 
-void CombinedAutomaton::generateCombinedAutomaton(unordered_map<string, Automaton> &automatonMap, unordered_map<string, Automaton> &keywordsMap, Automaton &punctuationsAutomaton){
+void CombinedAutomaton::generateCombinedAutomaton(unordered_map<string, Automaton> &automatonMap, unordered_map<string, Automaton> &keywordsMap, unordered_map<char, Automaton> &punctuationsAutomaton){
     generateCombinedAutomaton(automatonMap, keywordsMap);
     Node *tempStartNode = this->getStartNode();
     unordered_map<Node *, string> tempFinalNodesMap = this->getFinalNodesMap();
 
-    tempStartNode->addNextNode(punctuationsAutomaton.getStartNode(), char(238)); // epsilon input to go to each automaton
-    tempFinalNodesMap[punctuationsAutomaton.getFinalNode()] = "[punctuation]";
-    this->priorityMap["[punctuation]"] = -1;
+    for (auto &punctuation : punctuationsAutomaton) {
+        tempStartNode->addNextNode(punctuationsAutomaton[punctuation.first].getStartNode(), char(238)); // epsilon input to go to each automaton
+        tempFinalNodesMap[punctuationsAutomaton[punctuation.first].getFinalNode()] = string(1, punctuation.first);
+    }
+
 
     this->setFinalNodesMap(tempFinalNodesMap);
 

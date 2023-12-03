@@ -31,7 +31,7 @@ public:
     int getPriority(string token);
     void generateCombinedAutomaton(unordered_map<string, Automaton> &automatonMap);
     void generateCombinedAutomaton(unordered_map<string, Automaton> &automatonMap, unordered_map<string, Automaton> &keywordsMap);
-    void generateCombinedAutomaton(unordered_map<string, Automaton> &automatonMap, unordered_map<string, Automaton> &keywordsMap, Automaton &punctuationsAutomaton);
+    void generateCombinedAutomaton(unordered_map<string, Automaton> &automatonMap, unordered_map<string, Automaton> &keywordsMap, unordered_map<char, Automaton> &punctuationsAutomaton);
 
 };
 

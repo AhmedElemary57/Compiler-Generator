@@ -85,7 +85,7 @@ int main()
     unordered_map<string, string> regularExpressionsMap = getRegularExpressionsMap(regularExpressionsVector);
     unordered_map<string, Automaton> regularExpressionsAutomatonMap = generateAutomatonFromRegularExpressions(regularExpressionsMap, automatonMap);
     unordered_map<string, Automaton> keyWorldsAutomaton = generateAutomatonFromKeyWords(keywordsVector);
-    Automaton punctuationsAutomaton = generateAutomatonFromPunctuations(punctuationsVector);
+    unordered_map<char, Automaton> punctuationsAutomaton = generateAutomatonFromPunctuations(punctuationsVector);
 
     unordered_map<string, int> regularExpressionsPriorityMap = getPriorityMap(regularExpressionsVector, keywordsVector, punctuationsVector);
 
