@@ -34,7 +34,7 @@ int main()
     vector<string> regularExpressionsVector = getRegularExpressions(lines);
     vector<string> regularDefinitionsVector = getRegularDefinitions(lines);
     vector<string> keywordsVector = getKeywords(lines);
-    vector<string> punctuationsVector = getPunctuations(lines);
+    vector<char> punctuationsVector = getPunctuations(lines);
     set<char> reservedSymbolsSet = getReservedSymbols(lines);
 
 
@@ -84,7 +84,10 @@ int main()
     // get regular expression  map
     unordered_map<string, string> regularExpressionsMap = getRegularExpressionsMap(regularExpressionsVector);
     unordered_map<string, Automaton> regularExpressionsAutomatonMap = generateAutomatonFromRegularExpressions(regularExpressionsMap, automatonMap);
-    unordered_map<string, int> regularExpressionsPriorityMap = getRegularExpressionsPriorityMap(regularExpressionsVector);
+    unordered_map<string, Automaton> keyWorldsAutomaton = generateAutomatonFromKeyWords(keywordsVector);
+    unordered_map<char, Automaton> punctuationsAutomaton = generateAutomatonFromPunctuations(punctuationsVector);
+
+    unordered_map<string, int> regularExpressionsPriorityMap = getPriorityMap(regularExpressionsVector, keywordsVector, punctuationsVector);
 
     cout << "Regular Expressions Automaton Map: \n";
     printAutomatonMap(regularExpressionsAutomatonMap);
@@ -98,7 +101,7 @@ int main()
     CombinedAutomaton combinedAutomaton;
 
 
-    combinedAutomaton.generateCombinedAutomaton(regularExpressionsAutomatonMap);
+    combinedAutomaton.generateCombinedAutomaton(regularExpressionsAutomatonMap, keyWorldsAutomaton, punctuationsAutomaton);
     combinedAutomaton.setPriorityMap(regularExpressionsPriorityMap);
 
     combinedAutomaton.getFinalNodesMap();
@@ -111,7 +114,7 @@ int main()
 
     cout << "converted" << endl;
 
-    string program = "int sum , count , pass , mnt; while (pass !=10){pass = pass + 1 ;}";
+    string program = "int  sum , count , pass , mnt; while (pass !=10){pass = pass + 1 ;}";
     LexicalAnalyzer *lex = new LexicalAnalyzer(&DFA, program);
 
 
