@@ -9,22 +9,25 @@
 #include "AutomatonDataStructure/automatonGenerator.h"
 #include "Postfix-expression/Postfix_expression.h"
 
+#include "AutomatonDataStructure/CombinedAutomaton.h"
+
 #include "NFADFAConverter/NFADFAConverter.h"
 
 #include "LexicalAnalyzer/LexicalAnalyzer.h"
 
-#include "AutomatonDataStructure/CombinedAutomaton.h"
-
 using namespace std;
 
 int Node::nodeCounter = 0;
-int main(){
+int main()
+{
+
     // get current path of the project
     std::string current_path = __FILE__;
     current_path = current_path.substr(0, current_path.find_last_of('\\')) ;
 
     // Read the file into a string.
     std::string filepath = current_path + "\\input.txt";
+    cout<< filepath << endl;
     vector<string> lines = readInputFile(filepath);
 
     // Get the regular expressions from the file.
@@ -96,45 +99,31 @@ int main(){
     unordered_map<string, Automaton> regularDef;
     regularDef["digit"] = generateAutomatonFromRegularDefinition(v);
     regularDef["digits"] = positiveClosure(regularDef["digit"]);
-    Automaton num = postfix("digit+ | digit+ . digits (\\L | E digits)", regularDef);
+    Automaton num = postfix("digit+|digit+ . digits (\\L|E digits)", regularDef);
     cout << "num: \n";
     num.printAutomaton();
 
     // test the combined automaton
-    CombinedAutomaton combinedAutomaton = *new CombinedAutomaton();
+    CombinedAutomaton combinedAutomaton;
 
 
     combinedAutomaton.generateCombinedAutomaton(regularExpressionsAutomatonMap);
-
     combinedAutomaton.setPriorityMap(regularExpressionsPriorityMap);
 
-
     combinedAutomaton.getFinalNodesMap();
-
     combinedAutomaton.getStartNode();
 
-    int x= combinedAutomaton.getPriority(regularExpressionsAutomatonMap["id"].getFinalNode());
-    int y= combinedAutomaton.getPriority("id");
 
-    cout << "x: " << x << endl;
-    cout << "y: " << y << endl;
+    cout << "starting to convert" << endl;
+
+    CombinedAutomaton DFA = NFADFAConverter::convertNFAToDFA(combinedAutomaton, regularExpressionsPriorityMap);
+
+    cout << "converted" << endl;
+
+    string program = "int sum , count , pass , mnt; while (pass !=10){pass = pass + 1 ;}";
+    LexicalAnalyzer *lex = new LexicalAnalyzer(&DFA, program);
 
 
-
-    // test string. find and print the output
-    string i
-            = "int main(){\n"
-              "int x = 5;\n"
-              "int y = 6;\n"
-              "int z = x + y;\n"
-              "cout << z;\n"
-              "return 0;\n"
-              "}\n";
-
-    i.find("int");
-    cout <<  i.find("m") << endl;
 
     return 0;
-
-
 }
