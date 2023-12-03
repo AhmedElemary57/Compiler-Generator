@@ -15,12 +15,13 @@ vector<string> readInputFile(const string& filepath);
 vector<string> getRegularExpressions(const vector<string>& lines);
 vector<string> getRegularDefinitions(const vector<string>& lines);
 vector<string> getKeywords(const vector<string>& lines);
-vector<string> getPunctuations(const vector<string>& lines);
+vector<char> getPunctuations(const vector<string>& lines);
 set<char> getReservedSymbols(const vector<string>& lines);
 unordered_map<string, string> getRegularDefinitionsMap(const vector<string>& regularDefinitions);
 string handle_range(const std::string& str);
 string handle_spaces(string str);
 unordered_map<string, string> getRegularExpressionsMap(const vector<string>& regularExpressions);
-unordered_map<string, int> getRegularExpressionsPriorityMap(const vector<string>& regularExpressions);
+unordered_map<string, int> getPriorityMap(const vector<string>& lines);
+unordered_map<string, int> getPriorityMap(vector<string> regularExpressions, vector<string> keywords, vector<char> punctuations);
 vector<string> getRegularExpressions(const vector<string>& lines);
 #endif //COMPILERGENERATOR_PARSER_H

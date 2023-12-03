@@ -214,24 +214,28 @@ vector<string> getKeywords(const vector<string>& lines) {
     return keywords;
 }
 
-vector<string> getPunctuations(const vector<string>& lines) {
-    vector<string> punctuations;
+vector<char> getPunctuations(const vector<string>& lines) {
+    vector<char> punctuations;
     for (const auto& line : lines) {
         if (line[0] == '[' && line[line.size() - 1] == ']') {
-            istringstream iss(line.substr(1, line.size() - 2));
-            string word;
-            while (iss >> word) {
-                punctuations.push_back(word);
+            string l = line.substr(1, line.size() - 2);
+            for( char c : l){
+                if(c != ' ' && c != '\\' && c != '\\'){
+                    punctuations.push_back(c);
+                }
+
             }
+
         }
     }
     return punctuations;
 }
 
 set<char> getReservedSymbols(const vector<string>& lines) {
+/*
     set<char> reservedSymbols;
     vector<string> regularExpressions = getRegularExpressions(lines);
-    vector<string> punctuations = getPunctuations(lines);
+    vector<char> punctuations = getPunctuations(lines);
 
     // loop over the regular expressions and add the reserved symbols to the set.
     for (const auto& regularExpression : regularExpressions ) {
@@ -256,9 +260,12 @@ set<char> getReservedSymbols(const vector<string>& lines) {
            }
         }
     }
-
-
     return reservedSymbols;
+
+*/
+
+    return set<char>();
+
 }
 
 unordered_map<string, string> getRegularDefinitionsMap(const vector<string>& regularDefinitions) {
@@ -303,6 +310,68 @@ unordered_map<string, int> getRegularExpressionsPriorityMap(const vector<string>
     }
 
     return regularExpressionsPriorityMap;
+}
+
+// This function returns priority map for keywords. The priority of keywords is always -1.
+unordered_map<string, int> getKeywordsPriorityMap(const vector<string>& keywords) {
+    unordered_map<string, int> keywordsPriorityMap;
+    for (const auto& keyword : keywords) {
+        keywordsPriorityMap[keyword] = -1;
+    }
+    return keywordsPriorityMap;
+}
+
+// This function returns priority map for punctuations. The priority of punctuations is always -1.
+unordered_map<char, int> getPunctuationsPriorityMap(const vector<char>& punctuations) {
+    unordered_map<char, int> punctuationsPriorityMap;
+    for (const auto& punctuation : punctuations) {
+        punctuationsPriorityMap[punctuation] = -1;
+    }
+    return punctuationsPriorityMap;
+}
+
+// This function returns priority map.
+unordered_map<string, int> getPriorityMap(const vector<string>& lines) {
+    unordered_map<string, int> priorityMap;
+    vector<string> regularExpressions = getRegularExpressions(lines);
+    vector<string> keywords = getKeywords(lines);
+    vector<char> punctuations = getPunctuations(lines);
+
+    // get the priority map for regular expressions.
+    unordered_map<string, int> regularExpressionsPriorityMap = getRegularExpressionsPriorityMap(regularExpressions);
+    // get the priority map for keywords.
+    unordered_map<string, int> keywordsPriorityMap = getKeywordsPriorityMap(keywords);
+    // get the priority map for punctuations.
+    unordered_map<char, int> punctuationsPriorityMap = getPunctuationsPriorityMap(punctuations);
+
+    // merge the priority maps.
+    priorityMap.insert(regularExpressionsPriorityMap.begin(), regularExpressionsPriorityMap.end());
+    priorityMap.insert(keywordsPriorityMap.begin(), keywordsPriorityMap.end());
+    for (const auto& punctuationPriority : punctuationsPriorityMap) {
+        priorityMap[string(1, punctuationPriority.first)] = punctuationPriority.second;
+    }
+
+    return priorityMap;
+}
+
+unordered_map<string, int> getPriorityMap(vector<string> regularExpressions, vector<string> keywords, vector<char> punctuations) {
+
+    // get the priority map for regular expressions.
+    unordered_map<string, int> regularExpressionsPriorityMap = getRegularExpressionsPriorityMap(regularExpressions);
+    // get the priority map for keywords.
+    unordered_map<string, int> keywordsPriorityMap = getKeywordsPriorityMap(keywords);
+    // get the priority map for punctuations.
+    unordered_map<char, int> punctuationsPriorityMap = getPunctuationsPriorityMap(punctuations);
+
+    // merge the priority maps.
+    unordered_map<string, int> priorityMap;
+    priorityMap.insert(regularExpressionsPriorityMap.begin(), regularExpressionsPriorityMap.end());
+    priorityMap.insert(keywordsPriorityMap.begin(), keywordsPriorityMap.end());
+    for (const auto& punctuationPriority : punctuationsPriorityMap) {
+        priorityMap[string(1, punctuationPriority.first)] = punctuationPriority.second;
+    }
+
+    return priorityMap;
 }
 
 

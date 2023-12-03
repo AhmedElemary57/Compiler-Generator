@@ -51,6 +51,40 @@ void CombinedAutomaton::generateCombinedAutomaton(unordered_map<string, Automato
 
 }
 
+void CombinedAutomaton::generateCombinedAutomaton(unordered_map<string, Automaton> &automatonMap, unordered_map<string, Automaton> &keywordsMap){
+    /***
+     * This function generates the combined automaton from the automaton map and the keywords map
+     * @param automatonMap: the map of the automata generated from the regular expressions
+     * @param keywordsMap: the map of the keywords
+     * @return: void
+     */
+    CombinedAutomaton::generateCombinedAutomaton(automatonMap);
+    Node *tempStartNode = this->getStartNode();
+    unordered_map<Node *, string> tempFinalNodesMap = this->getFinalNodesMap();
+
+    for (auto &keyword : keywordsMap) {
+        tempStartNode->addNextNode(keywordsMap[keyword.first].getStartNode(), char(238)); // epsilon input to go to each automaton
+        tempFinalNodesMap[keywordsMap[keyword.first].getFinalNode()] = keyword.first;
+    }
+
+    this->setFinalNodesMap(tempFinalNodesMap);
+
+}
+
+void CombinedAutomaton::generateCombinedAutomaton(unordered_map<string, Automaton> &automatonMap, unordered_map<string, Automaton> &keywordsMap, Automaton &punctuationsAutomaton){
+    generateCombinedAutomaton(automatonMap, keywordsMap);
+    Node *tempStartNode = this->getStartNode();
+    unordered_map<Node *, string> tempFinalNodesMap = this->getFinalNodesMap();
+
+    tempStartNode->addNextNode(punctuationsAutomaton.getStartNode(), char(238)); // epsilon input to go to each automaton
+    tempFinalNodesMap[punctuationsAutomaton.getFinalNode()] = "[punctuation]";
+    this->priorityMap["[punctuation]"] = -1;
+
+    this->setFinalNodesMap(tempFinalNodesMap);
+
+}
+
+
 void CombinedAutomaton::setPriorityMap(unordered_map<string, int> &priorityMap) {
     /***
      * This function sets the priority map of the automata

@@ -38,6 +38,42 @@ unordered_map<string, Automaton> generateAutomatonFromRegularExpressions(unorder
     return automatonMap;
 }
 
+unordered_map<string, Automaton> generateAutomatonFromKeyWords(const vector<string>& keywordsVector) {
+    /**
+     * This function generates an automaton map from keywords.
+     * @param keywordsVector: a vector of strings that represents the keywords.
+     * @return a map of strings to automata that represents the keywords.
+     */
+
+    unordered_map<string, Automaton> automatonMap;
+    for (auto & i : keywordsVector) {
+        Automaton newAutomaton;
+        newAutomaton.setStartNode(new Node());
+        newAutomaton.setFinalNode(new Node());
+        newAutomaton.getStartNode()->addNextNode(newAutomaton.getFinalNode(), i[0]);
+
+        for (int j = 1; j < i.length(); j++) {
+            Node* tempNode = new Node();
+            newAutomaton.getFinalNode()->addNextNode(tempNode, i[j]);
+            newAutomaton.setFinalNode(tempNode);
+        }
+
+        automatonMap[i] = newAutomaton;
+    }
+
+    return automatonMap;
+}
+Automaton generateAutomatonFromPunctuations(const vector<char>& keywordsVector){
+    Automaton punctuationsAutomaton;
+    punctuationsAutomaton.setStartNode(new Node());
+    punctuationsAutomaton.setFinalNode(new Node());
+    for (auto & i : keywordsVector) {
+        punctuationsAutomaton.getStartNode()->addNextNode(punctuationsAutomaton.getFinalNode(), i);
+    }
+    return punctuationsAutomaton;
+}
+
+
 void printAutomatonMap(const unordered_map<string, Automaton>& automatonMap) {
     /**
      * This function prints information about the automaton map.
