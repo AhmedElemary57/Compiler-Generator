@@ -109,12 +109,6 @@ int main(){
 
     combinedAutomaton.getStartNode();
 
-    int x= combinedAutomaton.getPriority(regularExpressionsAutomatonMap["id"].getFinalNode());
-    int y= combinedAutomaton.getPriority("id");
-
-    cout << "x: " << x << endl;
-    cout << "y: " << y << endl;
-
 
 
 
