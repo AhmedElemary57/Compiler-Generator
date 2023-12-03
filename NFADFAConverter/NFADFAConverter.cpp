@@ -164,34 +164,45 @@ pair<unordered_map<int, unordered_map<char, int>>, unordered_map<int, string>> f
 }
 
 unordered_map<int, int> minimizeDFAStates(unordered_map<int, int> &statesGroupMap,
+                                          vector<vector<int>> &groups,
                                           unordered_map<int, unordered_map<char, int>> &dfaTransitionsMap,
-                                          unordered_set<char> &allPossibleInputs,
-                                          int lastNumberOfGroups)
+                                          unordered_set<char> &allPossibleInputs)
 {
     unordered_map<int, int> newStatesGroupMap;
-    unordered_map<vector<int>, vector<int>, HashVectorInt> inputsGroupStates;
-    for (auto const &transition : dfaTransitionsMap)
+    vector<vector<int>> newGroups;
+    int groupCounter = 1;
+    for (vector<int> &group : groups)
     {
-        vector<int> stateInputsGroup = vector<int>(allPossibleInputs.size());
-        unordered_map<char, int> stateTransitions = transition.second;
-        int counter = 0;
-        for (char input : allPossibleInputs)
+        unordered_map<vector<int>, vector<int>, HashVectorInt> inputsGroupStates;
+        for (int &state : group)
         {
-            stateInputsGroup[counter] = statesGroupMap[stateTransitions[input]];
-            counter++;
+            vector<int> stateInputsGroup = vector<int>(allPossibleInputs.size());
+            unordered_map<char, int> stateTransitions = dfaTransitionsMap[state];
+            int i = 0;
+            for (char input : allPossibleInputs)
+            {
+                stateInputsGroup[i] = statesGroupMap[stateTransitions[input]];
+                i++;
+            }
+            inputsGroupStates[stateInputsGroup].push_back(state);
         }
-        inputsGroupStates[stateInputsGroup].push_back(transition.first);
+        for (auto const &element : inputsGroupStates)
+        {
+            vector<int> newGroup = vector<int>(element.second.size());
+            int i = 0;
+            for (int state : element.second)
+            {
+                newStatesGroupMap[state] = groupCounter;
+                newGroup[i] = (state);
+                i++;
+            }
+            newGroups.push_back(newGroup);
+            groupCounter++;
+        }
     }
-    int counter = 1;
-    for (auto const &element : inputsGroupStates)
-    {
-        for (int state : element.second)
-            newStatesGroupMap[state] = counter;
-        counter++;
-    }
-    if (lastNumberOfGroups == newStatesGroupMap.size())
+    if (newGroups.size() == groups.size())
         return newStatesGroupMap;
-    return minimizeDFAStates(newStatesGroupMap, dfaTransitionsMap, allPossibleInputs, newStatesGroupMap.size());
+    return minimizeDFAStates(newStatesGroupMap, newGroups, dfaTransitionsMap, allPossibleInputs);
 }
 
 CombinedAutomaton constructDFA(unordered_map<int, int> &statesGroupMap,
@@ -259,11 +270,20 @@ CombinedAutomaton NFADFAConverter::convertNFAToDFA(CombinedAutomaton nfa, unorde
     unordered_map<int, unordered_map<char, int>> dfaTransitionsMap = dfaInfo.first;
     unordered_map<int, string> dfaFinalStatesMap = dfaInfo.second;
     unordered_map<int, int> statesGroupMap;
+    vector<int> dfaFinalStates;
+    vector<int> dfaNonFinalStates;
     for (auto const &dfaFinalStatesMapElement : dfaFinalStatesMap)
+    {
         statesGroupMap.insert({dfaFinalStatesMapElement.first, 1});
+        dfaFinalStates.push_back(dfaFinalStatesMapElement.first);
+    }
     for (auto const &dfaTransitionsMapElement : dfaTransitionsMap)
         if (statesGroupMap.find(dfaTransitionsMapElement.first) == statesGroupMap.end())
+        {
             statesGroupMap.insert({dfaTransitionsMapElement.first, 2});
-    statesGroupMap = minimizeDFAStates(statesGroupMap, dfaTransitionsMap, allPossibleInputs, 2);
+            dfaNonFinalStates.push_back(dfaTransitionsMapElement.first);
+        }
+    vector<vector<int>> groups{dfaFinalStates, dfaNonFinalStates};
+    statesGroupMap = minimizeDFAStates(statesGroupMap, groups, dfaTransitionsMap, allPossibleInputs);
     return constructDFA(statesGroupMap, dfaTransitionsMap, dfaFinalStatesMap, regularExpressionsPriorityMap);
 }
