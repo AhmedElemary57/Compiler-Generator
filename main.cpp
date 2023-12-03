@@ -23,10 +23,10 @@ int main()
 
     // get current path of the project
     std::string current_path = __FILE__;
-    current_path = current_path.substr(0, current_path.find_last_of('\\')) ;
+    current_path = current_path.substr(0, current_path.find_last_of('/')) ;
 
     // Read the file into a string.
-    std::string filepath = current_path + "//input.txt";
+    std::string filepath = current_path + "/input.txt";
     vector<string> lines = readInputFile(filepath);
 
     // Get the regular expressions from the file.

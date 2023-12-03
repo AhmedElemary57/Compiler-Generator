@@ -33,7 +33,7 @@ string findHighestPeriorityRE(vector<string> &regularExpressions, unordered_map<
     for (string regularExpression : regularExpressions)
     {
         int priority = regularExpressionsPriorityMap[regularExpression];
-        if (priority > highestPeriority)
+        if (priority < highestPeriority)
         {
             highestPeriority = priority;
             highestPeriorityRE = regularExpression;
@@ -218,7 +218,7 @@ CombinedAutomaton constructDFA(unordered_map<int, int> &statesGroupMap,
         int group = statesGroupMap[finalState.first];
         if (finalGroupsMap.find(group) == finalGroupsMap.end())
             finalGroupsMap[group] = finalState.second;
-        else if (regularExpressionsPriorityMap[finalGroupsMap[group]] < regularExpressionsPriorityMap[finalState.second])
+        else if (regularExpressionsPriorityMap[finalGroupsMap[group]] > regularExpressionsPriorityMap[finalState.second])
             finalGroupsMap[group] = finalState.second;
     }
     unordered_map<int, Node *> groupsNodeMap;
@@ -259,6 +259,7 @@ CombinedAutomaton constructDFA(unordered_map<int, int> &statesGroupMap,
     }
     dfaAutomaton.setStartNode(groupsNodeMap[startGroup]);
     dfaAutomaton.setFinalNodesMap(finalNodesMap);
+    dfaAutomaton.setPriorityMap(regularExpressionsPriorityMap);
     return dfaAutomaton;
 }
 
