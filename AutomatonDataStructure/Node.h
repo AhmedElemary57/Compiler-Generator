@@ -25,6 +25,7 @@ class Node {
         unordered_map<char,vector<Node*> > getNextNodes();
         vector<Node* > getNextNodes(char input);
 
+        void setNextNodes(unordered_map<char,vector<Node*>> nextNodes);
         void setIsFinal(bool isFinal);
         void printNode();
     int getNodeNumber() const {
