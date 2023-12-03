@@ -163,6 +163,30 @@ pair<unordered_map<int, unordered_map<char, int>>, unordered_map<int, string>> f
     return {statesTransitions, determineFinalStatesMap(statesNodesMap, nfa.getFinalNodesMap(), regularExpressionsPriorityMap)};
 }
 
+pair<vector<vector<int>>, unordered_map<int, int>> findDFAInitialGroupsInfo(vector<int> &allDFAStates,
+                                                                            unordered_map<int, string> &dfaFinalStatesMap)
+{
+    unordered_map<int, int> statesGroupMap;
+    unordered_map<string, vector<int>> reFinalStatesMap;
+    vector<vector<int>> groups;
+    vector<int> nonFinalStates;
+    for (int &state : allDFAStates)
+        if (dfaFinalStatesMap.find(state) == dfaFinalStatesMap.end())
+            nonFinalStates.push_back(state);
+    groups.push_back(nonFinalStates);
+    for (auto const &element : dfaFinalStatesMap)
+        if (reFinalStatesMap.find(element.second) == reFinalStatesMap.end())
+            reFinalStatesMap[element.second] = vector<int>{element.first};
+        else
+            reFinalStatesMap[element.second].push_back(element.first);
+    for (auto const &element: reFinalStatesMap)
+        groups.push_back(element.second);
+    for (int groupNumber = 1; groupNumber <= groups.size(); groupNumber++)
+        for (int &state : groups[groupNumber - 1])
+            statesGroupMap[state] = groupNumber;
+    return {groups, statesGroupMap};
+}
+
 unordered_map<int, int> minimizeDFAStates(unordered_map<int, int> &statesGroupMap,
                                           vector<vector<int>> &groups,
                                           unordered_map<int, unordered_map<char, int>> &dfaTransitionsMap,
@@ -270,21 +294,10 @@ CombinedAutomaton NFADFAConverter::convertNFAToDFA(CombinedAutomaton nfa, unorde
     pair<unordered_map<int, unordered_map<char, int>>, unordered_map<int, string>> dfaInfo = findDFAInfo(nfa, regularExpressionsPriorityMap, allPossibleInputs);
     unordered_map<int, unordered_map<char, int>> dfaTransitionsMap = dfaInfo.first;
     unordered_map<int, string> dfaFinalStatesMap = dfaInfo.second;
-    unordered_map<int, int> statesGroupMap;
-    vector<int> dfaFinalStates;
-    vector<int> dfaNonFinalStates;
-    for (auto const &dfaFinalStatesMapElement : dfaFinalStatesMap)
-    {
-        statesGroupMap.insert({dfaFinalStatesMapElement.first, 1});
-        dfaFinalStates.push_back(dfaFinalStatesMapElement.first);
-    }
-    for (auto const &dfaTransitionsMapElement : dfaTransitionsMap)
-        if (statesGroupMap.find(dfaTransitionsMapElement.first) == statesGroupMap.end())
-        {
-            statesGroupMap.insert({dfaTransitionsMapElement.first, 2});
-            dfaNonFinalStates.push_back(dfaTransitionsMapElement.first);
-        }
-    vector<vector<int>> groups{dfaFinalStates, dfaNonFinalStates};
-    statesGroupMap = minimizeDFAStates(statesGroupMap, groups, dfaTransitionsMap, allPossibleInputs);
+    vector<int> allDFAStates;
+    for (auto const &dfaTransition : dfaTransitionsMap)
+        allDFAStates.push_back(dfaTransition.first);
+    pair<vector<vector<int>>, unordered_map<int, int>> dfaInitialGroupsInfo = findDFAInitialGroupsInfo(allDFAStates, dfaFinalStatesMap);
+    unordered_map<int, int> statesGroupMap = minimizeDFAStates(dfaInitialGroupsInfo.second, dfaInitialGroupsInfo.first, dfaTransitionsMap, allPossibleInputs);
     return constructDFA(statesGroupMap, dfaTransitionsMap, dfaFinalStatesMap, regularExpressionsPriorityMap);
 }
