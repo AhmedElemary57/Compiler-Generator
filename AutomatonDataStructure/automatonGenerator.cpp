@@ -3,6 +3,8 @@
 
 using namespace std;
 
+
+
 Automaton generateAutomatonFromRegularDefinition(vector<string> regularDefinition) {
     /**
      * This function generates an automaton from a regular definition.
@@ -13,14 +15,14 @@ Automaton generateAutomatonFromRegularDefinition(vector<string> regularDefinitio
     automaton.setStartNode(new Node());
     automaton.setFinalNode(new Node());
 
-    for (auto & i : regularDefinition) {
+    for( auto & i : regularDefinition ) {
+
+        i = handle_spaces(i);
+
         if (i == "\\L") {
             automaton.getStartNode()->addNextNode(automaton.getFinalNode(), char(238));
             continue;
         }
-
-        // remove spaces from the regular definition
-        i.erase(remove(i.begin(), i.end(), ' '), i.end());
 
         // if the regular definition is a single character
         if (i.length() == 1) {
@@ -35,6 +37,7 @@ Automaton generateAutomatonFromRegularDefinition(vector<string> regularDefinitio
             }
             continue;
         }
+
     }
     return automaton;
 }
@@ -105,7 +108,6 @@ Automaton concatenate(Automaton& automaton1, Automaton& automaton2) {
     Automaton newAutomaton = *new Automaton(automaton1);
     newAutomaton.getFinalNode()->addNextNode(automaton2.getStartNode(), char(238));
     newAutomaton.setFinalNode(automaton2.getFinalNode());
-
     return newAutomaton;
 }
 
@@ -135,6 +137,7 @@ void handleRegularDefinitionsInTermsOfOtherRegularDefinitions(unordered_map<stri
     }
 }
 
+// function to generate the automaton from the regular definitions map.
 unordered_map<string, Automaton> generateAutomatonFromRegularDefinitions(unordered_map<string, vector<string>>& regularDefinitionsMap) {
     /**
      * This function generates an automaton map from a regular definitions map.
@@ -161,9 +164,8 @@ unordered_map<string, Automaton> generateAutomatonFromRegularExpressions(unorder
      */
     unordered_map<string, Automaton> automatonMap;
     for (auto & i : regularExpressionsMap) {
-        Postfix_expression postfixExpression;
         string  regularExpressions = i.second;
-        Automaton newAutomaton = postfixExpression.postfix(regularExpressions, regularDefinitionsAutoMap);
+        Automaton newAutomaton = postfix(regularExpressions, regularDefinitionsAutoMap);
         automatonMap[i.first] = newAutomaton;
     }
 

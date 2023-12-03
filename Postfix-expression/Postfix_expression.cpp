@@ -47,10 +47,10 @@ void handle_operation(stack<Automaton> &automaton_stack, char op) {
 }
 
 // Function to convert a postfix expression to an automaton
-Automaton Postfix_expression::postfix(std::string expression, unordered_map<std::string, Automaton> automatons) {
+Automaton postfix(string expression, unordered_map<string, Automaton> automatons){
     stack<char> op;
     stack<Automaton> automaton_stack;
-
+    expression = handle_spaces(expression);
     // Prepare characters and handle escape sequences
     prepareCharacters(expression, automatons);
 
@@ -137,7 +137,10 @@ Automaton make_simple_automaton(char a) {
     automaton.getStartNode()->addNextNode(automaton.getFinalNode(), a);
     return automaton;
 }
-
+bool reserved_symbol(char c){
+    //return c=='=' || c==':'|| c == '{' || c == '}' || c == '[' || c == ']';
+    return c=='=' || c==':';
+}
 // Function to create an automaton for a sequence of characters (case 2)
 Automaton case2(string str) {
     bool first = true;
@@ -147,7 +150,7 @@ Automaton case2(string str) {
     }
     for (int i = 0; i < str.length(); ++i) {
 
-        if (str[i] == '\\' && i + 1 < str.length() && is_special(str[i + 1])) {
+        if (str[i] == '\\' && i + 1 < str.length() && is_special(str[i + 1]) ||reserved_symbol(str[i + 1])) {
             i++;
         }
         if (first) {
@@ -173,7 +176,7 @@ void handle_simple_expression(string str, unordered_map<string, Automaton> &auto
 }
 
 // Function to prepare characters and handle escape sequences
-string Postfix_expression::prepareCharacters(string str, unordered_map<string, Automaton> &automatons) {
+string prepareCharacters(string str, unordered_map<string, Automaton> &automatons) {
     unsigned long n = str.length();
     string cur;
 
