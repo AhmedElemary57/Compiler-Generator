@@ -20,10 +20,10 @@ using namespace std;
 int Node::nodeCounter = 0;
 int main()
 {
-    
+
     // get current path of the project
     std::string current_path = __FILE__;
-    current_path = current_path.substr(0, current_path.find_last_of('/')) ;
+    current_path = current_path.substr(0, current_path.find_last_of('\\')) ;
 
     // Read the file into a string.
     std::string filepath = current_path + "//input.txt";
@@ -98,8 +98,7 @@ int main()
     unordered_map<string, Automaton> regularDef;
     regularDef["digit"] = generateAutomatonFromRegularDefinition(v);
     regularDef["digits"] = positiveClosure(regularDef["digit"]);
-    Postfix_expression postfixExpression;
-    Automaton num = postfixExpression.postfix("digit+|digit+ . digits (\\L|E digits)", regularDef);
+    Automaton num = postfix("digit+|digit+ . digits (\\L|E digits)", regularDef);
     cout << "num: \n";
     num.printAutomaton();
 
@@ -108,11 +107,12 @@ int main()
 
 
     combinedAutomaton.generateCombinedAutomaton(regularExpressionsAutomatonMap);
+    combinedAutomaton.setPriorityMap(regularExpressionsPriorityMap);
 
     combinedAutomaton.getFinalNodesMap();
     combinedAutomaton.getStartNode();
-    
-    
+
+
     cout << "starting to convert" << endl;
 
     CombinedAutomaton DFA = NFADFAConverter::convertNFAToDFA(combinedAutomaton, regularExpressionsPriorityMap);
@@ -121,8 +121,8 @@ int main()
 
     string program = "int sum , count , pass , mnt; while (pass !=10){pass = pass + 1 ;}";
     LexicalAnalyzer *lex = new LexicalAnalyzer(&DFA, program);
-    
 
-    
+
+
     return 0;
 }

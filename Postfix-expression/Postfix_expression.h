@@ -6,12 +6,10 @@
 
 #include "../AutomatonDataStructure/Automaton.h"
 #include "../AutomatonDataStructure/automatonGenerator.h"
-class Postfix_expression {
+#include "../ParsingInputFile/parser.h"
 
-
-public:
-    Automaton postfix(string expression, unordered_map<string, Automaton> automatons);
-    string prepareCharacters(string str, unordered_map<string, Automaton> &automatons);
-};
+Automaton postfix(string expression, unordered_map<string, Automaton> automatons);
+string prepareCharacters(string str, unordered_map<string, Automaton> &automatons);
+bool is_special(char c);
 
 #endif //COMPILERGENERATOR_POSTFIX_EXPRESSION_H

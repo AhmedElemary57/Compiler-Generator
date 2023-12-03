@@ -7,11 +7,13 @@
 CombinedAutomaton::CombinedAutomaton() {
     this->startNode = nullptr;
     this->finalNodesMap = unordered_map<Node *, string>();
+    this->priorityMap = unordered_map<string, int>();
 }
 
-CombinedAutomaton::CombinedAutomaton(Node *startNode, unordered_map<Node *, string> finalNodesMap) {
+CombinedAutomaton::CombinedAutomaton(Node *startNode, unordered_map<Node *, string> finalNodesMap, unordered_map<string, int> priorityMap) {
     this->startNode = startNode;
     this->finalNodesMap = finalNodesMap;
+    this->priorityMap = priorityMap;
 }
 
 void CombinedAutomaton::setStartNode(Node *startNode) {
@@ -48,3 +50,58 @@ void CombinedAutomaton::generateCombinedAutomaton(unordered_map<string, Automato
 
 
 }
+
+void CombinedAutomaton::setPriorityMap(unordered_map<string, int> &priorityMap) {
+    /***
+     * This function sets the priority map of the automata
+     * @param priorityMap: the priority map to be set
+     * @param automatonMap: the map of the automata generated from the regular expressions
+     * @return: void
+     */
+    this->priorityMap = priorityMap;
+}
+
+int CombinedAutomaton::getPriority(Node* node) {
+    /***
+     * This function returns the priority of the node lower priority means higher precedence
+     * @param node: the node to get its priority
+     * @return: the priority of the node
+     */
+    if ( !node->getIsFinal()) {
+        return -1; // not a final node
+    }
+
+    string token = this->finalNodesMap[node];
+    int priority = this->priorityMap[token];
+
+    return priority;
+}
+
+int CombinedAutomaton::getPriority(string token) {
+    /***
+     * This function returns the priority of the token lower priority means higher precedence
+     * @param token: the token to get its priority
+     * @return: the priority of the token
+     */
+    int priority = this->priorityMap[token];
+
+    return priority;
+}
+
+string CombinedAutomaton::getTokenName(Node* node) {
+    /***
+     * This function returns the token name of the node
+     * @param node: the node to get its token name
+     * @param finalNodesMap: the map of the final nodes of the automata
+     * @return: the token name of the node
+     */
+    if ( !node->getIsFinal()) {
+        return ""; // not a final node
+    }
+
+    string token = finalNodesMap[node];
+
+    return token;
+}
+
+

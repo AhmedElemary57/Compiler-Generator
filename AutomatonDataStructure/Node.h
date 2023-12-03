@@ -28,9 +28,12 @@ class Node {
         void setNextNodes(unordered_map<char,vector<Node*>> nextNodes);
         void setIsFinal(bool isFinal);
         void printNode();
-    int getNodeNumber() const {
+        int getNodeNumber() const {
         return nodeNumber;
-    }
+        }
+        bool getIsFinal() const {
+            return isFinal;
+        }
 
 };
 
@@ -48,4 +51,4 @@ struct HashUnorderedSetNodePointers
 };
 
 
-#endif //COMPILERGENERATOR_NODE_H
+#endif // COMPILERGENERATOR_NODE_H
