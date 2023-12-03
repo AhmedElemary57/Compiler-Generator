@@ -92,7 +92,10 @@ unordered_set<char> findAllPossibleInputs(Node *startNode)
             allPossibleInputs.insert(transition.first);
             for (Node *destinationNode : transition.second)
                 if (markedNodes.find(destinationNode) == markedNodes.end())
+                {
                     nodesQueue.push(destinationNode);
+                    markedNodes.insert(destinationNode);
+                }
         }
     }
     return allPossibleInputs;
@@ -160,9 +163,9 @@ pair<unordered_map<int, unordered_map<char, int>>, unordered_map<int, string>> f
     return {statesTransitions, determineFinalStatesMap(statesNodesMap, nfa.getFinalNodesMap(), regularExpressionsPriorityMap)};
 }
 
-unordered_map<int, int> minimizeDFAStates(unordered_map<int, int> statesGroupMap,
+unordered_map<int, int> minimizeDFAStates(unordered_map<int, int> &statesGroupMap,
                                           unordered_map<int, unordered_map<char, int>> &dfaTransitionsMap,
-                                          unordered_set<char> allPossibleInputs,
+                                          unordered_set<char> &allPossibleInputs,
                                           int lastNumberOfGroups)
 {
     unordered_map<int, int> newStatesGroupMap;
@@ -188,6 +191,7 @@ unordered_map<int, int> minimizeDFAStates(unordered_map<int, int> statesGroupMap
     }
     if (lastNumberOfGroups == newStatesGroupMap.size())
         return newStatesGroupMap;
+    return minimizeDFAStates(newStatesGroupMap, dfaTransitionsMap, allPossibleInputs, newStatesGroupMap.size());
 }
 
 CombinedAutomaton constructDFA(unordered_map<int, int> &statesGroupMap,
