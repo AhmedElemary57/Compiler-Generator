@@ -17,7 +17,7 @@ vector<string> getRegularDefinitions(const vector<string>& lines);
 vector<string> getKeywords(const vector<string>& lines);
 vector<string> getPunctuations(const vector<string>& lines);
 set<char> getReservedSymbols(const vector<string>& lines);
-unordered_map<string, vector<string> > getRegularDefinitionsMap(const vector<string>& regularDefinitions);
+unordered_map<string, string> getRegularDefinitionsMap(const vector<string>& regularDefinitions);
 string handle_range(const std::string& str);
 string handle_spaces(string str);
 unordered_map<string, string> getRegularExpressionsMap(const vector<string>& regularExpressions);
