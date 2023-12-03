@@ -5,44 +5,6 @@ using namespace std;
 
 
 
-Automaton generateAutomatonFromRegularDefinition(vector<string> regularDefinition) {
-    /**
-     * This function generates an automaton from a regular definition.
-     * @param regularDefinition: a vector of strings that represents the regular definition.
-     * @return an automaton that represents the regular definition.
-     */
-
-    Automaton automaton;
-    automaton.setStartNode(new Node());
-    automaton.setFinalNode(new Node());
-
-    for( auto & i : regularDefinition ) {
-
-        i = handle_spaces(i);
-
-        if (i == "\\L") {
-            automaton.getStartNode()->addNextNode(automaton.getFinalNode(), char(238));
-            continue;
-        }
-
-        // if the regular definition is a single character
-        if (i.length() == 1) {
-            automaton.getStartNode()->addNextNode(automaton.getFinalNode(), i[0]);
-            continue;
-        }
-
-        // if the regular definition is a range of characters
-        if (i.length() == 3 && i[1] == '-') {
-            for (char j = i[0]; j <= i[2]; j++) {
-                automaton.getStartNode()->addNextNode(automaton.getFinalNode(), j);
-            }
-            continue;
-        }
-
-    }
-    return automaton;
-}
-
 void handleRegularDefinitionsInTermsOfOtherRegularDefinitions(unordered_map<string, vector<string>>& regularDefinitionsMap, unordered_map<string, Automaton>& automatonMap) {
     /**
      * This function handles the regular definitions that are defined in terms of other regular definitions.
@@ -50,39 +12,26 @@ void handleRegularDefinitionsInTermsOfOtherRegularDefinitions(unordered_map<stri
      * @param automatonMap: a map of strings to automata that represents the regular definitions.
      */
     for (auto & i : regularDefinitionsMap) {
-        for (auto & j : i.second) {
-            if (j.find('+') != string::npos) {
-                string regularDefinitionName = j.substr(0, j.length() - 1); // get the name of the regular definition
-                vector<string> regularDefinition = regularDefinitionsMap[regularDefinitionName];
-                Automaton oldAutomaton = automatonMap[regularDefinitionName];
-                automatonMap[i.first] = positiveClosure(oldAutomaton);
-                regularDefinitionsMap[i.first].insert(regularDefinitionsMap[i.first].end(), regularDefinition.begin(), regularDefinition.end());
-            }
-            else if (j.find('*') != string::npos) {
-                string regularDefinitionName = j.substr(1, j.length() - 2); // get the name of the regular definition
-                vector<string> regularDefinition = regularDefinitionsMap[regularDefinitionName];
-                Automaton oldAutomaton = automatonMap[regularDefinitionName];
-                automatonMap[i.first] = closure(oldAutomaton);
-                regularDefinitionsMap[i.first].insert(regularDefinitionsMap[i.first].end(), regularDefinition.begin(), regularDefinition.end());
-            }
-        }
+        Automaton automaton;
+        automaton = postfix(i.second[0], automatonMap);
+
     }
 }
 
 // function to generate the automaton from the regular definitions map.
-unordered_map<string, Automaton> generateAutomatonFromRegularDefinitions(unordered_map<string, vector<string>>& regularDefinitionsMap) {
+unordered_map<string, Automaton> generateAutomatonFromRegularDefinitions(unordered_map<string, string>& regularDefinitionsMap) {
     /**
      * This function generates an automaton map from a regular definitions map.
      * @param regularDefinitionsMap: a map of strings to vectors of strings that represents the regular definitions.
      * @return a map of strings to automata that represents the regular definitions.
      */
     unordered_map<string, Automaton> automatonMap;
-    for (auto & i : regularDefinitionsMap) {
-        automatonMap[i.first] = generateAutomatonFromRegularDefinition(i.second);
-    }
 
-    // handle the regular definitions that are defined in terms of other regular definitions.
-    handleRegularDefinitionsInTermsOfOtherRegularDefinitions(regularDefinitionsMap,  automatonMap);
+    for (auto & i : regularDefinitionsMap) {
+        string regularDefinition = i.second;
+        Automaton newAutomaton = postfix(regularDefinition, automatonMap);
+        automatonMap[i.first] = newAutomaton;
+    }
 
     return automatonMap;
 }

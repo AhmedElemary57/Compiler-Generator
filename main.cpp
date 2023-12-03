@@ -63,7 +63,7 @@ int main()
         cout << i << endl;
     }
 
-    unordered_map<string, vector<string>> regularDefinitionsMap = getRegularDefinitionsMap(regularDefinitionsVector);
+    unordered_map<string, string> regularDefinitionsMap = getRegularDefinitionsMap(regularDefinitionsVector);
 
     cout << "Regular Definitions Map: \n";
     for (auto & i : regularDefinitionsMap) {
@@ -93,15 +93,6 @@ int main()
     for (auto & i : regularExpressionsPriorityMap) {
         cout << i.first << " : " << i.second << endl;
     }
-
-    vector<string> v;
-    v.emplace_back("0-9");
-    unordered_map<string, Automaton> regularDef;
-    regularDef["digit"] = generateAutomatonFromRegularDefinition(v);
-    regularDef["digits"] = positiveClosure(regularDef["digit"]);
-    Automaton num = postfix("digit+|digit+ . digits (\\L|E digits)", regularDef);
-    cout << "num: \n";
-    num.printAutomaton();
 
     // test the combined automaton
     CombinedAutomaton combinedAutomaton;
