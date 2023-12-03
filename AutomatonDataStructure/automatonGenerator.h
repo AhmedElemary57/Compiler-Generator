@@ -11,8 +11,7 @@
 #ifndef COMPILERGENERATOR_AUTOMATONGENERATOR_H
 #define COMPILERGENERATOR_AUTOMATONGENERATOR_H
 
-Automaton generateAutomatonFromRegularDefinition(vector<string> regularDefinition);
-unordered_map<string, Automaton> generateAutomatonFromRegularDefinitions(unordered_map<string, vector<string>>& regularDefinitionsMap);
+unordered_map<string, Automaton> generateAutomatonFromRegularDefinitions(unordered_map<string, string>& regularDefinitionsMap);
 void printAutomatonMap(const unordered_map<string, Automaton>& automatonMap);
 void handleRegularDefinitionsInTermsOfOtherRegularDefinitions(unordered_map<string, vector<string>>& regularDefinitionsMap, unordered_map<string, Automaton>& automatonMap);
 Automaton positiveClosure(Automaton automaton);
