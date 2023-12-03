@@ -17,5 +17,9 @@ add_executable(
         AutomatonDataStructure/automatonGenerator.h
         Postfix-expression/Postfix_expression.h
         Postfix-expression/Postfix_expression.cpp
+        NFADFAConverter/NFADFAConverter.h
+        NFADFAConverter/NFADFAConverter.cpp
+        LexicalAnalyzer/LexicalAnalyzer.h
+        LexicalAnalyzer/LexicalAnalyzer.cpp
 
         )

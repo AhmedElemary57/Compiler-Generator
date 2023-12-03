@@ -58,6 +58,10 @@ vector<Node *> Node::getNextNodes(char input) {
     return this->nextNodes[input];
 }
 
+void Node::setNextNodes(unordered_map<char,vector<Node*>> nextNodes){
+    this->nextNodes = nextNodes;
+}
+
 void Node::setIsFinal(bool isFinal) {
 
     this->isFinal = isFinal;
