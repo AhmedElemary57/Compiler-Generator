@@ -271,6 +271,7 @@ unordered_map<string, string> getRegularDefinitionsMap(const vector<string>& reg
         // split the regularDefinitionExpression by the | character.
         istringstream iss(regularDefinitionExpression);
         // remove the spaces from regularDefinitionName .
+        regularDefinitionName.erase(remove_if(regularDefinitionName.begin(), regularDefinitionName.end(), ::isspace), regularDefinitionName.end());
         regularDefinitionsMap[regularDefinitionName]= regularDefinitionExpression;
 
     }
@@ -285,7 +286,6 @@ unordered_map<string, string> getRegularExpressionsMap(const vector<string>& reg
         string regularExpressionExpression = regularExpression.substr(regularExpression.find(':') + 1);
         // remove the spaces from regularExpressionName .
         regularExpressionName.erase(remove_if(regularExpressionName.begin(), regularExpressionName.end(), ::isspace), regularExpressionName.end());
-
         regularExpressionsMap[regularExpressionName] = regularExpressionExpression;
     }
     return regularExpressionsMap;

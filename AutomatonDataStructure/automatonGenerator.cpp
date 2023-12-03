@@ -3,21 +3,6 @@
 
 using namespace std;
 
-
-
-void handleRegularDefinitionsInTermsOfOtherRegularDefinitions(unordered_map<string, vector<string>>& regularDefinitionsMap, unordered_map<string, Automaton>& automatonMap) {
-    /**
-     * This function handles the regular definitions that are defined in terms of other regular definitions.
-     * @param regularDefinitionsMap: a map of strings to vectors of strings that represents the regular definitions.
-     * @param automatonMap: a map of strings to automata that represents the regular definitions.
-     */
-    for (auto & i : regularDefinitionsMap) {
-        Automaton automaton;
-        automaton = postfix(i.second[0], automatonMap);
-
-    }
-}
-
 // function to generate the automaton from the regular definitions map.
 unordered_map<string, Automaton> generateAutomatonFromRegularDefinitions(unordered_map<string, string>& regularDefinitionsMap) {
     /**

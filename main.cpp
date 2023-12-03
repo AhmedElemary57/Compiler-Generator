@@ -3,6 +3,7 @@
 #include <vector>
 #include <set>
 
+
 #include "ParsingInputFile/parser.h"
 #include "AutomatonDataStructure/Node.h"
 #include "AutomatonDataStructure/Automaton.h"
