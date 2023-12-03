@@ -11,13 +11,19 @@
 
 #include "AutomatonDataStructure/CombinedAutomaton.h"
 
+#include "NFADFAConverter/NFADFAConverter.h"
+
+#include "LexicalAnalyzer/LexicalAnalyzer.h"
+
 using namespace std;
 
 int Node::nodeCounter = 0;
-int main(){
+int main()
+{
+    
     // get current path of the project
     std::string current_path = __FILE__;
-    current_path = current_path.substr(0, current_path.find_last_of('\\')) ;
+    current_path = current_path.substr(0, current_path.find_last_of('/')) ;
 
     // Read the file into a string.
     std::string filepath = current_path + "\\input.txt";
@@ -105,10 +111,18 @@ int main(){
 
     combinedAutomaton.getFinalNodesMap();
     combinedAutomaton.getStartNode();
+    
+    
+    cout << "starting to convert" << endl;
 
+    CombinedAutomaton DFA = NFADFAConverter::convertNFAToDFA(combinedAutomaton, regularExpressionsPriorityMap);
 
+    cout << "converted" << endl;
 
+    string program = "int sum , count , pass , mnt; while (pass !=10){pass = pass + 1 ;}";
+    LexicalAnalyzer *lex = new LexicalAnalyzer(&DFA, program);
+    
+
+    
     return 0;
-
-
 }
