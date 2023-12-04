@@ -114,10 +114,24 @@ int main()
 
     cout << "converted" << endl;
 
-    string program = "int  sum , count , pass , mnt; while (pass !=10){pass = pass + 1 ;}";
+    cout << endl;
+
+    ifstream inFile("../sample_programs/p3.txt");
+    if (!inFile.is_open()) {
+        std::cerr << "Unable to open the file." << std::endl;
+        return 1; 
+    }
+    
+    std::stringstream buffer;
+    buffer << inFile.rdbuf();
+    string program = buffer.str();
+    inFile.close();
     LexicalAnalyzer *lex = new LexicalAnalyzer(&DFA, program);
-
-
+    vector<pair<string, string>> tokens = lex->getAllTokens();
+    lex->print_tokens();
+    lex->write_tokens("../sample_programs/p3_out.txt");
+    cout << endl;
+    lex->print_symbol_table();
 
     return 0;
 }

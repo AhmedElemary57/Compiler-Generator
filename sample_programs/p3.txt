@@ -1,0 +1,9 @@
+int $%#;
+
+float i, w, q;
+
+int z;
+z = y;
+
+test = 5 * 10 + 1;
+

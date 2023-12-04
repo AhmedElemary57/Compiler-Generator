@@ -1,17 +1,14 @@
 #include "LexicalAnalyzer.h"
 #include "../AutomatonDataStructure/CombinedAutomaton.h"
 
-
 using namespace std;
 
 LexicalAnalyzer::LexicalAnalyzer(CombinedAutomaton *DFA, string program)
 {
 
     this->DFA = DFA;
-    program.erase(remove(program.begin(), program.end(), ' '), program.end());
     cout << program << endl;
     this->program = program;
-    
     this->current_index = 0;
 }
 
@@ -34,6 +31,15 @@ pair<string, string> LexicalAnalyzer::getNextToken()
     Node *accepted_node = nullptr;
     string accepted_token = "";
     int accepted_index = -1;
+
+    auto it = finalNodesMap.find(start);
+
+    if (it != finalNodesMap.end())
+    {
+        accepted_node = start;
+        accepted_token = "";
+        accepted_index = current_index + 1;
+    }
 
     unordered_map<char, vector<Node *>> nextNodes = start->getNextNodes();
     auto iterator = nextNodes.find(program[current_index]);
@@ -76,10 +82,9 @@ pair<string, string> LexicalAnalyzer::getNextToken()
         {
             nextNode = nullptr;
         }
-        
     }
 
-    auto it = finalNodesMap.find(nextNode);
+    it = finalNodesMap.find(nextNode);
 
     if (it != finalNodesMap.end())
     {
@@ -90,12 +95,17 @@ pair<string, string> LexicalAnalyzer::getNextToken()
 
     if (accepted_node == nullptr)
     {
-        cout << "Error string " << current_token << " didn't match any RE" << endl;
+        if (!isspace(current_token[0]))
+            cout << "Error string " << current_token << " didn't match any RE" << endl;
         return {"", ""};
     }
     else
     {
         current_index = accepted_index;
+        tokens.push_back({finalNodesMap[accepted_node], accepted_token});
+        if(finalNodesMap[accepted_node] == "id"){
+            symbol_table.insert(accepted_token);
+        }
         return {finalNodesMap[accepted_node], accepted_token};
     }
 }
@@ -114,9 +124,48 @@ vector<pair<string, string>> LexicalAnalyzer::getAllTokens()
     return tokens;
 }
 
-
-void LexicalAnalyzer::print_tokens(vector<pair<string, string>> tokens){
-    for (int i=0; i<tokens.size(); i++){
+void LexicalAnalyzer::print_tokens(vector<pair<string, string>> tokens)
+{
+    for (int i = 0; i < tokens.size(); i++)
+    {
         cout << tokens[i].first << " " << tokens[i].second << endl;
+    }
+}
+
+void LexicalAnalyzer::print_tokens()
+{
+    for (int i = 0; i < this->tokens.size(); i++)
+    {
+        cout << this->tokens[i].first << " " << this->tokens[i].second << endl;
+    }
+}
+
+void LexicalAnalyzer::write_tokens(string path)
+{
+    ofstream outFile(path);
+    if(!outFile.is_open()){
+        cout << "Error opening the file" << endl;
+        return;
+    }
+    for (int i=0; i<tokens.size(); i++){
+        outFile << tokens[i].first << endl;
+    }
+}
+
+void LexicalAnalyzer::write_tokens()
+{
+    ofstream outFile("../tokens.txt");
+    if(!outFile.is_open()){
+        cout << "Error opening the file" << endl;
+        return;
+    }
+    for (int i=0; i<tokens.size(); i++){
+        outFile << tokens[i].first << endl;
+    }
+}
+
+void LexicalAnalyzer::print_symbol_table(){
+    for (auto it = symbol_table.begin(); it != symbol_table.end(); it++){
+        cout << *it << endl;
     }
 }
