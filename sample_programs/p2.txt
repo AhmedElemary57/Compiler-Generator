@@ -1,0 +1,7 @@
+boolean x;
+int y;
+float z;
+
+while(z != x){
+    y = y + 1;
+}
