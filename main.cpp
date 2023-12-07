@@ -116,7 +116,7 @@ int main()
 
     cout << endl;
 
-    ifstream inFile("../sample_programs/p3.txt");
+    ifstream inFile("./sample_programs/p3.txt");
     if (!inFile.is_open()) {
         std::cerr << "Unable to open the file." << std::endl;
         return 1; 
@@ -129,7 +129,7 @@ int main()
     LexicalAnalyzer *lex = new LexicalAnalyzer(&DFA, program);
     vector<pair<string, string>> tokens = lex->getAllTokens();
     lex->print_tokens();
-    lex->write_tokens("../sample_programs/p3_out.txt");
+    lex->write_tokens("./sample_programs/p3_out.txt");
     cout << endl;
     lex->print_symbol_table();
 

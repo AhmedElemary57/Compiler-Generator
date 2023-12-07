@@ -201,12 +201,9 @@ vector<string> getKeywords(const vector<string>& lines) {
     vector<string> keywords;
     for (const auto& line : lines) {
         if (line[0] == '{' && line[line.size() - 1] == '}') {
-            istringstream iss(line);
+            istringstream iss(line.substr(1, line.size() - 2));
             string word;
             while (iss >> word) {
-                if (word.find('{') != string::npos || word.find('}') != string::npos) {
-                    continue;
-                }
                 keywords.push_back(word);
             }
         }
@@ -223,9 +220,7 @@ vector<char> getPunctuations(const vector<string>& lines) {
                 if(c != ' ' && c != '\\' && c != '\\'){
                     punctuations.push_back(c);
                 }
-
             }
-
         }
     }
     return punctuations;
