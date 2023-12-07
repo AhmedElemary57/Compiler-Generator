@@ -15,6 +15,7 @@ unordered_map<string, Automaton> generateAutomatonFromRegularDefinitions(unorder
 void printAutomatonMap(const unordered_map<string, Automaton>& automatonMap);
 void handleRegularDefinitionsInTermsOfOtherRegularDefinitions(unordered_map<string, vector<string>>& regularDefinitionsMap, unordered_map<string, Automaton>& automatonMap);
 Automaton positiveClosure(Automaton automaton);
+unordered_map<string, Automaton> generateAutomatonFromRegularDefinitions(pair<unordered_map<string, string>, vector<string>> regularDefinitionsPair);
 Automaton closure(const Automaton& automaton);
 Automaton union_op(Automaton& automaton1, Automaton& automaton2);
 Automaton concatenate(Automaton& automaton1, Automaton& automaton2);

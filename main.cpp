@@ -62,8 +62,8 @@ int main()
     for (auto & i : reservedSymbolsSet) {
         cout << i << endl;
     }
-
-    unordered_map<string, string> regularDefinitionsMap = getRegularDefinitionsMap(regularDefinitionsVector);
+    pair<unordered_map<string, string>, vector<string>> regularDefinitionsPair = getRegularDefinitionsMap(regularDefinitionsVector);
+    unordered_map<string, string> regularDefinitionsMap = regularDefinitionsPair.first;
 
     cout << "Regular Definitions Map: \n";
     for (auto & i : regularDefinitionsMap) {
@@ -75,7 +75,7 @@ int main()
     }
 
 
-    unordered_map<string, Automaton> automatonMap = generateAutomatonFromRegularDefinitions(regularDefinitionsMap);
+    unordered_map<string, Automaton> automatonMap = generateAutomatonFromRegularDefinitions(regularDefinitionsPair);
 
     cout << "Automaton Map: \n";
 
