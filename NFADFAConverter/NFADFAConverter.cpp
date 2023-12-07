@@ -1,8 +1,11 @@
 #include "NFADFAConverter.h"
 
-// This should never start from zero, since it is the default value for a map that has int as a value
+// this constant represent the start of aliase numbers that will be asigned to the DFA states in subset construction,
+// such taht the start state will have alias = DFAALIASSTART
+// this constant should never be assigned a value less than one, since the value zero is reserved as an alis for the DFA phi state
 #define DFAALIASSTART 1
 
+// hash function for vector of int, to be used inside unordered_set, unordered_mao, etc.
 struct HashVectorInt
 {
     size_t operator()(const vector<int> &vec) const
@@ -16,6 +19,7 @@ struct HashVectorInt
     }
 };
 
+// function to find elements that are common between two unordered_set of any template type
 template <typename T>
 unordered_set<T> unorderedSetsIntersection(const unordered_set<T> &first, const unordered_set<T> &second)
 {
@@ -26,6 +30,7 @@ unordered_set<T> unorderedSetsIntersection(const unordered_set<T> &first, const 
     return result;
 }
 
+// function to get the first RE that has the highest periority inside the given vector of REs
 string findHighestPeriorityRE(vector<string> &regularExpressions, unordered_map<string, int> &regularExpressionsPriorityMap)
 {
     string highestPeriorityRE = regularExpressions[0];
@@ -42,6 +47,7 @@ string findHighestPeriorityRE(vector<string> &regularExpressions, unordered_map<
     return highestPeriorityRE;
 }
 
+// function to get the epsilon closure of a given set of nodes the result will include the given nodes themselves
 unordered_set<Node *> findEClosure(unordered_set<Node *> nodes)
 {
     stack<Node *> stack;
@@ -65,6 +71,7 @@ unordered_set<Node *> findEClosure(unordered_set<Node *> nodes)
     return eClosure;
 }
 
+// for each node in the given set, get the destination nodes under the transition of the given input and append them to the returned set
 unordered_set<Node *> move(unordered_set<Node *> &sources, char input)
 {
     unordered_set<Node *> destinations;
@@ -76,6 +83,7 @@ unordered_set<Node *> move(unordered_set<Node *> &sources, char input)
     return destinations;
 }
 
+// function to find all possible inputs that all nodes of an automaton can accept (this function is needed to make this class more generic)
 unordered_set<char> findAllPossibleInputs(Node *startNode)
 {
     unordered_set<char> allPossibleInputs;
@@ -106,16 +114,21 @@ unordered_map<int, string> determineFinalStatesMap(
     unordered_map<Node *, string> finalNodesMap,
     unordered_map<string, int> &regularExpressionsPriorityMap)
 {
+    // unordered_map<int, string>: the key is the DFA final state alias, and the value is the assigned RE for that final state
     unordered_map<int, string> finalStatesMap;
     unordered_set<Node *> finalNodes;
     for (auto const &finalNodesMapElement : finalNodesMap)
         finalNodes.insert(finalNodesMapElement.first);
+    // for each set of nodes in the left most column of the subset construction table.
     for (auto const &dfaStatesNodesMapElement : dfaStatesNodesMap)
     {
+        // if this set contains some final nodes of the original NFA
         unordered_set<Node *> finalNodesIntersection = unorderedSetsIntersection<Node *>(dfaStatesNodesMapElement.first, finalNodes);
         if (finalNodesIntersection.empty())
             continue;
         vector<string> regularExpressions;
+        // determine which of these nodes' RE has the highest periority,
+        // then put that set in the map of DFA final states and assign it the highest periority RE
         for (Node *finalNode : finalNodesIntersection)
             regularExpressions.push_back(finalNodesMap[finalNode]);
         finalStatesMap[dfaStatesNodesMapElement.second] = findHighestPeriorityRE(regularExpressions, regularExpressionsPriorityMap);
@@ -123,19 +136,23 @@ unordered_map<int, string> determineFinalStatesMap(
     return finalStatesMap;
 }
 
+// this function build the subset construction table for the DFA
+// it returns a pair such that is first element is the transitions map of the DFA states,
+// and the second element is a map between the DFA final states and their RE
 pair<unordered_map<int, unordered_map<char, int>>, unordered_map<int, string>> findDFAInfo(CombinedAutomaton nfa,
                                                                                            unordered_map<string, int> &regularExpressionsPriorityMap,
                                                                                            unordered_set<char> allPossibleInputs)
 {
-    // Phi state will have alias = 0 by default, and start dfa state will have alias = DFAALIASSTART
     int alias = DFAALIASSTART;
-    unordered_map<unordered_set<Node *>, int, HashUnorderedSetNodePointers> statesNodesMap;
+    // this map is used to hold the aliases of the DFA states, such that the key is an unordered set holding the corresponding set of NFA nodes
+    unordered_map<unordered_set<Node *>, int, HashUnorderedSetNodePointers> dfaStatesSetAlias;
     unordered_map<int, unordered_set<Node *>> statesAliasMap;
     unordered_set<int> allStates;
     queue<int> unmarkedStates;
+    // unordered_map<int, unordered_map<char, int>>: the key is DFA state alias, the value is another map between all possbiel input and their destinations
     unordered_map<int, unordered_map<char, int>> statesTransitions;
     unordered_set<Node *> nextStateNodes = findEClosure({nfa.getStartNode()});
-    statesNodesMap[nextStateNodes] = alias;
+    dfaStatesSetAlias[nextStateNodes] = alias;
     statesAliasMap[alias] = nextStateNodes;
     allStates.insert(alias);
     unmarkedStates.push(alias);
@@ -148,28 +165,34 @@ pair<unordered_map<int, unordered_map<char, int>>, unordered_map<int, string>> f
         for (const char input : allPossibleInputs)
         {
             nextStateNodes = findEClosure(move(statesAliasMap[currentState], input));
-            if (allStates.find(statesNodesMap[nextStateNodes]) == allStates.end())
+            // if it is the first time of the destination set of nodes to appear, give an alias to it and add it to necessary data structures
+            if (allStates.find(dfaStatesSetAlias[nextStateNodes]) == allStates.end())
             {
-                statesNodesMap[nextStateNodes] = alias;
+                dfaStatesSetAlias[nextStateNodes] = alias;
                 statesAliasMap[alias] = nextStateNodes;
                 allStates.insert(alias);
                 unmarkedStates.push(alias);
                 alias++;
             }
-            transitions[input] = statesNodesMap[nextStateNodes];
+            // get the alias of the destination set of nodes and put it in the subset construction table of the DFA state
+            transitions[input] = dfaStatesSetAlias[nextStateNodes];
         }
         statesTransitions.insert({currentState, transitions});
     }
-    return {statesTransitions, determineFinalStatesMap(statesNodesMap, nfa.getFinalNodesMap(), regularExpressionsPriorityMap)};
+    return {statesTransitions, determineFinalStatesMap(dfaStatesSetAlias, nfa.getFinalNodesMap(), regularExpressionsPriorityMap)};
 }
 
+// function to find the first groups that are used as the first step to minimize the DFA
+// it returns a pair such that the first element is the first groups, and the second element is a map between the states and its group number
 pair<vector<vector<int>>, unordered_map<int, int>> findDFAInitialGroupsInfo(vector<int> &allDFAStates,
                                                                             unordered_map<int, string> &dfaFinalStatesMap)
 {
     unordered_map<int, int> statesGroupMap;
+    // a map between each RE and all of its accepting states (each map element represents a group)
     unordered_map<string, vector<int>> reFinalStatesMap;
     vector<vector<int>> groups;
     vector<int> nonFinalStates;
+    // determine all non final states and put them in the same group
     for (int &state : allDFAStates)
         if (dfaFinalStatesMap.find(state) == dfaFinalStatesMap.end())
             nonFinalStates.push_back(state);
@@ -179,14 +202,17 @@ pair<vector<vector<int>>, unordered_map<int, int>> findDFAInitialGroupsInfo(vect
             reFinalStatesMap[element.second] = vector<int>{element.first};
         else
             reFinalStatesMap[element.second].push_back(element.first);
-    for (auto const &element: reFinalStatesMap)
+    // for each RE put its acceptors in a separate group
+    for (auto const &element : reFinalStatesMap)
         groups.push_back(element.second);
+    // construct the map between each states and the group number it is assigned to
     for (int groupNumber = 1; groupNumber <= groups.size(); groupNumber++)
         for (int &state : groups[groupNumber - 1])
             statesGroupMap[state] = groupNumber;
     return {groups, statesGroupMap};
 }
 
+// function to minimize the DFA states and return a map between each DFA state and its group number
 unordered_map<int, int> minimizeDFAStates(unordered_map<int, int> &statesGroupMap,
                                           vector<vector<int>> &groups,
                                           unordered_map<int, unordered_map<char, int>> &dfaTransitionsMap,
@@ -229,6 +255,7 @@ unordered_map<int, int> minimizeDFAStates(unordered_map<int, int> &statesGroupMa
     return minimizeDFAStates(newStatesGroupMap, newGroups, dfaTransitionsMap, allPossibleInputs);
 }
 
+// function that consturcts and returns a combined automaton based on the given minimized DFA info
 CombinedAutomaton constructDFA(unordered_map<int, int> &statesGroupMap,
                                unordered_map<int, unordered_map<char, int>> &dfaTransitionsMap,
                                unordered_map<int, string> &dfaFinalStatesMap,
@@ -237,6 +264,7 @@ CombinedAutomaton constructDFA(unordered_map<int, int> &statesGroupMap,
     CombinedAutomaton dfaAutomaton;
     int startGroup = statesGroupMap[DFAALIASSTART];
     unordered_map<int, string> finalGroupsMap;
+    // determine the RE of the final groups such that each group take the RE corresponding to the highest periority
     for (auto const &finalState : dfaFinalStatesMap)
     {
         int group = statesGroupMap[finalState.first];
@@ -245,8 +273,10 @@ CombinedAutomaton constructDFA(unordered_map<int, int> &statesGroupMap,
         else if (regularExpressionsPriorityMap[finalGroupsMap[group]] > regularExpressionsPriorityMap[finalState.second])
             finalGroupsMap[group] = finalState.second;
     }
+    // map between each state alias and its corresponding Node object
     unordered_map<int, Node *> groupsNodeMap;
     unordered_set<int> finishedGroups;
+    // map between each final Node objects and its RE
     unordered_map<Node *, string> finalNodesMap;
     for (auto const &element : dfaTransitionsMap)
     {
@@ -255,17 +285,20 @@ CombinedAutomaton constructDFA(unordered_map<int, int> &statesGroupMap,
         {
             unordered_map<char, int> stateTransitions = element.second;
             Node *node;
+            // if this group has no Node object, then create a new one for it
             if (groupsNodeMap.find(group) == groupsNodeMap.end())
             {
                 node = new Node();
                 groupsNodeMap[group] = node;
             }
             node = groupsNodeMap[group];
+            // if this group is a final group then make its Node a final Node as well
             if (finalGroupsMap.find(group) != finalGroupsMap.end())
             {
                 node->setIsFinal(true);
                 finalNodesMap[node] = finalGroupsMap[group];
             }
+            // for each possible transition of this group, at it to its corresponding Node object
             for (auto const &stateTransition : stateTransitions)
             {
                 int nextGroup = statesGroupMap[stateTransition.second];
