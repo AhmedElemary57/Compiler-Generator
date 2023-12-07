@@ -154,12 +154,15 @@ string CombinedAutomaton::getTokenName(Node *node)
 
 void CombinedAutomaton::print()
 {
+    cout << "Combined Automaton Nodes:" << endl;
     unordered_set<Node *> markedNodes;
     queue<Node *> nodesQueue;
     nodesQueue.push(startNode);
     markedNodes.insert(startNode);
+    int nodesCounter = 0;
     while (!nodesQueue.empty())
     {
+        nodesCounter++;
         Node *currentNode = nodesQueue.front();
         nodesQueue.pop();
         currentNode->printNode();
@@ -171,4 +174,13 @@ void CombinedAutomaton::print()
                     markedNodes.insert(nextNode);
                 }
     }
+    cout << "Combined Automaton Number of Nodes: " << nodesCounter << endl;
+    cout << endl << "Combined Automaton Final Nodes RE:" << endl;
+    for (const auto &element : finalNodesMap)
+        cout << element.first->getNodeNumber() << " : " << element.second << endl;
+    cout << "Combined Automaton Number of Final Nodes: " << finalNodesMap.size() << endl;
+    cout << endl << "Combined Automaton REs Priorities:" << endl;
+    for (const auto &element : priorityMap)
+        cout << element.first << " : " << element.second << endl;
+    cout << "Combined Automaton Number of REs: " << priorityMap.size() << endl;
 }
