@@ -4,18 +4,20 @@
 using namespace std;
 
 // function to generate the automaton from the regular definitions map.
-unordered_map<string, Automaton> generateAutomatonFromRegularDefinitions(unordered_map<string, string>& regularDefinitionsMap) {
+unordered_map<string, Automaton> generateAutomatonFromRegularDefinitions(pair<unordered_map<string, string>, vector<string>> regularDefinitionsPair) {
     /**
      * This function generates an automaton map from a regular definitions map.
      * @param regularDefinitionsMap: a map of strings to vectors of strings that represents the regular definitions.
      * @return a map of strings to automata that represents the regular definitions.
      */
+    unordered_map<string, string> regularDefinitionsMap = regularDefinitionsPair.first;
+    vector<string> named = regularDefinitionsPair.second;
     unordered_map<string, Automaton> automatonMap;
 
-    for (auto & i : regularDefinitionsMap) {
-        string regularDefinition = i.second;
+    for (auto & i : named) {
+        string regularDefinition = regularDefinitionsMap[i];
         Automaton newAutomaton = postfix(regularDefinition, automatonMap);
-        automatonMap[i.first] = newAutomaton;
+        automatonMap[i] = newAutomaton;
     }
 
     return automatonMap;

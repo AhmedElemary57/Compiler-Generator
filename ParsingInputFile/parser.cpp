@@ -268,9 +268,10 @@ set<char> getReservedSymbols(const vector<string>& lines) {
 
 }
 
-unordered_map<string, string> getRegularDefinitionsMap(const vector<string>& regularDefinitions) {
+pair<unordered_map<string, string>, vector<string>> getRegularDefinitionsMap(const vector<string>& regularDefinitions) {
     unordered_map<string, string> regularDefinitionsMap;
-
+    pair<unordered_map<string, string>, vector<string>> result;
+    vector<string> regularDefinitionsVector;
     for (const auto& regularDefinition : regularDefinitions) {
 
         string regularDefinitionName = regularDefinition.substr(0, regularDefinition.find('='));
@@ -280,9 +281,11 @@ unordered_map<string, string> getRegularDefinitionsMap(const vector<string>& reg
         // remove the spaces from regularDefinitionName .
         regularDefinitionName.erase(remove_if(regularDefinitionName.begin(), regularDefinitionName.end(), ::isspace), regularDefinitionName.end());
         regularDefinitionsMap[regularDefinitionName]= regularDefinitionExpression;
-
+        regularDefinitionsVector.push_back(regularDefinitionName);
     }
-    return regularDefinitionsMap;
+    result.first = regularDefinitionsMap;
+    result.second = regularDefinitionsVector;
+    return result;
 }
 
 unordered_map<string, string> getRegularExpressionsMap(const vector<string>& regularExpressions) {
