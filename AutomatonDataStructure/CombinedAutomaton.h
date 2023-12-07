@@ -32,7 +32,7 @@ public:
     void generateCombinedAutomaton(unordered_map<string, Automaton> &automatonMap);
     void generateCombinedAutomaton(unordered_map<string, Automaton> &automatonMap, unordered_map<string, Automaton> &keywordsMap);
     void generateCombinedAutomaton(unordered_map<string, Automaton> &automatonMap, unordered_map<string, Automaton> &keywordsMap, unordered_map<char, Automaton> &punctuationsAutomaton);
-
+    void print();
 };
 
 
