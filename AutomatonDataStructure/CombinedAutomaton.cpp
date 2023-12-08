@@ -152,6 +152,7 @@ string CombinedAutomaton::getTokenName(Node *node)
     return token;
 }
 
+// IMPORTANT NOTE: we are assuming that each node has the same input characters in the same order inside its map
 void CombinedAutomaton::print()
 {
     cout << "Combined Automaton Nodes:" << endl;
@@ -160,19 +161,27 @@ void CombinedAutomaton::print()
     nodesQueue.push(startNode);
     markedNodes.insert(startNode);
     int nodesCounter = 0;
+    cout << "Input char: ";
+    for (auto const &element : startNode->getNextNodes())
+        cout << ", " << element.first;
+    cout << endl;
     while (!nodesQueue.empty())
     {
         nodesCounter++;
         Node *currentNode = nodesQueue.front();
         nodesQueue.pop();
-        currentNode->printNode();
+        cout << "Node " << currentNode->getNodeNumber() << ": ";
         for (auto const &element : currentNode->getNextNodes())
             for (Node *nextNode : element.second)
+            {
+                cout << ", " << nextNode->getNodeNumber();
                 if (markedNodes.find(nextNode) == markedNodes.end())
                 {
                     nodesQueue.push(nextNode);
                     markedNodes.insert(nextNode);
                 }
+            }
+        cout << endl;
     }
     cout << "Combined Automaton Number of Nodes: " << nodesCounter << endl;
     cout << endl << "Combined Automaton Final Nodes RE:" << endl;
