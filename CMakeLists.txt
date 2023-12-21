@@ -22,5 +22,7 @@ add_executable(
         NFADFAConverter/NFADFAConverter.cpp
         LexicalAnalyzer/LexicalAnalyzer.h
         LexicalAnalyzer/LexicalAnalyzer.cpp
+        tablePreparation/FirstCalculation.cpp
+        tablePreparation/FirstCalculation.h
 
-        )
+)
