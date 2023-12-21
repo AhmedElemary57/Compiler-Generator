@@ -1,3 +1,6 @@
+#ifndef COMPILERGENERATOR_CFG_H
+#define COMPILERGENERATOR_CFG_H
+
 #include <bits/stdc++.h>
 
 using namespace std;
@@ -10,28 +13,16 @@ private:
     // vector<CFGEntry *> followSet;            should this be a vector or other data structure?
 
 public:
-    CFGEntry(string name)
-    {
-        this->name = name;
-    }
-
-    string getName()
-    {
-        return this->name;
-    }
-
-    virtual bool isTerminal();
+    CFGEntry(string name);
+    string getName();
+    virtual bool isTerminal() = 0;
 };
 
 class Terminal : public CFGEntry
 {
 public:
-    Terminal(string name) : CFGEntry(name) {}
-
-    bool isTerminal() override
-    {
-        return true;
-    }
+    Terminal(string name);
+    bool isTerminal() override;
 };
 
 class NonTerminal : public CFGEntry
@@ -41,13 +32,9 @@ private:
 
 public:
     bool hasEpsilonProduction;
-
-    NonTerminal(string name) : CFGEntry(name) {}
-
-    bool isTerminal() override
-    {
-        return false;
-    }
+    NonTerminal(string name);
+    bool isTerminal() override;
+    void addProduction(vector<CFGEntry *> production);
 };
 
 class CFG
@@ -57,9 +44,7 @@ private:
     unordered_map<string, NonTerminal *> namesNonTerminalsMap;
 
 public:
-    CFG(vector<string> &nonTerminalsNames, unordered_map<string, NonTerminal *> namesNonTerminalsMap)
-    {
-        this->nonTerminalsNames = nonTerminalsNames;
-        this->namesNonTerminalsMap = namesNonTerminalsMap;
-    }
+    CFG(vector<string> &nonTerminalsNames, unordered_map<string, NonTerminal *> namesNonTerminalsMap);
 };
+
+#endif //COMPILERGENERATOR_CFG_H
