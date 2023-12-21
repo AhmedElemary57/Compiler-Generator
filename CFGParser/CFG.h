@@ -9,8 +9,6 @@ class CFGEntry
 {
 private:
     string name;
-    // vector<CFGEntry *> firstSet;             should this be a vector or other data structure?
-    // vector<CFGEntry *> followSet;            should this be a vector or other data structure?
 
 public:
     CFGEntry(string name);
