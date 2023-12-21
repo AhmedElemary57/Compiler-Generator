@@ -22,5 +22,8 @@ add_executable(
         NFADFAConverter/NFADFAConverter.cpp
         LexicalAnalyzer/LexicalAnalyzer.h
         LexicalAnalyzer/LexicalAnalyzer.cpp
-
+        CFGParser/CFG.h
+        CFGParser/CFG.cpp
+        CFGParser/CFGParser.h
+        CFGParser/CFGParser.cpp
         )

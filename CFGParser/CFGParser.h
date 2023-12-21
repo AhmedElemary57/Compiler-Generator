@@ -1,0 +1,8 @@
+#ifndef COMPILERGENERATOR_CFGPARSER_H
+#define COMPILERGENERATOR_CFGPARSER_H
+
+#include "CFG.h"
+
+CFG parseCFG(const string filePath);
+
+#endif //COMPILERGENERATOR_CFGPARSER_H
