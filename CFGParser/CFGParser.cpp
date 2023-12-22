@@ -53,11 +53,16 @@ void extractAddProductions(string line,
         {
             if (word == "")
             {
+                if ((line[i] == '|' || (i == line.length() - 1)) && production.size() != 0)
+                {
+                    namesNonTerminalsMap[nonTerminalName]->addProduction(production);
+                    production = vector<CFGEntry *>();
+                }
                 continue;
             }
-            else if (word == "L" && i > 0 && line[i - 1] == '\\')
+            else if (word == "L" && i > 1 && line[i - 2] == '\\')
             {
-                if ((line[i] == '|' || i == line.length()) && production.size() == 0)
+                if ((line[i] == '|' || (i == line.length() - 1)) && production.size() == 0)
                     namesNonTerminalsMap[nonTerminalName]->hasEpsilonProduction = true;
             }
             else if (isTerminal)
@@ -72,7 +77,7 @@ void extractAddProductions(string line,
                     namesNonTerminalsMap[word] = new NonTerminal(word);
                 production.push_back(namesNonTerminalsMap[word]);
             }
-            if (line[i] == '|' || i == line.length())
+            if ((line[i] == '|' || (i == line.length() - 1)) && production.size() != 0)
             {
                 namesNonTerminalsMap[nonTerminalName]->addProduction(production);
                 production = vector<CFGEntry *>();

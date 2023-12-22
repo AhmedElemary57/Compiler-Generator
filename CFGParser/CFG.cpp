@@ -17,7 +17,9 @@ bool Terminal::isTerminal()
     return true;
 }
 
-NonTerminal::NonTerminal(string name) : CFGEntry(name) {}
+NonTerminal::NonTerminal(string name) : CFGEntry(name) {
+    this->hasEpsilonProduction = false;
+}
 
 bool NonTerminal::isTerminal()
 {
