@@ -62,15 +62,24 @@ vector<CFGEntry *> string_to_vector(string s){
     return newEntries;
 }
 
-vector<string> CFG::build_string_from_production(vector<vector<CFGEntry *>> prod, vector<int> indices){
-    vector<string> re;
-    for (int i=0; i<indices.size(); i++){
-        string s = "";
-        int index = indices[i];
-        for (int j=0; j<prod[index].size(); j++){
-            s += prod[index][j]->getName();
+string CFG::get_unique_non_terminal_name(string name){
+    while(true){
+        auto it = namesNonTerminalsMap.find(name);
+        if (it == namesNonTerminalsMap.end()){
+            return name;
         }
-        re.push_back(s);
+        name += "'";
+    }
+}
+
+vector<vector<CFGEntry *>> CFG::build_string_from_production(vector<vector<CFGEntry *>> prod, vector<int> indices){
+    
+    vector<vector<CFGEntry *>> re;
+    for (int i=0; i<indices.size(); i++){
+        
+        int index = indices[i];
+        re.push_back(prod[index]);
+        
     }
     return re;
 }
@@ -189,37 +198,43 @@ void CFG::left_recursion_elimination(){
     }
 }
 
-string longestCommonPrefix(vector<string> strings) {
-    if (strings.empty()) {
-        return "";
+
+vector<CFGEntry*> findLongestCommonPrefix(vector<vector<CFGEntry*>> productions)
+{
+    vector<CFGEntry*> result;
+
+    if (productions.empty())
+        return result;
+
+    size_t minLen = INT_MAX;
+    
+    for (int i=0; i<productions.size(); i++){
+        minLen = min(minLen, productions[i].size());
     }
 
-    
-    int minLen = min_element(strings.begin(), strings.end(),
-        [](const string& a, const string& b) {
-            return a.length() < b.length();
-        })->length();
-
-    
-    for (int i = 0; i < minLen; ++i) {
-        char currentChar = strings[0][i];
-        for (int j = 1; j < strings.size(); ++j) {
-            if (strings[j][i] != currentChar) {
-                return strings[0].substr(0, i);
+    for (int i=0; i<minLen; i++){
+        CFGEntry *cfgEntry = productions[0][i];
+        bool mismatch = false;
+        for (const auto &prod : productions){
+            if(cfgEntry->getName() != prod[i]->getName()){
+                mismatch = true;
+                break;
             }
         }
+        if(mismatch){
+            break;
+        }
+        result.push_back(new CFGEntry(cfgEntry->getName()));
     }
 
-    
-    return strings[0].substr(0, minLen);
+    return result;
 }
-
 void CFG::left_factor_non_terminal(NonTerminal *A, string name){
     
     
     vector<vector<CFGEntry *>> A_prod = A->getProductions();
     
-    
+    bool leave = true;
     unordered_map<string, pair<int, vector<int>>> count;
     for (int i=0; i<A_prod.size(); i++){
         auto it = count.find(A_prod[i][0]->getName());
@@ -227,11 +242,15 @@ void CFG::left_factor_non_terminal(NonTerminal *A, string name){
             count.insert({A_prod[i][0]->getName(), {1, {i}}});
         }
         else{
+            leave = false;
             it->second.first++;
             it->second.second.push_back(i);
         }
     }
-    string new_non_terminal_name = name;
+    if(leave){
+        return;
+    }
+    string new_non_terminal_name = get_unique_non_terminal_name(name);
     vector<NonTerminal *> nonTerminals;
     vector<vector<CFGEntry*>> new_A_prod;
     for (int i=0; i<A_prod.size(); i++){
@@ -245,10 +264,11 @@ void CFG::left_factor_non_terminal(NonTerminal *A, string name){
             continue;
         }
         else{
+            new_non_terminal_name = get_unique_non_terminal_name(new_non_terminal_name);
             vector<vector<CFGEntry *>> A_dash_prod;
-            vector<string> strings = build_string_from_production(A_prod, c.second);
-            string pre = longestCommonPrefix(strings);
-            vector<CFGEntry *> newEntries = string_to_vector(pre);
+            vector<vector<CFGEntry *>> strings = build_string_from_production(A_prod, c.second);
+            vector<CFGEntry *> newEntries = findLongestCommonPrefix(strings);
+            int taken_size = newEntries.size();
             CFGEntry *cfgEntry = new CFGEntry(new_non_terminal_name);
             newEntries.push_back(cfgEntry);
             new_A_prod.push_back(newEntries);
@@ -258,16 +278,20 @@ void CFG::left_factor_non_terminal(NonTerminal *A, string name){
             nonTerminals.push_back(no);
             this->nonTerminalsNames.push_back(new_non_terminal_name);
             this->namesNonTerminalsMap.insert({new_non_terminal_name, no});
-            new_non_terminal_name += "'";
+            
             
             for (int j=0; j<strings.size(); j++){
-                string left_over = strings[j].substr(pre.size());
-                if(left_over.size() == 0){
-                    no->hasEpsilonProduction = true;
-                    continue;
+                vector<CFGEntry *> new_A_dash_entries;
+                for(int k=taken_size; k<strings[j].size(); k++){
+                    CFGEntry *cfgEntry = new CFGEntry(strings[j][k]->getName());
+                    new_A_dash_entries.push_back(cfgEntry);
                 }
-                vector<CFGEntry *> new_A_dash_entries = string_to_vector(left_over);
-                A_dash_prod.push_back(new_A_dash_entries);
+                if(new_A_dash_entries.size() == 0){
+                    no->hasEpsilonProduction = true;
+                }
+                else{
+                    A_dash_prod.push_back(new_A_dash_entries);
+                }
             }
             no->setProductions(A_dash_prod);
         }
@@ -306,6 +330,7 @@ void CFG::print_productions(){
         for (int j=0; j<A_prod.size(); j++){
             for (int k=0; k<A_prod[j].size(); k++){
                 prod += A_prod[j][k]->getName();
+                prod += " ";
             }
             if (j != A_prod.size() -1 ){
                 prod += " | ";

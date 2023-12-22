@@ -46,7 +46,8 @@ private:
     void non_immediate_left_recursion_elimination(int i, int j);
     void immediate_left_recursion_elimination(int i);
     void left_factor_non_terminal(NonTerminal *A, string name);
-    vector<string> build_string_from_production(vector<vector<CFGEntry *>> prod, vector<int> indices);
+    vector<vector<CFGEntry *>> build_string_from_production(vector<vector<CFGEntry *>> prod, vector<int> indices);
+    string get_unique_non_terminal_name(string name);
 
 public:
     CFG(vector<string> &nonTerminalsNames, unordered_map<string, NonTerminal *> namesNonTerminalsMap);
