@@ -15,13 +15,13 @@
 #include "NFADFAConverter/NFADFAConverter.h"
 
 #include "LexicalAnalyzer/LexicalAnalyzer.h"
+#include "CFGParser/CFG.h"
+#include "CFGParser/CFGParser.h"
 
 using namespace std;
 
 int Node::nodeCounter = 0;
-int main()
-{
-
+int hide(){
     // get current path of the project
     std::string current_path = __FILE__;
     current_path = current_path.substr(0, current_path.find_last_of('/')) ;
@@ -132,6 +132,14 @@ int main()
     lex->write_tokens("./sample_programs/p3_out.txt");
     cout << endl;
     lex->print_symbol_table();
+    return 0;
+}
+int main()
+{
 
+    CFG cfg = parseCFG("E:/CSED/Semester7/Compilers/Compiler-Generator/CFGRules.txt");
+    
+    cfg.print_productions();
+    
     return 0;
 }
