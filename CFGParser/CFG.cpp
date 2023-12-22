@@ -229,7 +229,7 @@ void CFG::left_factor_non_terminal(NonTerminal *A, string name){
             it->second.second.push_back(i);
         }
     }
-    string new_non_terminal_name = name + "'";
+    string new_non_terminal_name = name;
     vector<NonTerminal *> nonTerminals;
     vector<vector<CFGEntry*>> new_A_prod;
     for (int i=0; i<A_prod.size(); i++){
@@ -252,6 +252,7 @@ void CFG::left_factor_non_terminal(NonTerminal *A, string name){
             new_A_prod.push_back(newEntries);
 
             NonTerminal *no = new NonTerminal(new_non_terminal_name);
+            no->hasEpsilonProduction = false;
             nonTerminals.push_back(no);
             this->nonTerminalsNames.push_back(new_non_terminal_name);
             this->namesNonTerminalsMap.insert({new_non_terminal_name, no});
@@ -285,7 +286,7 @@ void CFG::left_factoring(){
             return;
         }
         NonTerminal *A = it->second;
-        left_factor_non_terminal(A, A->getName());
+        left_factor_non_terminal(A, A->getName() + "'");
     }
 }
 

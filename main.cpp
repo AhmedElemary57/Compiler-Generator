@@ -21,7 +21,7 @@
 using namespace std;
 
 int Node::nodeCounter = 0;
-void hide1(){
+void left_re(){
     NonTerminal *a1 = new NonTerminal("E");
     a1->hasEpsilonProduction = false;
     vector<vector<CFGEntry *>> productions1;
@@ -98,8 +98,16 @@ void hide1(){
     namesNonTerminalsMap.insert({"E", a1});
     namesNonTerminalsMap.insert({"T", a2});
     namesNonTerminalsMap.insert({"F", a3});
+
+    CFG *cfg = new CFG(nonTerminalsNames, namesNonTerminalsMap);
+    cout << "Grammar" << endl;
+    cfg->print_productions();
+    cout << "Left recursion elimination" << endl;
+    cfg->left_recursion_elimination();
+    cfg->print_productions();
 }
 int hide(){
+
 // get current path of the project
     std::string current_path = __FILE__;
     current_path = current_path.substr(0, current_path.find_last_of('/')) ;
@@ -212,10 +220,9 @@ int hide(){
     lex->print_symbol_table();
     return 0;
 }
-int main()
-{
 
-    NonTerminal *a1 = new NonTerminal("A");
+void left_factor(){
+NonTerminal *a1 = new NonTerminal("A");
     a1->hasEpsilonProduction = false;
     vector<vector<CFGEntry *>> productions1;
     vector<CFGEntry *> p1;
@@ -223,15 +230,15 @@ int main()
     CFGEntry *c1 = new CFGEntry("a");
     p1.push_back(c1);
 
-    CFGEntry *c2 = new CFGEntry("B");
+    CFGEntry *c2 = new CFGEntry("b");
     p1.push_back(c2);
 
 
     
-    CFGEntry *c3 = new CFGEntry("C");
+    CFGEntry *c3 = new CFGEntry("c");
     p1.push_back(c3);
 
-    CFGEntry *c10 = new CFGEntry("D");
+    CFGEntry *c10 = new CFGEntry("d");
     p1.push_back(c10);
 
     vector<CFGEntry *> p2;
@@ -239,31 +246,29 @@ int main()
     p2.push_back(c4);
 
     
-    CFGEntry *c5 = new CFGEntry("B");
+    CFGEntry *c5 = new CFGEntry("b");
     p2.push_back(c5);
 
-    CFGEntry *c6 = new CFGEntry("E");
+    CFGEntry *c6 = new CFGEntry("c");
     p2.push_back(c6);
 
-    CFGEntry *c11 = new CFGEntry("F");
-    p2.push_back(c11);
+    
 
     vector<CFGEntry *> p3;
     CFGEntry *c9 = new CFGEntry("a");
     p3.push_back(c9);
 
-    CFGEntry *c55 = new CFGEntry("B");
+    CFGEntry *c55 = new CFGEntry("b");
     p3.push_back(c55);
     
-    CFGEntry *c56 = new CFGEntry("C");
-    p3.push_back(c56);
-
-    CFGEntry *c57 = new CFGEntry("T");
-    p3.push_back(c57);
+    vector<CFGEntry *> p4;
+    CFGEntry *c100 = new CFGEntry("a");
+    p4.push_back(c100);
 
     productions1.push_back(p1);
     productions1.push_back(p2);
     productions1.push_back(p3);
+    productions1.push_back(p4);
   
     a1->setProductions(productions1);
     
@@ -284,10 +289,18 @@ int main()
     
     
     CFG *cfg = new CFG(nonTerminalsNames, namesNonTerminalsMap);
+    cout << "Grammar" << endl;
     cfg->print_productions();
-    cout << endl;
+    cout << "Left factored grammar" << endl;
     cfg->left_factoring();
     cfg->print_productions();
+}
 
+int main()
+{
+
+    
+    left_re();
+    left_factor();
     return 0;
 }
