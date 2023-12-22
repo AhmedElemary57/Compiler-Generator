@@ -6,7 +6,9 @@ string getTrimmed(string &input)
 {
     size_t left = input.find_first_not_of(whiteSpaces);
     size_t right = input.find_last_not_of(whiteSpaces);
-    return left == right ? "" : input.substr(left, right - left + 1);
+    if (left == string::npos || right == string::npos)
+        return "";
+    return input.substr(left, right - left + 1);
 }
 
 pair<int, string> getWord(string &input, int start)
