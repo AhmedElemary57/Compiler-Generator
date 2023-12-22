@@ -16,13 +16,99 @@
 
 #include "LexicalAnalyzer/LexicalAnalyzer.h"
 
+#include "CFGParser/CFG.h"
+
 using namespace std;
 
 int Node::nodeCounter = 0;
-int main()
-{
+void left_re(){
+    NonTerminal *a1 = new NonTerminal("E");
+    a1->hasEpsilonProduction = false;
+    vector<vector<CFGEntry *>> productions1;
+    vector<CFGEntry *> p1;
 
-    // get current path of the project
+    CFGEntry *c1 = new CFGEntry("E");
+    p1.push_back(c1);
+
+    CFGEntry *c2 = new CFGEntry("+");
+    p1.push_back(c2);
+
+    CFGEntry *c3 = new CFGEntry("T");
+    p1.push_back(c3);
+
+    vector<CFGEntry *> p2;
+    CFGEntry *c8 = new CFGEntry("T");
+    p2.push_back(c8);
+    productions1.push_back(p1);
+    productions1.push_back(p2);
+    a1->setProductions(productions1);
+    
+    NonTerminal *a2 = new NonTerminal("T");
+    a2->hasEpsilonProduction = false;
+    vector<vector<CFGEntry *>> productions2;
+    vector<CFGEntry *> p3;
+
+    CFGEntry *c4 = new CFGEntry("T");
+    p3.push_back(c4);
+
+    CFGEntry *c5 = new CFGEntry("*");
+    p3.push_back(c5);
+
+    CFGEntry *c6 = new CFGEntry("F");
+    p3.push_back(c6);
+
+    vector<CFGEntry *> p4;
+    CFGEntry *c7 = new CFGEntry("F");
+    p4.push_back(c7);
+    productions2.push_back(p3);
+    productions2.push_back(p4);
+    a2->setProductions(productions2);
+
+    NonTerminal *a3 = new NonTerminal("F");
+    a3->hasEpsilonProduction = false;
+
+    vector<vector<CFGEntry *>> productions3;
+    vector<CFGEntry *> p5;
+
+    CFGEntry *c9 = new CFGEntry("(");
+    p5.push_back(c9);
+
+    CFGEntry *c10 = new CFGEntry("E");
+    p5.push_back(c10);
+
+    CFGEntry *c11 = new CFGEntry(")");
+    p5.push_back(c11);
+
+    vector<CFGEntry *> p6;
+    CFGEntry *c12 = new CFGEntry("id");
+    p6.push_back(c12);
+    productions3.push_back(p5);
+    productions3.push_back(p6);
+
+    a3->setProductions(productions3);
+
+
+    vector<string> nonTerminalsNames;
+    unordered_map<string, NonTerminal *> namesNonTerminalsMap;
+
+    nonTerminalsNames.push_back("E");
+    nonTerminalsNames.push_back("T");
+    nonTerminalsNames.push_back("F");
+
+    namesNonTerminalsMap.insert({"E", a1});
+    namesNonTerminalsMap.insert({"T", a2});
+    namesNonTerminalsMap.insert({"F", a3});
+
+    CFG *cfg = new CFG(nonTerminalsNames, namesNonTerminalsMap);
+    cout << "Grammar" << endl;
+    cfg->print_productions();
+    cout << "Left recursion elimination" << endl;
+    cfg->left_recursion_elimination();
+    cfg->print_productions();
+}
+int hide(){
+
+// get current path of the project
     std::string current_path = __FILE__;
     current_path = current_path.substr(0, current_path.find_last_of('/')) ;
 
@@ -132,6 +218,89 @@ int main()
     lex->write_tokens("./sample_programs/p3_out.txt");
     cout << endl;
     lex->print_symbol_table();
+    return 0;
+}
 
+void left_factor(){
+NonTerminal *a1 = new NonTerminal("A");
+    a1->hasEpsilonProduction = false;
+    vector<vector<CFGEntry *>> productions1;
+    vector<CFGEntry *> p1;
+
+    CFGEntry *c1 = new CFGEntry("a");
+    p1.push_back(c1);
+
+    CFGEntry *c2 = new CFGEntry("b");
+    p1.push_back(c2);
+
+
+    
+    CFGEntry *c3 = new CFGEntry("c");
+    p1.push_back(c3);
+
+    CFGEntry *c10 = new CFGEntry("d");
+    p1.push_back(c10);
+
+    vector<CFGEntry *> p2;
+    CFGEntry *c4 = new CFGEntry("a");
+    p2.push_back(c4);
+
+    
+    CFGEntry *c5 = new CFGEntry("b");
+    p2.push_back(c5);
+
+    CFGEntry *c6 = new CFGEntry("c");
+    p2.push_back(c6);
+
+    
+
+    vector<CFGEntry *> p3;
+    CFGEntry *c9 = new CFGEntry("a");
+    p3.push_back(c9);
+
+    CFGEntry *c55 = new CFGEntry("b");
+    p3.push_back(c55);
+    
+    vector<CFGEntry *> p4;
+    CFGEntry *c100 = new CFGEntry("a");
+    p4.push_back(c100);
+
+    productions1.push_back(p1);
+    productions1.push_back(p2);
+    productions1.push_back(p3);
+    productions1.push_back(p4);
+  
+    a1->setProductions(productions1);
+    
+    
+
+    
+
+
+    vector<string> nonTerminalsNames;
+    unordered_map<string, NonTerminal *> namesNonTerminalsMap;
+
+    nonTerminalsNames.push_back("A");
+    
+    
+
+    namesNonTerminalsMap.insert({"A", a1});
+  
+    
+    
+    CFG *cfg = new CFG(nonTerminalsNames, namesNonTerminalsMap);
+    cout << "Grammar" << endl;
+    cfg->print_productions();
+    cout << "Left factored grammar" << endl;
+    cfg->left_factoring();
+    cfg->print_productions();
+}
+
+int main()
+{
+
+    
+    left_re();
+    left_factor();
     return 0;
 }
