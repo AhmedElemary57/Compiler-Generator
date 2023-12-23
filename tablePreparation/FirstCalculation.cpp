@@ -15,12 +15,12 @@ void calculateFirstToCFG(CFG &cfg) {
         if (namesNonTerminalsMap[nonTerminalName]->allFirstComputed()) {
             continue;
         }
-
-        calculateFirstToNonTerminal(namesNonTerminalsMap[nonTerminalName], visited);
+        cout<<nonTerminalName<<endl;
+        calculateFirstToNonTerminal(namesNonTerminalsMap[nonTerminalName], visited, namesNonTerminalsMap);
     }
 }
 
-void calculateFirstToNonTerminal(NonTerminal *nonTerminal, unordered_map<string, bool> visited) {
+void calculateFirstToNonTerminal(NonTerminal *nonTerminal, unordered_map<string, bool> visited, unordered_map<string, NonTerminal *> namesNonTerminalsMap) {
     if(visited[nonTerminal->getName()] && !nonTerminal->allFirstComputed()){
         cerr << "Left Recursion Detected" << endl;
         exit(1);
@@ -38,14 +38,15 @@ void calculateFirstToNonTerminal(NonTerminal *nonTerminal, unordered_map<string,
                 break;
             }
             else{
-                set<Terminal*> firstSetOfEntry = ((NonTerminal*)entry)->getAllFirstSet();
-                if(firstSetOfEntry.empty()){
-                    calculateFirstToNonTerminal((NonTerminal*)entry, visited);
-                    firstSetOfEntry = ((NonTerminal*)entry)->getAllFirstSet();
+                NonTerminal *curNonTerminal = namesNonTerminalsMap[entry->getName()];
+                set<Terminal*> firstSetOfEntry = curNonTerminal->getAllFirstSet();
+                if(!curNonTerminal->allFirstComputed()){
+                    calculateFirstToNonTerminal(curNonTerminal, visited, namesNonTerminalsMap);
+                    firstSetOfEntry = curNonTerminal->getAllFirstSet();
                 }
 
                 firstSet.insert(firstSetOfEntry.begin(), firstSetOfEntry.end());
-                if(!((NonTerminal*)entry)->hasEpsilon()){
+                if(!curNonTerminal->hasEpsilon()){
                     break;
                 }
                 if(i == production.size() - 1){

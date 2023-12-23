@@ -163,7 +163,7 @@ int Node::nodeCounter = 0;
 //    return 0;
 //}
 int main(){
-    CFG cfg = parseCFG("/home/mkhaled/Desktop/Compiler-Generator/CFGRules.txt");
+    CFG cfg = parseCFG("/home/elsaber/compilers/Compiler-Generator/CFGRules.txt");
     cfg.left_recursion_elimination();
     cfg.left_factoring();
     cfg.print_productions();
