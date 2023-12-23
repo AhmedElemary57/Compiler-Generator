@@ -106,7 +106,8 @@ public:
     CFG(vector<string> &nonTerminalsNames, unordered_map<string, NonTerminal *> namesNonTerminalsMap);
 
     string get_unique_non_terminal_name(string name);
-
+    vector<string> get_non_terminals_names();
+    unordered_map<string, NonTerminal *> get_names_non_terminals_map();
     vector<vector<CFGEntry *>> build_string_from_production(vector<vector<CFGEntry *>> prod, vector<int> indices);
 
     void non_immediate_left_recursion_elimination(int i, int j);

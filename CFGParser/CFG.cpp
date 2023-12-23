@@ -342,3 +342,10 @@ void CFG::print_productions(){
     }
     
 }
+
+unordered_map<string, NonTerminal *> CFG::get_names_non_terminals_map() {
+    return this->namesNonTerminalsMap;
+}
+vector<string> CFG::get_non_terminals_names() {
+    return this->nonTerminalsNames;
+}

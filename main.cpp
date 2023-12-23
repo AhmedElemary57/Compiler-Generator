@@ -159,22 +159,25 @@ int Node::nodeCounter = 0;
 //    cfg.left_factoring();
 //    cout << "Grammar after eliminating left factoring" << endl;
 //    cfg.print_productions();
+//    calculateFirstToCFG(cfg);
 //    return 0;
 //}
 int main(){
     NonTerminal nt_A = *new NonTerminal("A");
     NonTerminal nt_b = *new NonTerminal("B");
 
-    vector<CFGEntry *> production;
-    production.push_back(&nt_A);
-    production.push_back(&nt_b);
-
+    vector<CFGEntry *> production_A;
+    vector<CFGEntry *> production_B;
+    production_A.push_back(&nt_b);
+    nt_b.setHasEpsilonProduction(true);
     Terminal t_a = *new Terminal("a");
     Terminal t_b = *new Terminal("b");
-    production.push_back(&t_a);
-    production.push_back(&t_b);
-    nt_A.addProduction(production);
+    production_A.push_back(&t_a);
+    production_B.push_back(&t_b);
+    nt_A.addProduction(production_A);
+    nt_b.addProduction(production_B);
     vector<string> nonTerminalsNames;
+    production_B.push_back(&t_b);
     unordered_map<string, NonTerminal *> namesNonTerminalsMap;
     nonTerminalsNames.push_back("A");
     namesNonTerminalsMap["A"] = &nt_A;
@@ -183,6 +186,6 @@ int main(){
 
 
     CFG cfg = *new CFG(nonTerminalsNames, namesNonTerminalsMap);
-    calculateFirstToCFG(make_pair(nonTerminalsNames, namesNonTerminalsMap));
+    calculateFirstToCFG(cfg);
     nt_A.printFirstSet();
 }

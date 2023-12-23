@@ -3,15 +3,20 @@
 //
 
 #include "FirstCalculation.h"
-void calculateFirstToCFG(pair<vector<string>, unordered_map<string, NonTerminal *>> nonTerminals) {
+void calculateFirstToCFG(CFG &cfg) {
 
     unordered_map<string, bool> visited;
-    for (auto &nonTerminalName: nonTerminals.first) {
-        if (nonTerminals.second[nonTerminalName]->allFirstComputed()) {
+    vector<string> nonTerminals = cfg.get_non_terminals_names();
+    unordered_map<string, NonTerminal *> namesNonTerminalsMap = cfg.get_names_non_terminals_map();
+    for (auto &nonTerminalName: nonTerminals) {
+        visited[nonTerminalName] = false;
+    }
+    for (auto &nonTerminalName: nonTerminals) {
+        if (namesNonTerminalsMap[nonTerminalName]->allFirstComputed()) {
             continue;
         }
 
-        calculateFirstToNonTerminal(nonTerminals.second[nonTerminalName], visited);
+        calculateFirstToNonTerminal(namesNonTerminalsMap[nonTerminalName], visited);
     }
 }
 
