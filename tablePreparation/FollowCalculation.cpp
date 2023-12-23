@@ -13,13 +13,14 @@ void initializeFollowSetForStartSymbol(const vector<string>& nonTerminalsNames,
 
 void updateFollowSetForLastEntry(const string &nonTerminalName, NonTerminal *currentNonTerminal,
                                  const vector<string> &nonTerminalsNames,
-                                 unordered_map<string, NonTerminal *> &nonTerminals) {
+                                 unordered_map<string, NonTerminal *> &nonTerminals, unordered_map<string, bool> &computed) {
     set<Terminal*> nonTerminalsInProduction = currentNonTerminal->getFollowSet();
 
     // If follow set is empty, calculate it
     if (nonTerminalsInProduction.empty()) {
-        calculateFollowToNonTerminal(nonTerminalsNames, currentNonTerminal->getName(), nonTerminals);
+        calculateFollowToNonTerminal(nonTerminalsNames, currentNonTerminal->getName(), nonTerminals, computed);
         nonTerminalsInProduction = currentNonTerminal->getFollowSet();
+        computed[currentNonTerminal->getName()] = true;
     }
 
     nonTerminals[nonTerminalName]->addSetToFollowSet(nonTerminalsInProduction);
@@ -50,12 +51,13 @@ set<Terminal*> removeEpsilonFromFirstSet(const set<Terminal*>& firstSetOfNextEnt
 
 void updateFollowSetForNonTerminalInProduction(NonTerminal *currentNonTerminal, const vector<string> &nonTerminalsNames,
                                                const string &nonTerminalName, const vector<CFGEntry *> &production,
-                                               int currentIndex, unordered_map<string, NonTerminal *> &nonTerminals) {
+                                               int currentIndex, unordered_map<string, NonTerminal *> &nonTerminals,
+                                               unordered_map<string, bool> &computed) {
 
     if (currentIndex == production.size() - 1) {
         // Rule 3: A → αB
         if (nonTerminalName == production[currentIndex]->getName() && nonTerminalName != currentNonTerminal->getName()) {
-            updateFollowSetForLastEntry(nonTerminalName, currentNonTerminal, nonTerminalsNames, nonTerminals);
+            updateFollowSetForLastEntry(nonTerminalName, currentNonTerminal, nonTerminalsNames, nonTerminals, computed);
         }
     } else if (nonTerminalName == production[currentIndex]->getName()) {
         if (production[currentIndex + 1]->isTerminal()) {
@@ -74,13 +76,14 @@ void updateFollowSetForNonTerminalInProduction(NonTerminal *currentNonTerminal, 
             if (checkForEpsilonInFirstSet(firstSetOfNextEntry)) {
 
                 updateFollowSetForNonTerminalInProduction(currentNonTerminal, nonTerminalsNames, nonTerminalName,
-                                                          production, currentIndex + 1, nonTerminals);
+                                                          production, currentIndex + 1, nonTerminals, computed);
                 set<Terminal*> followSetOfNextEntry = nonTerminals[production[currentIndex + 1]->getName()]->getFollowSet();
 
                 // If follow set is empty, calculate it
                 if (followSetOfNextEntry.empty()) {
-                    calculateFollowToNonTerminal(nonTerminalsNames, production[currentIndex + 1]->getName(), nonTerminals);
+                    calculateFollowToNonTerminal(nonTerminalsNames, production[currentIndex + 1]->getName(), nonTerminals, computed);
                     followSetOfNextEntry = nonTerminals[production[currentIndex + 1]->getName()]->getFollowSet();
+                    computed[production[currentIndex + 1]->getName()] = true;
                 }
 
                 nonTerminals[nonTerminalName]->addSetToFollowSet(followSetOfNextEntry);
@@ -98,7 +101,8 @@ void updateFollowSetForNonTerminalInProduction(NonTerminal *currentNonTerminal, 
 // Calculate follow set for a specific non-terminal
 void calculateFollowToNonTerminal(const vector<string>& nonTerminalsNames,
                                   const string& nonTerminalName,
-                                  unordered_map<string, NonTerminal*> nonTerminals) {
+                                  unordered_map<string, NonTerminal*> nonTerminals,
+                                  unordered_map<string, bool>& computed) {
     for (auto& nonTerminal : nonTerminals) {
         // Get the production of the non-terminal
         vector<vector<CFGEntry*>> productions = nonTerminal.second->getProductions();
@@ -106,7 +110,7 @@ void calculateFollowToNonTerminal(const vector<string>& nonTerminalsNames,
             for (int i = 0; i < production.size(); i++) {
                 auto& entry = production[i];
                 if (!entry->isTerminal()) {
-                    updateFollowSetForNonTerminalInProduction(nonTerminal.second, nonTerminalsNames, nonTerminalName, production, i, nonTerminals);
+                    updateFollowSetForNonTerminalInProduction(nonTerminal.second, nonTerminalsNames, nonTerminalName, production, i, nonTerminals, computed);
                 }
             }
         }
@@ -117,8 +121,16 @@ void calculateFollowToNonTerminal(const vector<string>& nonTerminalsNames,
 void calculateFollowToNonTerminals(const vector<string>& nonTerminalsNames,
                                    unordered_map<string, NonTerminal*> nonTerminals) {
     initializeFollowSetForStartSymbol(nonTerminalsNames, nonTerminals);
-
+    unordered_map<string, bool> computed;
+    // Initialize the computed map
     for (auto& nonTerminalName : nonTerminalsNames) {
-        calculateFollowToNonTerminal(nonTerminalsNames, nonTerminalName, nonTerminals);
+        computed[nonTerminalName] = false;
+    }
+    for (auto& nonTerminalName : nonTerminalsNames) {
+        // If the follow set is already calculated
+        if (computed[nonTerminalName]) {
+            continue;
+        }
+        calculateFollowToNonTerminal(nonTerminalsNames, nonTerminalName, nonTerminals, computed);
     }
 }
