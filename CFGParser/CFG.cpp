@@ -183,7 +183,7 @@ void CFG::immediate_left_recursion_elimination(int i){
     NonTerminal *no = new NonTerminal(new_non_terminal);
     this->namesNonTerminalsMap.insert({new_non_terminal, no});
     no->setProductions(new_A_dash_prod);
-    no->hasEpsilonProduction = true;
+    no->setHasEpsilonProduction(true) ;
     A->setProductions(new_A_prod);
 
 }
@@ -197,7 +197,6 @@ void CFG::left_recursion_elimination(){
         immediate_left_recursion_elimination(i);
     }
 }
-
 
 vector<CFGEntry*> findLongestCommonPrefix(vector<vector<CFGEntry*>> productions)
 {
@@ -274,7 +273,7 @@ void CFG::left_factor_non_terminal(NonTerminal *A, string name){
             new_A_prod.push_back(newEntries);
 
             NonTerminal *no = new NonTerminal(new_non_terminal_name);
-            no->hasEpsilonProduction = false;
+            no->setHasEpsilonProduction(false);
             nonTerminals.push_back(no);
             this->nonTerminalsNames.push_back(new_non_terminal_name);
             this->namesNonTerminalsMap.insert({new_non_terminal_name, no});
@@ -287,7 +286,7 @@ void CFG::left_factor_non_terminal(NonTerminal *A, string name){
                     new_A_dash_entries.push_back(cfgEntry);
                 }
                 if(new_A_dash_entries.size() == 0){
-                    no->hasEpsilonProduction = true;
+                    no->setHasEpsilonProduction(true);
                 }
                 else{
                     A_dash_prod.push_back(new_A_dash_entries);
@@ -336,7 +335,7 @@ void CFG::print_productions(){
                 prod += " | ";
             }
         }
-        if(A->hasEpsilonProduction){
+        if(A->hasEpsilon()){
             prod += " | epsilon";
         }
         cout << prod << endl;
