@@ -65,7 +65,7 @@ void extractAddProductions(string line,
             else if (word == "L" && i > 1 && line[i - 2] == '\\')
             {
                 if ((line[i] == '|' || (i == line.length() - 1)) && production.size() == 0)
-                    namesNonTerminalsMap[nonTerminalName]->hasEpsilonProduction = true;
+                    namesNonTerminalsMap[nonTerminalName]->setHasEpsilonProduction(true);
             }
             else if (isTerminal)
             {
