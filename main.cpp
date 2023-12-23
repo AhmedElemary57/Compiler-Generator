@@ -163,29 +163,17 @@ int Node::nodeCounter = 0;
 //    return 0;
 //}
 int main(){
-    NonTerminal nt_A = *new NonTerminal("A");
-    NonTerminal nt_b = *new NonTerminal("B");
-
-    vector<CFGEntry *> production_A;
-    vector<CFGEntry *> production_B;
-    production_A.push_back(&nt_b);
-    nt_b.setHasEpsilonProduction(true);
-    Terminal t_a = *new Terminal("a");
-    Terminal t_b = *new Terminal("b");
-    production_A.push_back(&t_a);
-    production_B.push_back(&t_b);
-    nt_A.addProduction(production_A);
-    nt_b.addProduction(production_B);
-    vector<string> nonTerminalsNames;
-    production_B.push_back(&t_b);
-    unordered_map<string, NonTerminal *> namesNonTerminalsMap;
-    nonTerminalsNames.push_back("A");
-    namesNonTerminalsMap["A"] = &nt_A;
-    nonTerminalsNames.push_back("B");
-    namesNonTerminalsMap["B"] = &nt_b;
-
-
-    CFG cfg = *new CFG(nonTerminalsNames, namesNonTerminalsMap);
+    CFG cfg = parseCFG("/home/mkhaled/Desktop/Compiler-Generator/CFGRules.txt");
+    cfg.left_recursion_elimination();
+    cfg.left_factoring();
+    cfg.print_productions();
     calculateFirstToCFG(cfg);
-    nt_A.printFirstSet();
+    auto namesNonTerminalsMap = cfg.get_names_non_terminals_map();
+    auto nonTerminalsNames = cfg.get_non_terminals_names();
+    for (auto element : nonTerminalsNames)
+    {
+        cout << element << ": " << endl;
+        namesNonTerminalsMap[element]->printFirstSet();
+        cout << endl;
+    }
 }
