@@ -20,6 +20,7 @@
 #include "CFGParser/CFGParser.h"
 
 #include "tablePreparation/FirstCalculation.h"
+#include "tablePreparation/FollowCalculation.h"
 
 using namespace std;
 
@@ -162,27 +163,107 @@ int Node::nodeCounter = 0;
 //    return 0;
 //}
 int main(){
-    NonTerminal nt_A = *new NonTerminal("A");
-    NonTerminal nt_b = *new NonTerminal("B");
+
+    ////E  TE’
+
+    //T  FT’
+    //T’  *FT’ | 
+    //F  (E) | id*****
+    /// **///
+    NonTerminal nt_E = *new NonTerminal("E");
+    NonTerminal nt_E_ = *new NonTerminal("E'");
+    NonTerminal nt_T = *new NonTerminal("T");
+    NonTerminal nt_T_ = *new NonTerminal("T'");
+    NonTerminal nt_F = *new NonTerminal("F");
 
     vector<CFGEntry *> production;
-    production.push_back(&nt_A);
-    production.push_back(&nt_b);
+    production.push_back(&nt_T);
+    production.push_back(&nt_E_);
+    nt_E.addProduction(production);
 
-    Terminal t_a = *new Terminal("a");
-    Terminal t_b = *new Terminal("b");
-    production.push_back(&t_a);
-    production.push_back(&t_b);
-    nt_A.addProduction(production);
+    //E’  +TE’ | 
+    production.clear();
+    production.push_back(new Terminal("+"));
+    production.push_back(&nt_T);
+    production.push_back(&nt_E_);
+    nt_E_.addProduction(production);
+
+    production.clear();
+    production.push_back(new Terminal("\\L"));
+    nt_E_.addProduction(production);
+
+    //T  FT’
+    production.clear();
+    production.push_back(&nt_F);
+    production.push_back(&nt_T_);
+    nt_T.addProduction(production);
+
+    //T’  *FT’ | 
+    production.clear();
+    production.push_back(new Terminal("*"));
+    production.push_back(&nt_F);
+    production.push_back(&nt_T_);
+    nt_T_.addProduction(production);
+
+    production.clear();
+    production.push_back(new Terminal("\\L"));
+    nt_T_.addProduction(production);
+
+    //F  (E) | id
+    production.clear();
+    production.push_back(new Terminal("("));
+    production.push_back(&nt_E);
+    production.push_back(new Terminal(")"));
+    nt_F.addProduction(production);
+
+    production.clear();
+    production.push_back(new Terminal("id"));
+    nt_F.addProduction(production);
+
     vector<string> nonTerminalsNames;
+    nonTerminalsNames.push_back(nt_E.getName());
+    nonTerminalsNames.push_back(nt_E_.getName());
+    nonTerminalsNames.push_back(nt_T.getName());
+    nonTerminalsNames.push_back(nt_T_.getName());
+    nonTerminalsNames.push_back(nt_F.getName());
+
     unordered_map<string, NonTerminal *> namesNonTerminalsMap;
-    nonTerminalsNames.push_back("A");
-    namesNonTerminalsMap["A"] = &nt_A;
-    nonTerminalsNames.push_back("B");
-    namesNonTerminalsMap["B"] = &nt_b;
+    namesNonTerminalsMap[nt_E.getName()] = &nt_E;
+    namesNonTerminalsMap[nt_E_.getName()] = &nt_E_;
+    namesNonTerminalsMap[nt_T.getName()] = &nt_T;
+    namesNonTerminalsMap[nt_T_.getName()] = &nt_T_;
+    namesNonTerminalsMap[nt_F.getName()] = &nt_F;
+
+
 
 
     CFG cfg = *new CFG(nonTerminalsNames, namesNonTerminalsMap);
+    cfg.left_recursion_elimination();
+    cfg.left_factoring();
+    cfg.print_productions();
+
     calculateFirstToCFG(make_pair(nonTerminalsNames, namesNonTerminalsMap));
-    nt_A.printFirstSet();
+
+
+    calculateFollowToNonTerminals(nonTerminalsNames, namesNonTerminalsMap);
+
+
+    // print first and follow
+    cout << "First and Follow sets: \n";
+    for (auto & i : nonTerminalsNames) {
+        // print first
+        cout << "First(" << i << ") = {";
+        for (auto & j : namesNonTerminalsMap[i]->getAllFirstSet()) {
+            cout << j->getName() << ", ";
+        }
+        cout << "}\t\t";
+
+        // print follow
+        cout << "Follow(" << i << ") = {";
+        for (auto & j : namesNonTerminalsMap[i]->getFollowSet()) {
+            cout << j->getName() << ", ";
+        }
+        cout << "}\n";
+
+    }
 }

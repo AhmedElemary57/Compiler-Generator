@@ -45,6 +45,24 @@ vector<vector<CFGEntry *>> NonTerminal::getProductions()
 {
     return this->productions;
 }
+
+void NonTerminal::addTerminalToFollowSet(Terminal *terminal) {
+    this->followSet.insert(terminal);
+}
+
+void NonTerminal::addSetToFollowSet(set<Terminal *> followSet) {
+    this->followSet.insert(followSet.begin(), followSet.end());
+}
+
+void NonTerminal::setFollowSet(set<Terminal *> followSet) {
+    this->followSet = followSet;
+
+}
+
+set<Terminal *> NonTerminal::getFollowSet() {
+    return this->followSet;
+}
+
 CFG::CFG(vector<string> &nonTerminalsNames, unordered_map<string, NonTerminal *> namesNonTerminalsMap)
 {
     this->nonTerminalsNames = nonTerminalsNames;
@@ -342,3 +360,13 @@ void CFG::print_productions(){
     }
     
 }
+
+vector<string> CFG::get_non_terminals_names() {
+    return this->nonTerminalsNames;
+}
+
+unordered_map<string, NonTerminal *> CFG::get_non_terminals_map() {
+    return this->namesNonTerminalsMap;
+}
+
+

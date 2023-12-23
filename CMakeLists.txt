@@ -28,4 +28,6 @@ add_executable(
         CFGParser/CFGParser.cpp
         tablePreparation/FirstCalculation.h
         tablePreparation/FirstCalculation.cpp
+        tablePreparation/FollowCalculation.h
+        tablePreparation/FollowCalculation.cpp
         )

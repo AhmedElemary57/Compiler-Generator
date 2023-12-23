@@ -33,10 +33,10 @@ class NonTerminal : public CFGEntry
 private:
     vector<vector<CFGEntry *>> productions;
     vector<set<Terminal*>> firstOfProductions;
+    set<Terminal*> followSet;
     bool hasEpsilonProduction;
     bool hasEpsilonProductionInFirst;
 public:
-
     NonTerminal(string name);
     void addProduction(vector<CFGEntry *> production);
     bool isTerminal() override;
@@ -89,10 +89,22 @@ public:
         }
         cout << endl;
     }
+    void printFollowSet()
+    {
+        cout << "Follow Set of " << this->getName() << " is: ";
+        cout << "{";
+        for (const auto& followEntry: this->followSet) {
+            cout << followEntry->getName() << ", ";
+        }
+        cout << "}, ";
+        cout << endl;
+    }
 
     void setProductions(vector<vector<CFGEntry *>> productions);
-
-
+    void addTerminalToFollowSet(Terminal* terminal);
+    void addSetToFollowSet(set<Terminal*> followSet);
+    void setFollowSet(set<Terminal*> followSet);
+    set<Terminal*> getFollowSet();
 
 };
 
@@ -108,6 +120,12 @@ public:
     string get_unique_non_terminal_name(string name);
 
     vector<vector<CFGEntry *>> build_string_from_production(vector<vector<CFGEntry *>> prod, vector<int> indices);
+
+    // get non terminals names
+    vector<string> get_non_terminals_names();
+
+    // get non terminals map
+    unordered_map<string, NonTerminal *> get_non_terminals_map();
 
     void non_immediate_left_recursion_elimination(int i, int j);
 
