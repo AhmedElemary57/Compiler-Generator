@@ -33,10 +33,10 @@ class NonTerminal : public CFGEntry
 private:
     vector<vector<CFGEntry *>> productions;
     vector<set<Terminal*>> firstOfProductions;
+    set<Terminal*> followSet;
     bool hasEpsilonProduction;
     bool hasEpsilonProductionInFirst;
 public:
-
     NonTerminal(string name);
     void addProduction(vector<CFGEntry *> production);
     bool isTerminal() override;
@@ -54,7 +54,7 @@ public:
     void setHasEpsilonProduction(bool hasEpsilonProduction)
     {
         this->hasEpsilonProduction = hasEpsilonProduction;
-        hasEpsilonProductionInFirst = hasEpsilonProduction;
+        this->hasEpsilonProductionInFirst = hasEpsilonProduction;
     }
 
     void setHasEpsilonProductionInFirst()
@@ -89,10 +89,22 @@ public:
         }
         cout << endl;
     }
+    void printFollowSet()
+    {
+        cout << "Follow Set of " << this->getName() << " is: ";
+        cout << "{";
+        for (const auto& followEntry: this->followSet) {
+            cout << followEntry->getName() << ", ";
+        }
+        cout << "}, ";
+        cout << endl;
+    }
 
     void setProductions(vector<vector<CFGEntry *>> productions);
-
-
+    void addTerminalToFollowSet(Terminal* terminal);
+    void addSetToFollowSet(set<Terminal*> followSet);
+    void setFollowSet(set<Terminal*> followSet);
+    set<Terminal*> getFollowSet();
 
 };
 
@@ -101,14 +113,22 @@ class CFG
 private:
     vector<string> nonTerminalsNames;
     unordered_map<string, NonTerminal *> namesNonTerminalsMap;
+    CFGEntry* create_entry(string name, bool terminal);
+    vector<CFGEntry*> findLongestCommonPrefix(vector<vector<CFGEntry*>> productions);
 
 public:
     CFG(vector<string> &nonTerminalsNames, unordered_map<string, NonTerminal *> namesNonTerminalsMap);
 
     string get_unique_non_terminal_name(string name);
-    vector<string> get_non_terminals_names();
-    unordered_map<string, NonTerminal *> get_names_non_terminals_map();
+    
+    
     vector<vector<CFGEntry *>> build_string_from_production(vector<vector<CFGEntry *>> prod, vector<int> indices);
+
+    // get non terminals names
+    vector<string> get_non_terminals_names();
+
+    // get non terminals map
+    unordered_map<string, NonTerminal *> get_non_terminals_map();
 
     void non_immediate_left_recursion_elimination(int i, int j);
 

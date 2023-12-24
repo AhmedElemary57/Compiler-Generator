@@ -8,7 +8,8 @@ using namespace std;
 #ifndef COMPILERGENERATOR_FIRSTCALCULATION_H
 #define COMPILERGENERATOR_FIRSTCALCULATION_H
 
-void calculateFirstToCFG(CFG &cfg) ;
-void calculateFirstToNonTerminal(NonTerminal *nonTerminal, unordered_map<string, bool> visited, unordered_map<string, NonTerminal *> namesNonTerminalsMap);
+void calculateFirstToCFG(pair<vector<string>, unordered_map<string, NonTerminal *>> nonTerminals);
+void calculateFirstToNonTerminal(NonTerminal* nonTerminal,  unordered_map<string, bool> visited, unordered_map<string, NonTerminal *> nonTerminals);
+
 
 #endif //COMPILERGENERATOR_FIRSTCALCULATION_H

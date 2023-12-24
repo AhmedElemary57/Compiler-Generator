@@ -45,17 +45,41 @@ vector<vector<CFGEntry *>> NonTerminal::getProductions()
 {
     return this->productions;
 }
+
+void NonTerminal::addTerminalToFollowSet(Terminal *terminal) {
+    this->followSet.insert(terminal);
+}
+
+void NonTerminal::addSetToFollowSet(set<Terminal *> followSet) {
+    this->followSet.insert(followSet.begin(), followSet.end());
+}
+
+void NonTerminal::setFollowSet(set<Terminal *> followSet) {
+    this->followSet = followSet;
+
+}
+
+set<Terminal *> NonTerminal::getFollowSet() {
+    return this->followSet;
+}
+
 CFG::CFG(vector<string> &nonTerminalsNames, unordered_map<string, NonTerminal *> namesNonTerminalsMap)
 {
     this->nonTerminalsNames = nonTerminalsNames;
     this->namesNonTerminalsMap = namesNonTerminalsMap;
 }
 
-CFGEntry* create_entry(string name, bool terminal){
+CFGEntry* CFG::create_entry(string name, bool terminal){
     if(terminal){
-        return new Terminal(name);
+        Terminal *terminal = new Terminal(name);
+        return terminal;
     }
-    return new NonTerminal(name);
+    NonTerminal *no = new NonTerminal(name);
+    NonTerminal *it = this->namesNonTerminalsMap[name];
+    no->setProductions(it->getProductions());
+    no->setHasEpsilonProduction(it->hasEpsilon());
+    this->namesNonTerminalsMap[name] = no;
+    return no;
 }
 
 
@@ -164,27 +188,39 @@ void CFG::immediate_left_recursion_elimination(int i){
     string new_non_terminal = A->getName() + "'";
     vector<vector<CFGEntry *>> new_A_prod;
     vector<vector<CFGEntry *>> new_A_dash_prod;
+
+    this->nonTerminalsNames.push_back(new_non_terminal);
+    NonTerminal *no = new NonTerminal(new_non_terminal);
+    this->namesNonTerminalsMap.insert({new_non_terminal, no});
+    vector<CFGEntry *> new_A_dash_entries;
+    new_A_dash_entries.push_back(new Terminal("\\L"));
+    new_A_dash_prod.push_back(new_A_dash_entries);
+    no->setProductions(new_A_dash_prod);
+    no->setHasEpsilonProduction(true) ;
+    CFGEntry* cfgEntry = create_entry(new_non_terminal, false);
     if(betas.size() == 0){
-        new_A_prod.push_back({create_entry(new_non_terminal, false)});
+        
+        new_A_prod.push_back({cfgEntry});
     }
 
     for (int k=0; k<betas.size(); k++){
-        CFGEntry* cfgEntry = create_entry(new_non_terminal, false);
+        
         betas[k].push_back(cfgEntry);
         new_A_prod.push_back(betas[k]);
     }
 
     
     for (int k=0; k<alphas.size(); k++){
-        CFGEntry* cfgEntry = create_entry(new_non_terminal, false);
+        
         alphas[k].push_back(cfgEntry);
         new_A_dash_prod.push_back(alphas[k]);
     }
-    this->nonTerminalsNames.push_back(new_non_terminal);
-    NonTerminal *no = new NonTerminal(new_non_terminal);
-    this->namesNonTerminalsMap.insert({new_non_terminal, no});
+    
+    
+    no = (NonTerminal*) cfgEntry;
     no->setProductions(new_A_dash_prod);
-    no->setHasEpsilonProduction(true) ;
+    
+    A = this->namesNonTerminalsMap[A->getName()];
     A->setProductions(new_A_prod);
 
 }
@@ -199,7 +235,7 @@ void CFG::left_recursion_elimination(){
     }
 }
 
-vector<CFGEntry*> findLongestCommonPrefix(vector<vector<CFGEntry*>> productions)
+vector<CFGEntry*> CFG::findLongestCommonPrefix(vector<vector<CFGEntry*>> productions)
 {
     vector<CFGEntry*> result;
 
@@ -224,7 +260,7 @@ vector<CFGEntry*> findLongestCommonPrefix(vector<vector<CFGEntry*>> productions)
         if(mismatch){
             break;
         }
-        result.push_back(create_entry(cfgEntry->getName(), cfgEntry->isTerminal()));
+        result.push_back(this->create_entry(cfgEntry->getName(), cfgEntry->isTerminal()));
     }
 
     return result;
@@ -270,15 +306,18 @@ void CFG::left_factor_non_terminal(NonTerminal *A, string name){
             vector<CFGEntry *> newEntries = findLongestCommonPrefix(strings);
             int taken_size = newEntries.size();
             
-            CFGEntry *cfgEntry = create_entry(new_non_terminal_name, false);
-            newEntries.push_back(cfgEntry);
-            new_A_prod.push_back(newEntries);
-
             NonTerminal *no = new NonTerminal(new_non_terminal_name);
             no->setHasEpsilonProduction(false);
-            nonTerminals.push_back(no);
+            
             this->nonTerminalsNames.push_back(new_non_terminal_name);
             this->namesNonTerminalsMap.insert({new_non_terminal_name, no});
+
+            CFGEntry *cfgEntry = create_entry(new_non_terminal_name, false);
+            no = (NonTerminal *) cfgEntry;
+            newEntries.push_back(cfgEntry);
+            new_A_prod.push_back(newEntries);
+            nonTerminals.push_back(no);
+            
             
             
             for (int j=0; j<strings.size(); j++){
@@ -290,11 +329,15 @@ void CFG::left_factor_non_terminal(NonTerminal *A, string name){
                 }
                 if(new_A_dash_entries.size() == 0){
                     no->setHasEpsilonProduction(true);
+                    new_A_dash_entries.push_back(new Terminal("\\L"));
+                    A_dash_prod.push_back(new_A_dash_entries);
+
                 }
                 else{
                     A_dash_prod.push_back(new_A_dash_entries);
                 }
             }
+            no = this->namesNonTerminalsMap[new_non_terminal_name];
             no->setProductions(A_dash_prod);
         }
         it->second.first = -1; 
@@ -331,6 +374,8 @@ void CFG::print_productions(){
         prod += " -> ";
         for (int j=0; j<A_prod.size(); j++){
             for (int k=0; k<A_prod[j].size(); k++){
+
+                
                 if(A_prod[j][k]->isTerminal()){
                     prod += "'";
                     prod += A_prod[j][k]->getName();
@@ -348,17 +393,18 @@ void CFG::print_productions(){
                 prod += " | ";
             }
         }
-        if(A->hasEpsilon()){
-            prod += " | epsilon";
-        }
         cout << prod << endl;
+        
     }
     
 }
 
-unordered_map<string, NonTerminal *> CFG::get_names_non_terminals_map() {
-    return this->namesNonTerminalsMap;
-}
 vector<string> CFG::get_non_terminals_names() {
     return this->nonTerminalsNames;
 }
+
+unordered_map<string, NonTerminal *> CFG::get_non_terminals_map() {
+    return this->namesNonTerminalsMap;
+}
+
+
