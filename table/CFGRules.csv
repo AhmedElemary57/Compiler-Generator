@@ -1,0 +1,6 @@
+NonTerminal,$,(,),*,+,id
+F,Sync,F -> ( E ) ,Sync,Sync,Sync,F -> id 
+T',Epsilon,Error,Epsilon,T' -> * F T' ,Epsilon,Error
+T,Sync,T -> F T' ,Sync,Error,Sync,T -> F T' 
+E',Epsilon,Error,Epsilon,Error,E' -> + T E' ,Error
+E,Sync,E -> T E' ,Sync,Error,Error,E -> T E' 

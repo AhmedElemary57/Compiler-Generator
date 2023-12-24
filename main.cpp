@@ -189,11 +189,7 @@ int main(){
     production.push_back(&nt_T);
     production.push_back(&nt_E_);
     nt_E_.addProduction(production);
-
-    production.clear();
-    production.push_back(new Terminal("\\L"));
-    nt_E_.addProduction(production);
-
+    nt_E_.setHasEpsilonProduction(true);
     //T  FT’
     production.clear();
     production.push_back(&nt_F);
@@ -206,11 +202,7 @@ int main(){
     production.push_back(&nt_F);
     production.push_back(&nt_T_);
     nt_T_.addProduction(production);
-
-    production.clear();
-    production.push_back(new Terminal("\\L"));
-    nt_T_.addProduction(production);
-
+    nt_T_.setHasEpsilonProduction(true);
     //F  (E) | id
     production.clear();
     production.push_back(new Terminal("("));
@@ -245,12 +237,9 @@ int main(){
     cfg.print_productions();
 
 
-    calculateFirstToCFG(make_pair(nonTerminalsNames, namesNonTerminalsMap));
-
-
-    calculateFollowToNonTerminals(nonTerminalsNames, namesNonTerminalsMap);
-
-    // print first and follow
+    calculateFirstToCFG(cfg);
+    nonTerminalsNames = cfg.get_non_terminals_names();
+    namesNonTerminalsMap = cfg.get_names_non_terminals_map();
     cout << "First and Follow sets: \n";
     for (auto & i : nonTerminalsNames) {
         // print first
@@ -268,9 +257,31 @@ int main(){
         cout << "}\n";
 
     }
+//    calculateFollowToNonTerminals(cfg.get_non_terminals_names(),cfg.get_non_terminals_map());
+//
+//
+//
+//    // print first and follow
+//    cout << "First and Follow sets: \n";
+//    for (auto & i : nonTerminalsNames) {
+//        // print first
+//        cout << "First(" << i << ") = {";
+//        for (auto & j : namesNonTerminalsMap[i]->getAllFirstSet()) {
+//            cout << j->getName() << ", ";
+//        }
+//        cout << "}\t\t";
+//
+//        // print follow
+//        cout << "Follow(" << i << ") = {";
+//        for (auto & j : namesNonTerminalsMap[i]->getFollowSet()) {
+//            cout << j->getName() << ", ";
+//        }
+//        cout << "}\n";
+//
+//    }
 
     // create parsing table
-    Table table = Table(namesNonTerminalsMap, nonTerminalsNames);
+    Table table = Table(cfg);
 
     // print parsing table
     table.printTable();

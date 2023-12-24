@@ -34,13 +34,15 @@ private:
     vector<set<Terminal*>> firstOfProductions;
     set<Terminal*> followSet;
     bool hasEpsilonProduction;
-    bool hasEpsilonProductionInFirst;
+    vector<bool> hasEpsilonProductionInFirst;
 public:
     NonTerminal(string name);
     void addProduction(vector<CFGEntry *> production);
     bool isTerminal() override;
     vector<vector<CFGEntry*>> getProductions();
-
+    vector<bool> getHasEpsilonProductionInFirst(){
+        return hasEpsilonProductionInFirst;
+    }
     bool hasEpsilon()
     {
         return hasEpsilonProduction;
@@ -53,12 +55,15 @@ public:
     void setHasEpsilonProduction(bool hasEpsilonProduction)
     {
         this->hasEpsilonProduction = hasEpsilonProduction;
-        this->hasEpsilonProductionInFirst = hasEpsilonProduction;
     }
 
-    void setHasEpsilonProductionInFirst()
+    void addHasEpsilonProductionInFirst(bool hasEpsilonProductionInFirst)
     {
-        this->hasEpsilonProductionInFirst = true;
+        this->hasEpsilonProductionInFirst.push_back(hasEpsilonProductionInFirst);
+    }
+    void changeHasEpsilonProductionInFirst(int index, bool hasEpsilonProductionInFirst)
+    {
+        this->hasEpsilonProductionInFirst[index] = hasEpsilonProductionInFirst;
     }
     set<Terminal*> getAllFirstSet()
     {
@@ -100,9 +105,9 @@ public:
         cout << "}, ";
         cout << endl;
     }
-    bool getHasEpsilonProductionInFirst()
+    bool getHasEpsilonProductionInFirst(int i)
     {
-        return hasEpsilonProductionInFirst;
+        return hasEpsilonProductionInFirst[i];
     }
     void setProductions(vector<vector<CFGEntry *>> productions);
     void addTerminalToFollowSet(Terminal* terminal);
@@ -145,5 +150,7 @@ public:
     void left_factoring();
 
     void print_productions();
+
+    unordered_map<string, NonTerminal *> get_names_non_terminals_map();
 };
 #endif // CFG_H

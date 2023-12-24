@@ -4,24 +4,24 @@
 #ifndef COMPILERGENERATOR_TABLE_H
 #define COMPILERGENERATOR_TABLE_H
 
+enum return_t {Production ,Epsilon ,Error, Sync, nonTerminalError};
 
 class Table {
 
     public:
-        unordered_map<string, unordered_map<string,vector<CFGEntry*>>> table; // <nonTerminal, <terminal, production>>
-        Table(unordered_map<string, NonTerminal*> nonTerminals, vector<string> nonTerminalsNames);\
+        unordered_map<string, unordered_map<string,pair<return_t,vector<CFGEntry*>>>> table; // <nonTerminal, <terminal, production>>
+        Table(CFG &cfg);\
         void printTable();
         void printTableToFile(string fileName);
         // get production of nonTerminal and terminal
-        vector<CFGEntry*> getProduction(string nonTerminalName, string terminalName);
+        pair<return_t,vector<CFGEntry *>>getProduction(string nonTerminalName, string terminalName);
         // get production of nonTerminal and terminal
 
 
     private:
-        unordered_map<string, NonTerminal> nonTerminals;
-        unordered_map<string, Terminal> terminals;
-        void fillTable(unordered_map<string, NonTerminal*> nonTerminals, vector<string> nonTerminalsNames);
-        vector<CFGEntry*> fillRowOfNonTerminal(NonTerminal* nonTerminal);
+
+        void fillTable(CFG &cfg);
+        void fillRowOfNonTerminal(NonTerminal* nonTerminal);
 
 };
 
