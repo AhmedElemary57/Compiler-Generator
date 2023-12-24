@@ -31,6 +31,10 @@ vector<CFGEntry*> Table::fillRowOfNonTerminal(NonTerminal* nonTerminal) {
         // check if the terminal is in the first set of the production
         //For each terminal 'a' in First(α), add A → α to M[A, a]
         for( auto terminal : firstSet){
+            // if  table[nonTerminal->getName()][terminal->getName()] exist then there is ambiguity
+            if(table[nonTerminal->getName()].find(terminal->getName()) == table[nonTerminal->getName()].end())
+                throw "Ambiguity in the grammar, please check the grammar and try again";
+
             table[nonTerminal->getName()][terminal->getName()] = productions[i];
         }
         //  If ε is in First(α) and $ is in Follow(A), add A → α to M[A, $]
