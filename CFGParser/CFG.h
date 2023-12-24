@@ -53,7 +53,7 @@ public:
     void setHasEpsilonProduction(bool hasEpsilonProduction)
     {
         this->hasEpsilonProduction = hasEpsilonProduction;
-        hasEpsilonProductionInFirst = hasEpsilonProduction;
+        this->hasEpsilonProductionInFirst = hasEpsilonProduction;
     }
 
     void setHasEpsilonProductionInFirst()
@@ -114,12 +114,15 @@ class CFG
 private:
     vector<string> nonTerminalsNames;
     unordered_map<string, NonTerminal *> namesNonTerminalsMap;
+    CFGEntry* create_entry(string name, bool terminal);
+    vector<CFGEntry*> findLongestCommonPrefix(vector<vector<CFGEntry*>> productions);
 
 public:
     CFG(vector<string> &nonTerminalsNames, unordered_map<string, NonTerminal *> namesNonTerminalsMap);
 
     string get_unique_non_terminal_name(string name);
-
+    
+    
     vector<vector<CFGEntry *>> build_string_from_production(vector<vector<CFGEntry *>> prod, vector<int> indices);
 
     // get non terminals names

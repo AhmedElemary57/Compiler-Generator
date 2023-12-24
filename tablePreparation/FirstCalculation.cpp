@@ -10,12 +10,14 @@ void calculateFirstToCFG(pair<vector<string>, unordered_map<string, NonTerminal 
         if (nonTerminals.second[nonTerminalName]->allFirstComputed()) {
             continue;
         }
-
-        calculateFirstToNonTerminal(nonTerminals.second[nonTerminalName], visited);
+        if(nonTerminalName == "TERM"){
+            cout << "please" << endl;
+        }
+        calculateFirstToNonTerminal(nonTerminals.second[nonTerminalName], visited, nonTerminals.second);
     }
 }
 
-void calculateFirstToNonTerminal(NonTerminal *nonTerminal, unordered_map<string, bool> visited) {
+void calculateFirstToNonTerminal(NonTerminal *nonTerminal, unordered_map<string, bool> visited, unordered_map<string, NonTerminal *> nonTerminals) {
     if(visited[nonTerminal->getName()] && !nonTerminal->allFirstComputed()){
         cerr << "Left Recursion Detected" << endl;
         exit(1);
@@ -33,9 +35,10 @@ void calculateFirstToNonTerminal(NonTerminal *nonTerminal, unordered_map<string,
                 break;
             }
             else{
+                entry = nonTerminals[production[i]->getName()];
                 set<Terminal*> firstSetOfEntry = ((NonTerminal*)entry)->getAllFirstSet();
                 if(firstSetOfEntry.empty()){
-                    calculateFirstToNonTerminal((NonTerminal*)entry, visited);
+                    calculateFirstToNonTerminal((NonTerminal*)entry, visited, nonTerminals);
                     firstSetOfEntry = ((NonTerminal*)entry)->getAllFirstSet();
                 }
 
