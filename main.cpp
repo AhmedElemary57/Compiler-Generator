@@ -20,6 +20,7 @@
 #include "CFGParser/CFGParser.h"
 #include "tablePreparation/FirstCalculation.h"
 #include "tablePreparation/FollowCalculation.h"
+
 using namespace std;
 
 int Node::nodeCounter = 0;
@@ -185,5 +186,6 @@ int main()
         cout << "}\n";
 
     }
+
     return 0;
 }
