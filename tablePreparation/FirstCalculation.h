@@ -9,7 +9,7 @@ using namespace std;
 #define COMPILERGENERATOR_FIRSTCALCULATION_H
 
 void calculateFirstToCFG(pair<vector<string>, unordered_map<string, NonTerminal *>> nonTerminals);
-void calculateFirstToNonTerminal(NonTerminal* nonTerminal,  unordered_map<string, bool> visited);
+void calculateFirstToNonTerminal(NonTerminal* nonTerminal,  unordered_map<string, bool> visited, unordered_map<string, NonTerminal *> nonTerminals);
 
 
 #endif //COMPILERGENERATOR_FIRSTCALCULATION_H

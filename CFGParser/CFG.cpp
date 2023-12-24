@@ -11,7 +11,7 @@ string CFGEntry::getName()
 }
 
 bool CFGEntry::isTerminal(){
-    return false;
+    return true;
 }
 
 Terminal::Terminal(string name) : CFGEntry(name) {}
@@ -69,16 +69,20 @@ CFG::CFG(vector<string> &nonTerminalsNames, unordered_map<string, NonTerminal *>
     this->namesNonTerminalsMap = namesNonTerminalsMap;
 }
 
-vector<CFGEntry *> string_to_vector(string s){
-    
-    vector<CFGEntry *> newEntries;
-    for (int j=0; j<s.size(); j++){
-        string c(1, s[j]);
-        CFGEntry *cfgEntry = new CFGEntry(c);
-        newEntries.push_back(cfgEntry);
+CFGEntry* CFG::create_entry(string name, bool terminal){
+    if(terminal){
+        Terminal *terminal = new Terminal(name);
+        return terminal;
     }
-    return newEntries;
+    NonTerminal *no = new NonTerminal(name);
+    NonTerminal *it = this->namesNonTerminalsMap[name];
+    no->setProductions(it->getProductions());
+    no->setHasEpsilonProduction(it->hasEpsilon());
+    this->namesNonTerminalsMap[name] = no;
+    return no;
 }
+
+
 
 string CFG::get_unique_non_terminal_name(string name){
     while(true){
@@ -127,11 +131,12 @@ void CFG::non_immediate_left_recursion_elimination(int i, int j){
             for (int w=0; w<B_prod.size(); w++){
                 vector<CFGEntry*> newEntries;
                 for (int z=0; z<B_prod[w].size(); z++){
-                    CFGEntry *cfgEntry = new CFGEntry(B_prod[w][z]->getName());
+                    
+                    CFGEntry *cfgEntry = create_entry(B_prod[w][z]->getName(), B_prod[w][z]->isTerminal());
                     newEntries.push_back(cfgEntry);
                 }
                 for (int z=1; z<A_prod[k].size(); z++){
-                    CFGEntry *cfgEntry = new CFGEntry(A_prod[k][z]->getName());
+                    CFGEntry *cfgEntry = create_entry(A_prod[k][z]->getName(), A_prod[k][z]->isTerminal());
                     newEntries.push_back(cfgEntry);
                 }
                 new_A_prod.push_back(newEntries);
@@ -159,7 +164,8 @@ void CFG::immediate_left_recursion_elimination(int i){
         if (A_prod[k][0]->getName() == A->getName()){
             vector<CFGEntry*> newEntries;
             for(int w=1; w<A_prod[k].size(); w++){
-                CFGEntry *cfgEntry = new CFGEntry(A_prod[k][w]->getName());
+                
+                CFGEntry *cfgEntry = create_entry(A_prod[k][w]->getName(), A_prod[k][w]->isTerminal());
                 newEntries.push_back(cfgEntry);
             }
             alphas.push_back(newEntries);
@@ -167,7 +173,8 @@ void CFG::immediate_left_recursion_elimination(int i){
         else{
             vector<CFGEntry*> newEntries;
             for(int w=0; w<A_prod[k].size(); w++){
-                CFGEntry *cfgEntry = new CFGEntry(A_prod[k][w]->getName());
+                
+                CFGEntry *cfgEntry = create_entry(A_prod[k][w]->getName(), A_prod[k][w]->isTerminal());
                 newEntries.push_back(cfgEntry);
             }
             betas.push_back(newEntries);
@@ -181,27 +188,39 @@ void CFG::immediate_left_recursion_elimination(int i){
     string new_non_terminal = A->getName() + "'";
     vector<vector<CFGEntry *>> new_A_prod;
     vector<vector<CFGEntry *>> new_A_dash_prod;
+
+    this->nonTerminalsNames.push_back(new_non_terminal);
+    NonTerminal *no = new NonTerminal(new_non_terminal);
+    this->namesNonTerminalsMap.insert({new_non_terminal, no});
+    vector<CFGEntry *> new_A_dash_entries;
+    new_A_dash_entries.push_back(new Terminal("\\L"));
+    new_A_dash_prod.push_back(new_A_dash_entries);
+    no->setProductions(new_A_dash_prod);
+    no->setHasEpsilonProduction(true) ;
+    CFGEntry* cfgEntry = create_entry(new_non_terminal, false);
     if(betas.size() == 0){
-        new_A_prod.push_back({new CFGEntry(new_non_terminal)});
+        
+        new_A_prod.push_back({cfgEntry});
     }
 
     for (int k=0; k<betas.size(); k++){
-        CFGEntry *cfgEntry = new CFGEntry(new_non_terminal);
+        
         betas[k].push_back(cfgEntry);
         new_A_prod.push_back(betas[k]);
     }
 
     
     for (int k=0; k<alphas.size(); k++){
-        CFGEntry *cfgEntry = new CFGEntry(new_non_terminal);
+        
         alphas[k].push_back(cfgEntry);
         new_A_dash_prod.push_back(alphas[k]);
     }
-    this->nonTerminalsNames.push_back(new_non_terminal);
-    NonTerminal *no = new NonTerminal(new_non_terminal);
-    this->namesNonTerminalsMap.insert({new_non_terminal, no});
+    
+    
+    no = (NonTerminal*) cfgEntry;
     no->setProductions(new_A_dash_prod);
-    no->setHasEpsilonProduction(true) ;
+    
+    A = this->namesNonTerminalsMap[A->getName()];
     A->setProductions(new_A_prod);
 
 }
@@ -216,7 +235,7 @@ void CFG::left_recursion_elimination(){
     }
 }
 
-vector<CFGEntry*> findLongestCommonPrefix(vector<vector<CFGEntry*>> productions)
+vector<CFGEntry*> CFG::findLongestCommonPrefix(vector<vector<CFGEntry*>> productions)
 {
     vector<CFGEntry*> result;
 
@@ -241,7 +260,7 @@ vector<CFGEntry*> findLongestCommonPrefix(vector<vector<CFGEntry*>> productions)
         if(mismatch){
             break;
         }
-        result.push_back(new CFGEntry(cfgEntry->getName()));
+        result.push_back(this->create_entry(cfgEntry->getName(), cfgEntry->isTerminal()));
     }
 
     return result;
@@ -286,30 +305,39 @@ void CFG::left_factor_non_terminal(NonTerminal *A, string name){
             vector<vector<CFGEntry *>> strings = build_string_from_production(A_prod, c.second);
             vector<CFGEntry *> newEntries = findLongestCommonPrefix(strings);
             int taken_size = newEntries.size();
-            CFGEntry *cfgEntry = new CFGEntry(new_non_terminal_name);
-            newEntries.push_back(cfgEntry);
-            new_A_prod.push_back(newEntries);
-
+            
             NonTerminal *no = new NonTerminal(new_non_terminal_name);
             no->setHasEpsilonProduction(false);
-            nonTerminals.push_back(no);
+            
             this->nonTerminalsNames.push_back(new_non_terminal_name);
             this->namesNonTerminalsMap.insert({new_non_terminal_name, no});
+
+            CFGEntry *cfgEntry = create_entry(new_non_terminal_name, false);
+            no = (NonTerminal *) cfgEntry;
+            newEntries.push_back(cfgEntry);
+            new_A_prod.push_back(newEntries);
+            nonTerminals.push_back(no);
+            
             
             
             for (int j=0; j<strings.size(); j++){
                 vector<CFGEntry *> new_A_dash_entries;
                 for(int k=taken_size; k<strings[j].size(); k++){
-                    CFGEntry *cfgEntry = new CFGEntry(strings[j][k]->getName());
+                   
+                    CFGEntry *cfgEntry = create_entry(strings[j][k]->getName(), strings[j][k]->isTerminal()); 
                     new_A_dash_entries.push_back(cfgEntry);
                 }
                 if(new_A_dash_entries.size() == 0){
                     no->setHasEpsilonProduction(true);
+                    new_A_dash_entries.push_back(new Terminal("\\L"));
+                    A_dash_prod.push_back(new_A_dash_entries);
+
                 }
                 else{
                     A_dash_prod.push_back(new_A_dash_entries);
                 }
             }
+            no = this->namesNonTerminalsMap[new_non_terminal_name];
             no->setProductions(A_dash_prod);
         }
         it->second.first = -1; 
@@ -346,17 +374,27 @@ void CFG::print_productions(){
         prod += " -> ";
         for (int j=0; j<A_prod.size(); j++){
             for (int k=0; k<A_prod[j].size(); k++){
-                prod += A_prod[j][k]->getName();
-                prod += " ";
+
+                
+                if(A_prod[j][k]->isTerminal()){
+                    prod += "'";
+                    prod += A_prod[j][k]->getName();
+                    prod+= "'";
+                
+                    prod += " ";
+                }
+                else{
+                    prod += A_prod[j][k]->getName();
+                    prod += " ";
+                }
             }
+            
             if (j != A_prod.size() -1 ){
                 prod += " | ";
             }
         }
-        if(A->hasEpsilon()){
-            prod += " | epsilon";
-        }
         cout << prod << endl;
+        
     }
     
 }
