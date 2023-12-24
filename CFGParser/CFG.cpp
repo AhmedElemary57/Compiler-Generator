@@ -146,6 +146,7 @@ void CFG::non_immediate_left_recursion_elimination(int i, int j){
             new_A_prod.push_back(A_prod[k]);
         }
     }
+    A = this->namesNonTerminalsMap[A->getName()];
     A->setProductions(new_A_prod);
 
 }
@@ -192,9 +193,6 @@ void CFG::immediate_left_recursion_elimination(int i){
     this->nonTerminalsNames.push_back(new_non_terminal);
     NonTerminal *no = new NonTerminal(new_non_terminal);
     this->namesNonTerminalsMap.insert({new_non_terminal, no});
-    vector<CFGEntry *> new_A_dash_entries;
-    new_A_dash_entries.push_back(new Terminal("\\L"));
-    new_A_dash_prod.push_back(new_A_dash_entries);
     no->setProductions(new_A_dash_prod);
     no->setHasEpsilonProduction(true) ;
     CFGEntry* cfgEntry = create_entry(new_non_terminal, false);
@@ -329,8 +327,6 @@ void CFG::left_factor_non_terminal(NonTerminal *A, string name){
                 }
                 if(new_A_dash_entries.size() == 0){
                     no->setHasEpsilonProduction(true);
-                    new_A_dash_entries.push_back(new Terminal("\\L"));
-                    A_dash_prod.push_back(new_A_dash_entries);
 
                 }
                 else{
@@ -342,6 +338,7 @@ void CFG::left_factor_non_terminal(NonTerminal *A, string name){
         }
         it->second.first = -1; 
     }
+    A = this->namesNonTerminalsMap[A->getName()];
     A->setProductions(new_A_prod);
     for (int i=0; i<nonTerminals.size(); i++){
         left_factor_non_terminal(nonTerminals[i], new_non_terminal_name);
