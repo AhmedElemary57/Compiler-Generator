@@ -22,6 +22,8 @@
 #include "tablePreparation/FirstCalculation.h"
 #include "tablePreparation/FollowCalculation.h"
 
+#include "table/Table.h"
+
 using namespace std;
 
 int Node::nodeCounter = 0;
@@ -242,11 +244,11 @@ int main(){
     cfg.left_factoring();
     cfg.print_productions();
 
+
     calculateFirstToCFG(make_pair(nonTerminalsNames, namesNonTerminalsMap));
 
 
     calculateFollowToNonTerminals(nonTerminalsNames, namesNonTerminalsMap);
-
 
     // print first and follow
     cout << "First and Follow sets: \n";
@@ -266,4 +268,11 @@ int main(){
         cout << "}\n";
 
     }
+
+    // create parsing table
+    Table table = Table(namesNonTerminalsMap, nonTerminalsNames);
+
+    // print parsing table
+    table.printTable();
+
 }

@@ -24,7 +24,6 @@ class Terminal : public CFGEntry
 {
 public:
     Terminal(string name);
-
     bool isTerminal() override;
 };
 
@@ -69,6 +68,7 @@ public:
         }
         return first;
     }
+
     set<Terminal*> getFirstSet(int productionIndex)
     {
         return firstOfProductions[productionIndex];
@@ -77,6 +77,7 @@ public:
     bool allFirstComputed() {
         return firstOfProductions.size() == productions.size();
     }
+
     void printFirstSet()
     {
         cout << "First Set of " << this->getName() << " is: ";
