@@ -9,8 +9,6 @@ void initializeFollowSetForStartSymbol(const vector<string>& nonTerminalsNames,
     nonTerminals[nonTerminalsNames[0]]->addTerminalToFollowSet(new Terminal("$"));
 }
 
-
-
 void updateFollowSetForLastEntry(const string &nonTerminalName, NonTerminal *currentNonTerminal,
                                  const vector<string> &nonTerminalsNames,
                                  unordered_map<string, NonTerminal *> &nonTerminals, unordered_map<string, bool> &computed) {
@@ -22,29 +20,7 @@ void updateFollowSetForLastEntry(const string &nonTerminalName, NonTerminal *cur
         nonTerminalsInProduction = currentNonTerminal->getFollowSet();
         computed[currentNonTerminal->getName()] = true;
     }
-
     nonTerminals[nonTerminalName]->addSetToFollowSet(nonTerminalsInProduction);
-}
-
-// Check if epsilon is in the first set
-bool checkForEpsilonInFirstSet(const set<Terminal*>& firstSetOfNextEntry) {
-    for (const auto& firstEntry : firstSetOfNextEntry) {
-        if (firstEntry->getName() == "\\L") {
-            return true;
-        }
-    }
-    return false;
-}
-
-// Remove epsilon from the first set
-set<Terminal*> removeEpsilonFromFirstSet(const set<Terminal*>& firstSetOfNextEntry) {
-    set<Terminal*> firstSetWithoutEpsilon = firstSetOfNextEntry;
-    for (const auto& firstEntry : firstSetOfNextEntry) {
-        if (firstEntry->getName() == "\\L") {
-            firstSetWithoutEpsilon.erase(firstEntry);
-        }
-    }
-    return firstSetWithoutEpsilon;
 }
 
 
@@ -60,23 +36,32 @@ void updateFollowSetForNonTerminalInProduction(NonTerminal *currentNonTerminal, 
             updateFollowSetForLastEntry(nonTerminalName, currentNonTerminal, nonTerminalsNames, nonTerminals, computed);
         }
     } else if (nonTerminalName == production[currentIndex]->getName()) {
-        if (production[currentIndex + 1]->isTerminal()) {
+        if (production[currentIndex + 1]-> isTerminal()) {
             // Rule 2: A → αBβ, where B is terminal
             nonTerminals[nonTerminalName]->addTerminalToFollowSet((Terminal*)production[currentIndex + 1]);
         } else {
-            set<Terminal*> firstSetOfNextEntry = ((NonTerminal*)production[currentIndex + 1])->getAllFirstSet();
+//            set<Terminal*> firstSetOfNextEntry = ((NonTerminal*)production[currentIndex + 1])->getAllFirstSet();
+            NonTerminal nextNonTerminal = *nonTerminals[production[currentIndex + 1]->getName()];
+            set<Terminal*> firstSetOfNextEntry = nextNonTerminal.getAllFirstSet();
+            // Rule 4: A → αBβ and ε belongs to FIRST(β)
+            bool hasEpsilonInFirstSet = false;
+            vector<bool> next= nextNonTerminal.getHasEpsilonProductionInFirst();
 
-            // If the first set is empty, calculate it
-            if (firstSetOfNextEntry.empty()) {
-                calculateFirstToCFG(make_pair(nonTerminalsNames, nonTerminals));
-                firstSetOfNextEntry = ((NonTerminal*)production[currentIndex + 1])->getAllFirstSet();
+            if(nextNonTerminal.hasEpsilon()){
+                hasEpsilonInFirstSet = true;
+            }
+            for(int i = 0; i < next.size(); i++){
+                if(next[i]){
+                    hasEpsilonInFirstSet = true;
+                    break;
+                }
             }
 
-            // Rule 4: A → αBβ and ε belongs to FIRST(β)
-            if (checkForEpsilonInFirstSet(firstSetOfNextEntry)) {
-
+//            if (checkForEpsilonInFirstSet(firstSetOfNextEntry)) {
+            if (hasEpsilonInFirstSet){
                 updateFollowSetForNonTerminalInProduction(currentNonTerminal, nonTerminalsNames, nonTerminalName,
                                                           production, currentIndex + 1, nonTerminals, computed);
+
                 set<Terminal*> followSetOfNextEntry = nonTerminals[production[currentIndex + 1]->getName()]->getFollowSet();
 
                 // If follow set is empty, calculate it
@@ -87,13 +72,11 @@ void updateFollowSetForNonTerminalInProduction(NonTerminal *currentNonTerminal, 
                 }
 
                 nonTerminals[nonTerminalName]->addSetToFollowSet(followSetOfNextEntry);
-
-                // Remove epsilon from the first set
-                firstSetOfNextEntry = removeEpsilonFromFirstSet(firstSetOfNextEntry);
             }
 
             // Rule 2: A → αBβ, where B is non-terminal
             nonTerminals[nonTerminalName]->addSetToFollowSet(firstSetOfNextEntry);
+
         }
     }
 }
@@ -132,5 +115,6 @@ void calculateFollowToNonTerminals(const vector<string>& nonTerminalsNames,
             continue;
         }
         calculateFollowToNonTerminal(nonTerminalsNames, nonTerminalName, nonTerminals, computed);
+
     }
 }

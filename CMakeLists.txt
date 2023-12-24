@@ -30,4 +30,6 @@ add_executable(
         tablePreparation/FirstCalculation.cpp
         tablePreparation/FollowCalculation.h
         tablePreparation/FollowCalculation.cpp
+        table/Table.cpp
+        table/Table.h
         )

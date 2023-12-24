@@ -356,6 +356,7 @@ void CFG::left_factoring(){
         if(it == this->namesNonTerminalsMap.end()){
             return;
         }
+
         NonTerminal *A = it->second;
         left_factor_non_terminal(A, A->getName() + "'");
     }
@@ -405,6 +406,10 @@ vector<string> CFG::get_non_terminals_names() {
 
 unordered_map<string, NonTerminal *> CFG::get_non_terminals_map() {
     return this->namesNonTerminalsMap;
+}
+
+unordered_map<string, NonTerminal *> CFG::get_names_non_terminals_map() {
+    return namesNonTerminalsMap;
 }
 
 

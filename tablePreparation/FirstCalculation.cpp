@@ -3,21 +3,24 @@
 //
 
 #include "FirstCalculation.h"
-void calculateFirstToCFG(pair<vector<string>, unordered_map<string, NonTerminal *>> nonTerminals) {
+void calculateFirstToCFG(CFG &cfg) {
 
     unordered_map<string, bool> visited;
-    for (auto &nonTerminalName: nonTerminals.first) {
-        if (nonTerminals.second[nonTerminalName]->allFirstComputed()) {
+    vector<string> nonTerminals = cfg.get_non_terminals_names();
+    unordered_map<string, NonTerminal *> namesNonTerminalsMap = cfg.get_names_non_terminals_map();
+    for (auto &nonTerminalName: nonTerminals) {
+        visited[nonTerminalName] = false;
+    }
+    for (auto &nonTerminalName: nonTerminals) {
+        if (namesNonTerminalsMap[nonTerminalName]->allFirstComputed()) {
             continue;
         }
-        if(nonTerminalName == "TERM"){
-            cout << "please" << endl;
-        }
-        calculateFirstToNonTerminal(nonTerminals.second[nonTerminalName], visited, nonTerminals.second);
+        cout<<nonTerminalName<<endl;
+        calculateFirstToNonTerminal(namesNonTerminalsMap[nonTerminalName], visited, namesNonTerminalsMap);
     }
 }
 
-void calculateFirstToNonTerminal(NonTerminal *nonTerminal, unordered_map<string, bool> visited, unordered_map<string, NonTerminal *> nonTerminals) {
+void calculateFirstToNonTerminal(NonTerminal *nonTerminal, unordered_map<string, bool> visited, unordered_map<string, NonTerminal *> namesNonTerminalsMap) {
     if(visited[nonTerminal->getName()] && !nonTerminal->allFirstComputed()){
         cerr << "Left Recursion Detected" << endl;
         exit(1);
@@ -32,22 +35,24 @@ void calculateFirstToNonTerminal(NonTerminal *nonTerminal, unordered_map<string,
             auto &entry = production[i];
             if(entry->isTerminal()){
                 firstSet.insert((Terminal*)entry);
+                nonTerminal->addHasEpsilonProductionInFirst(false);
                 break;
             }
             else{
-                entry = nonTerminals[production[i]->getName()];
-                set<Terminal*> firstSetOfEntry = ((NonTerminal*)entry)->getAllFirstSet();
-                if(firstSetOfEntry.empty()){
-                    calculateFirstToNonTerminal((NonTerminal*)entry, visited, nonTerminals);
-                    firstSetOfEntry = ((NonTerminal*)entry)->getAllFirstSet();
+                NonTerminal *curNonTerminal = namesNonTerminalsMap[entry->getName()];
+                set<Terminal*> firstSetOfEntry = curNonTerminal->getAllFirstSet();
+                if(!curNonTerminal->allFirstComputed()){
+                    calculateFirstToNonTerminal(curNonTerminal, visited, namesNonTerminalsMap);
+                    firstSetOfEntry = curNonTerminal->getAllFirstSet();
                 }
 
                 firstSet.insert(firstSetOfEntry.begin(), firstSetOfEntry.end());
-                if(!((NonTerminal*)entry)->hasEpsilon()){
+                if(!curNonTerminal->hasEpsilon()){
+                    nonTerminal->addHasEpsilonProductionInFirst(false);
                     break;
                 }
                 if(i == production.size() - 1){
-                    nonTerminal->setHasEpsilonProductionInFirst();
+                    nonTerminal->addHasEpsilonProductionInFirst(true);
                 }
             }
         }

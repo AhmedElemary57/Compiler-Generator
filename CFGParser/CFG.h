@@ -24,7 +24,6 @@ class Terminal : public CFGEntry
 {
 public:
     Terminal(string name);
-
     bool isTerminal() override;
 };
 
@@ -35,13 +34,15 @@ private:
     vector<set<Terminal*>> firstOfProductions;
     set<Terminal*> followSet;
     bool hasEpsilonProduction;
-    bool hasEpsilonProductionInFirst;
+    vector<bool> hasEpsilonProductionInFirst;
 public:
     NonTerminal(string name);
     void addProduction(vector<CFGEntry *> production);
     bool isTerminal() override;
     vector<vector<CFGEntry*>> getProductions();
-
+    vector<bool> getHasEpsilonProductionInFirst(){
+        return hasEpsilonProductionInFirst;
+    }
     bool hasEpsilon()
     {
         return hasEpsilonProduction;
@@ -54,12 +55,15 @@ public:
     void setHasEpsilonProduction(bool hasEpsilonProduction)
     {
         this->hasEpsilonProduction = hasEpsilonProduction;
-        this->hasEpsilonProductionInFirst = hasEpsilonProduction;
     }
 
-    void setHasEpsilonProductionInFirst()
+    void addHasEpsilonProductionInFirst(bool hasEpsilonProductionInFirst)
     {
-        this->hasEpsilonProductionInFirst = true;
+        this->hasEpsilonProductionInFirst.push_back(hasEpsilonProductionInFirst);
+    }
+    void changeHasEpsilonProductionInFirst(int index, bool hasEpsilonProductionInFirst)
+    {
+        this->hasEpsilonProductionInFirst[index] = hasEpsilonProductionInFirst;
     }
     set<Terminal*> getAllFirstSet()
     {
@@ -69,6 +73,7 @@ public:
         }
         return first;
     }
+
     set<Terminal*> getFirstSet(int productionIndex)
     {
         return firstOfProductions[productionIndex];
@@ -77,6 +82,7 @@ public:
     bool allFirstComputed() {
         return firstOfProductions.size() == productions.size();
     }
+
     void printFirstSet()
     {
         cout << "First Set of " << this->getName() << " is: ";
@@ -99,7 +105,10 @@ public:
         cout << "}, ";
         cout << endl;
     }
-
+    bool getHasEpsilonProductionInFirst(int i)
+    {
+        return hasEpsilonProductionInFirst[i];
+    }
     void setProductions(vector<vector<CFGEntry *>> productions);
     void addTerminalToFollowSet(Terminal* terminal);
     void addSetToFollowSet(set<Terminal*> followSet);
@@ -141,5 +150,7 @@ public:
     void left_factoring();
 
     void print_productions();
+
+    unordered_map<string, NonTerminal *> get_names_non_terminals_map();
 };
 #endif // CFG_H
