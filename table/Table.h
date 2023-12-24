@@ -22,6 +22,7 @@ class Table {
         unordered_map<string, Terminal> terminals;
         void fillTable(unordered_map<string, NonTerminal*> nonTerminals, vector<string> nonTerminalsNames);
         vector<CFGEntry*> fillRowOfNonTerminal(NonTerminal* nonTerminal);
+
 };
 
 

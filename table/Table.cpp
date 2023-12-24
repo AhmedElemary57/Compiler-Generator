@@ -24,7 +24,7 @@ vector<CFGEntry*> Table::fillRowOfNonTerminal(NonTerminal* nonTerminal) {
     vector<vector<CFGEntry*>> productions = nonTerminal->getProductions();
     vector<CFGEntry*> result;
     set<Terminal*> followSet = nonTerminal->getFollowSet();
-
+    unordered_map<string, vector<CFGEntry*>> row = table[nonTerminal->getName()];
     for (int i = 0; i < productions.size(); ++i) {
         // get first set of certain production
         set<Terminal*> firstSet = nonTerminal->getFirstSet(i);
@@ -32,17 +32,14 @@ vector<CFGEntry*> Table::fillRowOfNonTerminal(NonTerminal* nonTerminal) {
         //For each terminal 'a' in First(α), add A → α to M[A, a]
         for( auto terminal : firstSet){
             // if  table[nonTerminal->getName()][terminal->getName()] exist then there is ambiguity
-            if(table[nonTerminal->getName()].find(terminal->getName()) == table[nonTerminal->getName()].end())
-                throw "Ambiguity in the grammar, please check the grammar and try again";
-
-            table[nonTerminal->getName()][terminal->getName()] = productions[i];
-        }
-        //  If ε is in First(α) and $ is in Follow(A), add A → α to M[A, $]
-        if(searchInSet(firstSet, "\\L") && searchInSet(followSet, "$")){
-            table[nonTerminal->getName()]["$"] = productions[i];
+            if(row.find(terminal->getName()) != row.end()){
+                cerr << "Error: Ambiguity in the grammar" << endl;
+            }else{
+                table[nonTerminal->getName()][terminal->getName()] = productions[i];
+            }
         }
         // If ε is in First(α): For each terminal 'b' in Follow(A), add A → α to M[A, b].
-        if(searchInSet(firstSet, "\\L")){
+        if(nonTerminal->getHasEpsilonProductionInFirst()){
             for (auto it : followSet) {
                 table[nonTerminal->getName()][it->getName()] = productions[i];
             }
@@ -80,4 +77,20 @@ void Table::printTable() {
         }
         cout << endl;
     }
+}
+
+
+
+vector<CFGEntry *> Table::getProduction(string nonTerminalName, string terminalName) {
+
+    if(table.find(nonTerminalName) == table.end()){
+            cerr << "Error: No such non terminal in the grammar" << endl;
+            return vector<CFGEntry*>();
+        }
+        if(table[nonTerminalName].find(terminalName) == table[nonTerminalName].end()){
+            cerr << "Error: No such terminal in the grammar" << endl;
+            return vector<CFGEntry*>();
+        }
+        return table[nonTerminalName][terminalName];
+
 }

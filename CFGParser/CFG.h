@@ -100,7 +100,10 @@ public:
         cout << "}, ";
         cout << endl;
     }
-
+    bool getHasEpsilonProductionInFirst()
+    {
+        return hasEpsilonProductionInFirst;
+    }
     void setProductions(vector<vector<CFGEntry *>> productions);
     void addTerminalToFollowSet(Terminal* terminal);
     void addSetToFollowSet(set<Terminal*> followSet);
