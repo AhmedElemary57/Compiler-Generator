@@ -163,11 +163,19 @@ int Node::nodeCounter = 0;
 //    return 0;
 //}
 int main(){
-    CFG cfg = parseCFG("/home/elsaber/compilers/Compiler-Generator/CFGRules.txt");
+    CFG cfg = parseCFG("../CFGRules.txt");
+    
+    
     cfg.left_recursion_elimination();
+   
     cfg.left_factoring();
     cfg.print_productions();
     calculateFirstToCFG(cfg);
+    
+    
+    
+    
+
     auto namesNonTerminalsMap = cfg.get_names_non_terminals_map();
     auto nonTerminalsNames = cfg.get_non_terminals_names();
     for (auto element : nonTerminalsNames)

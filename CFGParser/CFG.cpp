@@ -11,7 +11,7 @@ string CFGEntry::getName()
 }
 
 bool CFGEntry::isTerminal(){
-    return false;
+    return true;
 }
 
 Terminal::Terminal(string name) : CFGEntry(name) {}
@@ -51,16 +51,14 @@ CFG::CFG(vector<string> &nonTerminalsNames, unordered_map<string, NonTerminal *>
     this->namesNonTerminalsMap = namesNonTerminalsMap;
 }
 
-vector<CFGEntry *> string_to_vector(string s){
-    
-    vector<CFGEntry *> newEntries;
-    for (int j=0; j<s.size(); j++){
-        string c(1, s[j]);
-        CFGEntry *cfgEntry = new CFGEntry(c);
-        newEntries.push_back(cfgEntry);
+CFGEntry* create_entry(string name, bool terminal){
+    if(terminal){
+        return new Terminal(name);
     }
-    return newEntries;
+    return new NonTerminal(name);
 }
+
+
 
 string CFG::get_unique_non_terminal_name(string name){
     while(true){
@@ -109,11 +107,12 @@ void CFG::non_immediate_left_recursion_elimination(int i, int j){
             for (int w=0; w<B_prod.size(); w++){
                 vector<CFGEntry*> newEntries;
                 for (int z=0; z<B_prod[w].size(); z++){
-                    CFGEntry *cfgEntry = new CFGEntry(B_prod[w][z]->getName());
+                    
+                    CFGEntry *cfgEntry = create_entry(B_prod[w][z]->getName(), B_prod[w][z]->isTerminal());
                     newEntries.push_back(cfgEntry);
                 }
                 for (int z=1; z<A_prod[k].size(); z++){
-                    CFGEntry *cfgEntry = new CFGEntry(A_prod[k][z]->getName());
+                    CFGEntry *cfgEntry = create_entry(A_prod[k][z]->getName(), A_prod[k][z]->isTerminal());
                     newEntries.push_back(cfgEntry);
                 }
                 new_A_prod.push_back(newEntries);
@@ -141,7 +140,8 @@ void CFG::immediate_left_recursion_elimination(int i){
         if (A_prod[k][0]->getName() == A->getName()){
             vector<CFGEntry*> newEntries;
             for(int w=1; w<A_prod[k].size(); w++){
-                CFGEntry *cfgEntry = new CFGEntry(A_prod[k][w]->getName());
+                
+                CFGEntry *cfgEntry = create_entry(A_prod[k][w]->getName(), A_prod[k][w]->isTerminal());
                 newEntries.push_back(cfgEntry);
             }
             alphas.push_back(newEntries);
@@ -149,7 +149,8 @@ void CFG::immediate_left_recursion_elimination(int i){
         else{
             vector<CFGEntry*> newEntries;
             for(int w=0; w<A_prod[k].size(); w++){
-                CFGEntry *cfgEntry = new CFGEntry(A_prod[k][w]->getName());
+                
+                CFGEntry *cfgEntry = create_entry(A_prod[k][w]->getName(), A_prod[k][w]->isTerminal());
                 newEntries.push_back(cfgEntry);
             }
             betas.push_back(newEntries);
@@ -164,18 +165,18 @@ void CFG::immediate_left_recursion_elimination(int i){
     vector<vector<CFGEntry *>> new_A_prod;
     vector<vector<CFGEntry *>> new_A_dash_prod;
     if(betas.size() == 0){
-        new_A_prod.push_back({new CFGEntry(new_non_terminal)});
+        new_A_prod.push_back({create_entry(new_non_terminal, false)});
     }
 
     for (int k=0; k<betas.size(); k++){
-        CFGEntry *cfgEntry = new CFGEntry(new_non_terminal);
+        CFGEntry* cfgEntry = create_entry(new_non_terminal, false);
         betas[k].push_back(cfgEntry);
         new_A_prod.push_back(betas[k]);
     }
 
     
     for (int k=0; k<alphas.size(); k++){
-        CFGEntry *cfgEntry = new CFGEntry(new_non_terminal);
+        CFGEntry* cfgEntry = create_entry(new_non_terminal, false);
         alphas[k].push_back(cfgEntry);
         new_A_dash_prod.push_back(alphas[k]);
     }
@@ -223,7 +224,7 @@ vector<CFGEntry*> findLongestCommonPrefix(vector<vector<CFGEntry*>> productions)
         if(mismatch){
             break;
         }
-        result.push_back(new CFGEntry(cfgEntry->getName()));
+        result.push_back(create_entry(cfgEntry->getName(), cfgEntry->isTerminal()));
     }
 
     return result;
@@ -268,7 +269,8 @@ void CFG::left_factor_non_terminal(NonTerminal *A, string name){
             vector<vector<CFGEntry *>> strings = build_string_from_production(A_prod, c.second);
             vector<CFGEntry *> newEntries = findLongestCommonPrefix(strings);
             int taken_size = newEntries.size();
-            CFGEntry *cfgEntry = new CFGEntry(new_non_terminal_name);
+            
+            CFGEntry *cfgEntry = create_entry(new_non_terminal_name, false);
             newEntries.push_back(cfgEntry);
             new_A_prod.push_back(newEntries);
 
@@ -282,7 +284,8 @@ void CFG::left_factor_non_terminal(NonTerminal *A, string name){
             for (int j=0; j<strings.size(); j++){
                 vector<CFGEntry *> new_A_dash_entries;
                 for(int k=taken_size; k<strings[j].size(); k++){
-                    CFGEntry *cfgEntry = new CFGEntry(strings[j][k]->getName());
+                   
+                    CFGEntry *cfgEntry = create_entry(strings[j][k]->getName(), strings[j][k]->isTerminal()); 
                     new_A_dash_entries.push_back(cfgEntry);
                 }
                 if(new_A_dash_entries.size() == 0){
@@ -328,9 +331,19 @@ void CFG::print_productions(){
         prod += " -> ";
         for (int j=0; j<A_prod.size(); j++){
             for (int k=0; k<A_prod[j].size(); k++){
-                prod += A_prod[j][k]->getName();
-                prod += " ";
+                if(A_prod[j][k]->isTerminal()){
+                    prod += "'";
+                    prod += A_prod[j][k]->getName();
+                    prod+= "'";
+                
+                    prod += " ";
+                }
+                else{
+                    prod += A_prod[j][k]->getName();
+                    prod += " ";
+                }
             }
+            
             if (j != A_prod.size() -1 ){
                 prod += " | ";
             }
