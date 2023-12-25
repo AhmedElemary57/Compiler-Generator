@@ -1,18 +1,18 @@
-NonTerminal,+,num,mulop,id,;,int,float,addop,if,),{,(,},-,=,else,while,relop,$
+NonTerminal,+,num,mulop,id,;,int,float,addop,if,),{,-,assign,(,},else,while,relop,$
 SIMPLE_EXPRESSION',Error,Error,Error,Error,Epsilon,Error,Error,SIMPLE_EXPRESSION' -> addop TERM SIMPLE_EXPRESSION' ,Error,Epsilon,Error,Error,Error,Error,Error,Error,Error,Epsilon,Error
 METHOD_BODY,Error,Error,Error,METHOD_BODY -> STATEMENT_LIST ,Error,METHOD_BODY -> STATEMENT_LIST ,METHOD_BODY -> STATEMENT_LIST ,Error,METHOD_BODY -> STATEMENT_LIST ,Error,Error,Error,Error,Error,Error,Error,METHOD_BODY -> STATEMENT_LIST ,Error,Sync
 STATEMENT_LIST',Error,Error,Error,STATEMENT_LIST' -> STATEMENT STATEMENT_LIST' ,Error,STATEMENT_LIST' -> STATEMENT STATEMENT_LIST' ,STATEMENT_LIST' -> STATEMENT STATEMENT_LIST' ,Error,STATEMENT_LIST' -> STATEMENT STATEMENT_LIST' ,Error,Error,Error,Error,Error,Error,Error,STATEMENT_LIST' -> STATEMENT STATEMENT_LIST' ,Error,Epsilon
 STATEMENT_LIST,Error,Error,Error,STATEMENT_LIST -> STATEMENT STATEMENT_LIST' ,Error,STATEMENT_LIST -> STATEMENT STATEMENT_LIST' ,STATEMENT_LIST -> STATEMENT STATEMENT_LIST' ,Error,STATEMENT_LIST -> STATEMENT STATEMENT_LIST' ,Error,Error,Error,Error,Error,Error,Error,STATEMENT_LIST -> STATEMENT STATEMENT_LIST' ,Error,Sync
 EXPRESSION',Error,Error,Error,Error,Epsilon,Error,Error,Error,Error,Epsilon,Error,Error,Error,Error,Error,Error,Error,EXPRESSION' -> relop SIMPLE_EXPRESSION ,Error
-STATEMENT,Error,Error,Error,STATEMENT -> ASSIGNMENT ,Error,STATEMENT -> DECLARATION ,STATEMENT -> DECLARATION ,Error,STATEMENT -> IF ,Error,Error,Error,Sync,Error,Error,Error,STATEMENT -> WHILE ,Error,Sync
-DECLARATION,Error,Error,Error,Sync,Error,DECLARATION -> PRIMITIVE_TYPE id ; ,DECLARATION -> PRIMITIVE_TYPE id ; ,Error,Sync,Error,Error,Error,Sync,Error,Error,Error,Sync,Error,Sync
-SIGN,SIGN -> + ,Sync,Error,Sync,Error,Error,Error,Error,Error,Error,Error,Sync,Error,SIGN -> - ,Error,Error,Error,Error,Error
-ASSIGNMENT,Error,Error,Error,ASSIGNMENT -> id = EXPRESSION ; ,Error,Sync,Sync,Error,Sync,Error,Error,Error,Sync,Error,Error,Error,Sync,Error,Sync
-IF,Error,Error,Error,Sync,Error,Sync,Sync,Error,IF -> if ( EXPRESSION ) { STATEMENT } else { STATEMENT } ,Error,Error,Error,Sync,Error,Error,Error,Sync,Error,Sync
+STATEMENT,Error,Error,Error,STATEMENT -> ASSIGNMENT ,Error,STATEMENT -> DECLARATION ,STATEMENT -> DECLARATION ,Error,STATEMENT -> IF ,Error,Error,Error,Error,Error,Sync,Error,STATEMENT -> WHILE ,Error,Sync
+DECLARATION,Error,Error,Error,Sync,Error,DECLARATION -> PRIMITIVE_TYPE id ; ,DECLARATION -> PRIMITIVE_TYPE id ; ,Error,Sync,Error,Error,Error,Error,Error,Sync,Error,Sync,Error,Sync
+SIGN,SIGN -> + ,Sync,Error,Sync,Error,Error,Error,Error,Error,Error,Error,SIGN -> - ,Error,Sync,Error,Error,Error,Error,Error
+ASSIGNMENT,Error,Error,Error,ASSIGNMENT -> id assign EXPRESSION ; ,Error,Sync,Sync,Error,Sync,Error,Error,Error,Error,Error,Sync,Error,Sync,Error,Sync
+IF,Error,Error,Error,Sync,Error,Sync,Sync,Error,IF -> if ( EXPRESSION ) { STATEMENT } else { STATEMENT } ,Error,Error,Error,Error,Error,Sync,Error,Sync,Error,Sync
 EXPRESSION,EXPRESSION -> SIMPLE_EXPRESSION EXPRESSION' ,EXPRESSION -> SIMPLE_EXPRESSION EXPRESSION' ,Error,EXPRESSION -> SIMPLE_EXPRESSION EXPRESSION' ,Sync,Error,Error,Error,Error,Sync,Error,EXPRESSION -> SIMPLE_EXPRESSION EXPRESSION' ,Error,EXPRESSION -> SIMPLE_EXPRESSION EXPRESSION' ,Error,Error,Error,Error,Error
 PRIMITIVE_TYPE,Error,Error,Error,Sync,Error,PRIMITIVE_TYPE -> int ,PRIMITIVE_TYPE -> float ,Error,Error,Error,Error,Error,Error,Error,Error,Error,Error,Error,Error
-WHILE,Error,Error,Error,Sync,Error,Sync,Sync,Error,Sync,Error,Error,Error,Sync,Error,Error,Error,WHILE -> while ( EXPRESSION ) { STATEMENT } ,Error,Sync
-SIMPLE_EXPRESSION,SIMPLE_EXPRESSION -> SIGN TERM SIMPLE_EXPRESSION' ,SIMPLE_EXPRESSION -> TERM SIMPLE_EXPRESSION' ,Error,SIMPLE_EXPRESSION -> TERM SIMPLE_EXPRESSION' ,Sync,Error,Error,Error,Error,Sync,Error,SIMPLE_EXPRESSION -> TERM SIMPLE_EXPRESSION' ,Error,SIMPLE_EXPRESSION -> SIGN TERM SIMPLE_EXPRESSION' ,Error,Error,Error,Sync,Error
+WHILE,Error,Error,Error,Sync,Error,Sync,Sync,Error,Sync,Error,Error,Error,Error,Error,Sync,Error,WHILE -> while ( EXPRESSION ) { STATEMENT } ,Error,Sync
+SIMPLE_EXPRESSION,SIMPLE_EXPRESSION -> SIGN TERM SIMPLE_EXPRESSION' ,SIMPLE_EXPRESSION -> TERM SIMPLE_EXPRESSION' ,Error,SIMPLE_EXPRESSION -> TERM SIMPLE_EXPRESSION' ,Sync,Error,Error,Error,Error,Sync,Error,SIMPLE_EXPRESSION -> SIGN TERM SIMPLE_EXPRESSION' ,Error,SIMPLE_EXPRESSION -> TERM SIMPLE_EXPRESSION' ,Error,Error,Error,Sync,Error
 TERM',Error,Error,TERM' -> mulop FACTOR TERM' ,Error,Epsilon,Error,Error,Epsilon,Error,Epsilon,Error,Error,Error,Error,Error,Error,Error,Epsilon,Error
-TERM,Error,TERM -> FACTOR TERM' ,Error,TERM -> FACTOR TERM' ,Sync,Error,Error,Sync,Error,Sync,Error,TERM -> FACTOR TERM' ,Error,Error,Error,Error,Error,Sync,Error
-FACTOR,Error,FACTOR -> num ,Sync,FACTOR -> id ,Sync,Error,Error,Sync,Error,Sync,Error,FACTOR -> ( EXPRESSION ) ,Error,Error,Error,Error,Error,Sync,Error
+TERM,Error,TERM -> FACTOR TERM' ,Error,TERM -> FACTOR TERM' ,Sync,Error,Error,Sync,Error,Sync,Error,Error,Error,TERM -> FACTOR TERM' ,Error,Error,Error,Sync,Error
+FACTOR,Error,FACTOR -> num ,Sync,FACTOR -> id ,Sync,Error,Error,Sync,Error,Sync,Error,Error,Error,FACTOR -> ( EXPRESSION ) ,Error,Error,Error,Sync,Error

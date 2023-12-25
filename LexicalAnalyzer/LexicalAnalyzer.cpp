@@ -8,7 +8,7 @@ LexicalAnalyzer::LexicalAnalyzer(CombinedAutomaton *DFA, string program)
 
     this->DFA = DFA;
     cout << program << endl;
-    this->program = program;
+    this->program = program + " ";
     this->current_index = 0;
 }
 
