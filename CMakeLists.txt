@@ -32,4 +32,6 @@ add_executable(
         tablePreparation/FollowCalculation.cpp
         table/Table.cpp
         table/Table.h
+        CodeParser/CodeParser.cpp
+        CodeParser/CodeParser.h
         )

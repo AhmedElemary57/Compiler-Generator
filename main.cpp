@@ -23,6 +23,7 @@
 #include "tablePreparation/FollowCalculation.h"
 
 #include "table/Table.h"
+#include "CodeParser/CodeParser.h"
 
 using namespace std;
 
@@ -95,5 +96,9 @@ int main()
     cfg.printFirstAndFollowSets();
     cout << endl;
     table.printTable();
+    cout << endl;    
+
+    CodeParser parser(lex, &table, cfg.get_non_terminals_names()[0]);
+    parser.performDrivation("/home/mkhaled/Desktop/Compiler-Generator/drivation.txt");
     cout << endl;
 }
