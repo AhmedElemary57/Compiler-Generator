@@ -66,7 +66,7 @@ int main()
 
     CombinedAutomaton DFA = NFADFAConverter::convertNFAToDFA(combinedAutomaton, regularExpressionsPriorityMap);
 
-    ifstream inFile("./sample_programs/p3.txt");
+    ifstream inFile(current_path+"/sample_programs/p3.txt");
     if (!inFile.is_open()) {
         std::cerr << "Unable to open the file." << std::endl;
         return 1;
@@ -95,10 +95,10 @@ int main()
     Table table = Table(cfg);
     cfg.printFirstAndFollowSets();
     cout << endl;
-    table.printTable();
-    cout << endl;    
+    table.printTable(cfg.get_terminals_names());
+    cout << endl;
 
-    CodeParser parser(lex, &table, cfg.get_non_terminals_names()[0], "/home/mkhaled/Desktop/Compiler-Generator/drivation.txt");
-    parser.startDrivation();
+//    CodeParser parser(lex, &table, cfg.get_non_terminals_names()[0], "/home/mkhaled/Desktop/Compiler-Generator/drivation.txt");
+//    parser.startDrivation();
     cout << endl;
 }

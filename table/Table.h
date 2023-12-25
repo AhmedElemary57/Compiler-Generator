@@ -11,9 +11,9 @@ class Table {
     public:
         unordered_map<string, unordered_map<string,pair<return_t,vector<CFGEntry*>>>> table; // <nonTerminal, <terminal, production>>
         Table(CFG &cfg);\
-        void printTable();
-        void printTableToFile(string fileName);
-        // get production of nonTerminal and terminal
+        void printTable(vector<string> names);
+    pair<return_t,vector<CFGEntry *>>  getProduction_print(string nonTerminalName, string terminalName);
+    // get production of nonTerminal and terminal
         pair<return_t,vector<CFGEntry *>>getProduction(string nonTerminalName, string terminalName);
         // get production of nonTerminal and terminal
 
