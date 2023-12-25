@@ -149,7 +149,8 @@ void Table::fillTable(CFG &cfg) {
 //}
 
 
-void Table::printTable() {
+void Table::printTable(vector<string> names) {
+    names.emplace_back("$");
     std::ofstream myfile;
     std::string current_path = __FILE__;
     current_path = current_path.substr(0, current_path.find_last_of('/'));
@@ -163,26 +164,24 @@ void Table::printTable() {
         exit(1);
     }
 
-    set<string> names;
-    for (const auto& entry : table) {
-        for (const auto& cell : entry.second) {
-            names.insert(cell.first);
-        }
-    }
+
 
     // Write header
+    string header = "Non Terminal,";
     myfile << "NonTerminal,";
     for (const auto& name : names) {
         myfile << name << ",";
+        header += name + ",";
     }
     myfile.seekp(-1, std::ios_base::end);  // Remove the trailing comma
     myfile << std::endl;
-
+    string row = "";
     // Write data
     for (const auto& entry : table) {
         myfile << entry.first << ",";
+        row += entry.first + ",";
         for (const auto& name : names) {
-            pair<return_t, vector<CFGEntry*>> cell = getProduction(entry.first, name);
+            pair<return_t, vector<CFGEntry*>> cell = getProduction_print(entry.first, name);
             if (cell.first == nonTerminalError) {
                 cerr << "Error: No such non-terminal in the grammar" << endl;
                 exit(1);
@@ -190,22 +189,38 @@ void Table::printTable() {
                 myfile << entry.first << " -> ";
                 for (int i = 0; i < cell.second.size(); ++i) {
                     myfile << cell.second[i]->getName() << " ";
+                    row += cell.second[i]->getName() + " ";
                 }
+                row += ",";
                 myfile << ",";
             } else if (cell.first == Epsilon) {
                 myfile << "Epsilon,";
+                row += "Epsilon,";
             } else if (cell.first == Error) {
                 myfile << "Error,";
+                row += "Error,";
             } else if (cell.first == Sync) {
                 myfile << "Sync,";
+                row += "Sync,";
             }
         }
         myfile.seekp(-1, std::ios_base::end);  // Remove the trailing comma
         myfile << std::endl;
+        row = "";
     }
 
     myfile.close();
 }
+pair<return_t,vector<CFGEntry *>> Table::getProduction_print(string nonTerminalName, string terminalName) {
+    if(table.find(nonTerminalName) == table.end()){
+        return make_pair(nonTerminalError,vector<CFGEntry*>());
+    }
+    if(table[nonTerminalName].find(terminalName) == table[nonTerminalName].end()){
+        return make_pair(Error,vector<CFGEntry*>());
+    }
+    return table[nonTerminalName][terminalName];
+}
+
 pair<return_t,vector<CFGEntry *>> Table::getProduction(string nonTerminalName, string terminalName) {
     if(table.find(nonTerminalName) == table.end()){
         cerr << "Error: No such non terminal in the grammar" << endl;

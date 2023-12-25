@@ -83,13 +83,27 @@ public:
 
     void printFirstSet()
     {
+
         cout << "First Set of " << this->getName() << " is: ";
         for (const auto& firstProduction: this->firstOfProductions) {
             for (const auto& firstEntry: firstProduction) {
                 cout << firstEntry->getName() << ", ";
             }
-            cout << ", ";
+
         }
+        if(this->hasEpsilonProduction)
+            cout << "epsilon";
+
+        else {
+            vector<bool> hasEpsilonProductionInFirst = this->getHasEpsilonProductionInFirst();
+            for (int i = 0; i < hasEpsilonProductionInFirst.size(); ++i) {
+                if(hasEpsilonProductionInFirst[i]) {
+                    cout << "epsilon, ";
+                    break;
+                }
+            }
+        }
+        cout << ", ";
         cout << endl;
     }
     void printFollowSet()
@@ -132,7 +146,9 @@ public:
     vector<string> get_non_terminals_names();
 
     unordered_map<string, NonTerminal *> get_non_terminals_map();
-
+    vector<string> get_terminals_names(){
+        return terminalsNames;
+    }
     void non_immediate_left_recursion_elimination(int i, int j);
 
     void immediate_left_recursion_elimination(int i);
