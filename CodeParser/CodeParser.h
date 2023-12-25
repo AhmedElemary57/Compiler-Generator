@@ -10,10 +10,14 @@ private:
     LexicalAnalyzer *lexicalAnalyzer;
     Table *table;
     string startNonTerminalName;
+    string outputFilePath;
+    ofstream outFile;
+
+    void showDrivationOutput(string newProduction, int lengthToRemove, bool isTerminal);
 
 public:
-    CodeParser(LexicalAnalyzer *lexicalAnalyzer, Table *table, string startNonTerminalName);
-    void performDrivation(string outputFilePath);
+    CodeParser(LexicalAnalyzer *lexicalAnalyzer, Table *table, string startNonTerminalName, string outputFilePath);
+    void startDrivation();
 };
 
 #endif //COMPILERGENERATOR_CODEPARSER_H

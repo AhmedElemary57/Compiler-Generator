@@ -98,7 +98,7 @@ int main()
     table.printTable();
     cout << endl;    
 
-    CodeParser parser(lex, &table, cfg.get_non_terminals_names()[0]);
-    parser.performDrivation("/home/mkhaled/Desktop/Compiler-Generator/drivation.txt");
+    CodeParser parser(lex, &table, cfg.get_non_terminals_names()[0], "/home/mkhaled/Desktop/Compiler-Generator/drivation.txt");
+    parser.startDrivation();
     cout << endl;
 }
