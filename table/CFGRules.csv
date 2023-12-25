@@ -1,6 +1,18 @@
-NonTerminal,$,(,),*,+,id
-F,Sync,F -> ( E ) ,Sync,Sync,Sync,F -> id 
-T',Epsilon,Error,Epsilon,T' -> * F T' ,Epsilon,Error
-T,Sync,T -> F T' ,Sync,Error,Sync,T -> F T' 
-E',Epsilon,Error,Epsilon,Error,E' -> + T E' ,Error
-E,Sync,E -> T E' ,Sync,Error,Error,E -> T E' 
+NonTerminal,$,(,),+,-,;,addop,float,id,if,int,mulop,num,relop,while,}
+SIMPLE_EXPRESSION',Error,Error,Epsilon,Error,Error,Epsilon,SIMPLE_EXPRESSION' -> addop TERM SIMPLE_EXPRESSION' ,Error,Error,Error,Error,Error,Error,Epsilon,Error,Error
+METHOD_BODY,Sync,Error,Error,Error,Error,Error,Error,METHOD_BODY -> STATEMENT_LIST ,METHOD_BODY -> STATEMENT_LIST ,METHOD_BODY -> STATEMENT_LIST ,METHOD_BODY -> STATEMENT_LIST ,Error,Error,Error,METHOD_BODY -> STATEMENT_LIST ,Error
+STATEMENT_LIST',Epsilon,Error,Error,Error,Error,Error,Error,STATEMENT_LIST' -> STATEMENT STATEMENT_LIST' ,STATEMENT_LIST' -> STATEMENT STATEMENT_LIST' ,STATEMENT_LIST' -> STATEMENT STATEMENT_LIST' ,STATEMENT_LIST' -> STATEMENT STATEMENT_LIST' ,Error,Error,Error,STATEMENT_LIST' -> STATEMENT STATEMENT_LIST' ,Error
+STATEMENT_LIST,Sync,Error,Error,Error,Error,Error,Error,STATEMENT_LIST -> STATEMENT STATEMENT_LIST' ,STATEMENT_LIST -> STATEMENT STATEMENT_LIST' ,STATEMENT_LIST -> STATEMENT STATEMENT_LIST' ,STATEMENT_LIST -> STATEMENT STATEMENT_LIST' ,Error,Error,Error,STATEMENT_LIST -> STATEMENT STATEMENT_LIST' ,Error
+EXPRESSION',Error,Error,Epsilon,Error,Error,Epsilon,Error,Error,Error,Error,Error,Error,Error,EXPRESSION' -> relop SIMPLE_EXPRESSION ,Error,Error
+STATEMENT,Sync,Error,Error,Error,Error,Error,Error,STATEMENT -> DECLARATION ,STATEMENT -> ASSIGNMENT ,STATEMENT -> IF ,STATEMENT -> DECLARATION ,Error,Error,Error,STATEMENT -> WHILE ,Sync
+DECLARATION,Sync,Error,Error,Error,Error,Error,Error,DECLARATION -> PRIMITIVE_TYPE id ; ,Sync,Sync,DECLARATION -> PRIMITIVE_TYPE id ; ,Error,Error,Error,Sync,Sync
+SIGN,Error,Sync,Error,SIGN -> + ,SIGN -> - ,Error,Error,Error,Sync,Error,Error,Error,Sync,Error,Error,Error
+ASSIGNMENT,Sync,Error,Error,Error,Error,Error,Error,Sync,ASSIGNMENT -> id = EXPRESSION ; ,Sync,Sync,Error,Error,Error,Sync,Sync
+IF,Sync,Error,Error,Error,Error,Error,Error,Sync,Sync,IF -> if ( EXPRESSION ) { STATEMENT } else { STATEMENT } ,Sync,Error,Error,Error,Sync,Sync
+EXPRESSION,Error,EXPRESSION -> SIMPLE_EXPRESSION EXPRESSION' ,Sync,EXPRESSION -> SIMPLE_EXPRESSION EXPRESSION' ,EXPRESSION -> SIMPLE_EXPRESSION EXPRESSION' ,Sync,Error,Error,EXPRESSION -> SIMPLE_EXPRESSION EXPRESSION' ,Error,Error,Error,EXPRESSION -> SIMPLE_EXPRESSION EXPRESSION' ,Error,Error,Error
+PRIMITIVE_TYPE,Error,Error,Error,Error,Error,Error,Error,PRIMITIVE_TYPE -> float ,Sync,Error,PRIMITIVE_TYPE -> int ,Error,Error,Error,Error,Error
+WHILE,Sync,Error,Error,Error,Error,Error,Error,Sync,Sync,Sync,Sync,Error,Error,Error,WHILE -> while ( EXPRESSION ) { STATEMENT } ,Sync
+SIMPLE_EXPRESSION,Error,SIMPLE_EXPRESSION -> TERM SIMPLE_EXPRESSION' ,Sync,SIMPLE_EXPRESSION -> SIGN TERM SIMPLE_EXPRESSION' ,SIMPLE_EXPRESSION -> SIGN TERM SIMPLE_EXPRESSION' ,Sync,Error,Error,SIMPLE_EXPRESSION -> TERM SIMPLE_EXPRESSION' ,Error,Error,Error,SIMPLE_EXPRESSION -> TERM SIMPLE_EXPRESSION' ,Sync,Error,Error
+TERM',Error,Error,Epsilon,Error,Error,Epsilon,Epsilon,Error,Error,Error,Error,TERM' -> mulop FACTOR TERM' ,Error,Epsilon,Error,Error
+TERM,Error,TERM -> FACTOR TERM' ,Sync,Error,Error,Sync,Sync,Error,TERM -> FACTOR TERM' ,Error,Error,Error,TERM -> FACTOR TERM' ,Sync,Error,Error
+FACTOR,Error,FACTOR -> ( EXPRESSION ) ,Sync,Error,Error,Sync,Sync,Error,FACTOR -> id ,Error,Error,Sync,FACTOR -> num ,Sync,Error,Error

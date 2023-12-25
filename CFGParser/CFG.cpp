@@ -409,4 +409,12 @@ unordered_map<string, NonTerminal *> CFG::get_names_non_terminals_map() {
     return namesNonTerminalsMap;
 }
 
+void CFG::printFirstAndFollowSets()
+{
+    for (auto & i : this->nonTerminalsNames) {
+        this->namesNonTerminalsMap[i]->printFirstSet();
+        this->namesNonTerminalsMap[i]->printFollowSet();
+    }
+}
+
 

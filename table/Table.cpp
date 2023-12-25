@@ -69,28 +69,7 @@ void Table::fillRowOfNonTerminal(NonTerminal* nonTerminal) {
         }
     }
 }
-void printFollowAndFirst(CFG &cfg){
-    vector<string> nonTerminalsNames = cfg.get_non_terminals_names();
-    unordered_map<string, NonTerminal*> namesNonTerminalsMap = cfg.get_names_non_terminals_map();
-    // print first and follow
-    cout << "First and Follow sets: \n";
-    for (auto & i : nonTerminalsNames) {
-        // print first
-        cout << "First(" << i << ") = {";
-        for (auto & j : namesNonTerminalsMap[i]->getAllFirstSet()) {
-            cout << j->getName() << ", ";
-        }
-        cout << "}\t\t";
 
-        // print follow
-        cout << "Follow(" << i << ") = {";
-        for (auto & j : namesNonTerminalsMap[i]->getFollowSet()) {
-            cout << j->getName() << ", ";
-        }
-        cout << "}\n";
-
-    }
-}
 /***
  For each production A → α:
     For each terminal 'a' in First(α), add A → α to M[A, a].
@@ -102,7 +81,6 @@ void Table::fillTable(CFG &cfg) {
 
     calculateFirstToCFG(cfg);
     calculateFollowToNonTerminals(cfg.get_non_terminals_names(),cfg.get_non_terminals_map());
-    printFollowAndFirst(cfg);
     vector<string> nonTerminalsNames = cfg.get_non_terminals_names();
     unordered_map<string, NonTerminal*> nonTerminals = cfg.get_names_non_terminals_map();
     for (int i = 0; i < nonTerminalsNames.size(); ++i) {
