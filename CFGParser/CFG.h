@@ -119,12 +119,13 @@ private:
     unordered_map<string, NonTerminal *> namesNonTerminalsMap;
     CFGEntry* create_entry(string name, bool terminal);
     vector<CFGEntry*> findLongestCommonPrefix(vector<vector<CFGEntry*>> productions);
+    unordered_map<string, Terminal *> namesTerminalsMap;
+    vector<string> terminalsNames;
 
 public:
     CFG(vector<string> &nonTerminalsNames, unordered_map<string, NonTerminal *> namesNonTerminalsMap);
 
     string get_unique_non_terminal_name(string name);
-    
     
     vector<vector<CFGEntry *>> build_string_from_production(vector<vector<CFGEntry *>> prod, vector<int> indices);
 
@@ -147,5 +148,9 @@ public:
     unordered_map<string, NonTerminal *> get_names_non_terminals_map();
 
     void printFirstAndFollowSets();
+
+    void setNamesTerminalsMap(unordered_map<string, Terminal *> namesTerminalsMap);
+
+    void setTerminalsNames(vector<string> terminalsNames);
 };
 #endif // CFG_H

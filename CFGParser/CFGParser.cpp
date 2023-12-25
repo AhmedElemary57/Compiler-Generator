@@ -131,5 +131,11 @@ CFG parseCFG(const string filePath)
         }
         extractAddProductions(line.substr(start), namesNonTerminalsMap, namesTerminalsMap, nonTerminalName);
     }
-    return CFG(nonTerminalsNames, namesNonTerminalsMap);
+    CFG cfg = CFG(nonTerminalsNames, namesNonTerminalsMap); 
+    cfg.setNamesTerminalsMap(namesTerminalsMap);
+    vector<string> terminalsNames;
+    for (auto const &element : namesTerminalsMap)
+        terminalsNames.push_back(element.first);
+    cfg.setTerminalsNames(terminalsNames);
+    return cfg;
 }

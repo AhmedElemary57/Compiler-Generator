@@ -417,4 +417,12 @@ void CFG::printFirstAndFollowSets()
     }
 }
 
+void CFG::setNamesTerminalsMap(unordered_map<string, Terminal *> namesTerminalsMap)
+{
+    this->namesTerminalsMap = namesTerminalsMap;
+}
 
+void CFG::setTerminalsNames(vector<string> terminalsNames)
+{
+    this->terminalsNames = terminalsNames;
+}
