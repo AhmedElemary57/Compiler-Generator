@@ -1,12 +1,6 @@
-int $%#;
-
-float i, w, q;
-
-int z;
-z = y;
-
-test = 5 * 10 + 1;
-
-1.2
-3E4
-56.78E9
+int x;
+x = 5;
+if (x > 2)
+{
+    x = 0;
+}

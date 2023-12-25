@@ -9,8 +9,6 @@ class CFGEntry
 {
 private:
     string name;
-    // vector<CFGEntry *> firstSet;             should this be a vector or other data structure?
-    // vector<CFGEntry *> followSet;            should this be a vector or other data structure?
 
 public:
     CFGEntry(string name);
@@ -87,22 +85,19 @@ public:
     {
         cout << "First Set of " << this->getName() << " is: ";
         for (const auto& firstProduction: this->firstOfProductions) {
-            cout << "{";
             for (const auto& firstEntry: firstProduction) {
                 cout << firstEntry->getName() << ", ";
             }
-            cout << "}, ";
+            cout << ", ";
         }
         cout << endl;
     }
     void printFollowSet()
     {
         cout << "Follow Set of " << this->getName() << " is: ";
-        cout << "{";
         for (const auto& followEntry: this->followSet) {
             cout << followEntry->getName() << ", ";
         }
-        cout << "}, ";
         cout << endl;
     }
     bool getHasEpsilonProductionInFirst(int i)
@@ -124,19 +119,18 @@ private:
     unordered_map<string, NonTerminal *> namesNonTerminalsMap;
     CFGEntry* create_entry(string name, bool terminal);
     vector<CFGEntry*> findLongestCommonPrefix(vector<vector<CFGEntry*>> productions);
+    unordered_map<string, Terminal *> namesTerminalsMap;
+    vector<string> terminalsNames;
 
 public:
     CFG(vector<string> &nonTerminalsNames, unordered_map<string, NonTerminal *> namesNonTerminalsMap);
 
     string get_unique_non_terminal_name(string name);
     
-    
     vector<vector<CFGEntry *>> build_string_from_production(vector<vector<CFGEntry *>> prod, vector<int> indices);
 
-    // get non terminals names
     vector<string> get_non_terminals_names();
 
-    // get non terminals map
     unordered_map<string, NonTerminal *> get_non_terminals_map();
 
     void non_immediate_left_recursion_elimination(int i, int j);
@@ -152,5 +146,11 @@ public:
     void print_productions();
 
     unordered_map<string, NonTerminal *> get_names_non_terminals_map();
+
+    void printFirstAndFollowSets();
+
+    void setNamesTerminalsMap(unordered_map<string, Terminal *> namesTerminalsMap);
+
+    void setTerminalsNames(vector<string> terminalsNames);
 };
 #endif // CFG_H

@@ -409,4 +409,20 @@ unordered_map<string, NonTerminal *> CFG::get_names_non_terminals_map() {
     return namesNonTerminalsMap;
 }
 
+void CFG::printFirstAndFollowSets()
+{
+    for (auto & i : this->nonTerminalsNames) {
+        this->namesNonTerminalsMap[i]->printFirstSet();
+        this->namesNonTerminalsMap[i]->printFollowSet();
+    }
+}
 
+void CFG::setNamesTerminalsMap(unordered_map<string, Terminal *> namesTerminalsMap)
+{
+    this->namesTerminalsMap = namesTerminalsMap;
+}
+
+void CFG::setTerminalsNames(vector<string> terminalsNames)
+{
+    this->terminalsNames = terminalsNames;
+}

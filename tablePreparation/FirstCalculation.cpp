@@ -15,7 +15,6 @@ void calculateFirstToCFG(CFG &cfg) {
         if (namesNonTerminalsMap[nonTerminalName]->allFirstComputed()) {
             continue;
         }
-        cout<<nonTerminalName<<endl;
         calculateFirstToNonTerminal(namesNonTerminalsMap[nonTerminalName], visited, namesNonTerminalsMap);
     }
 }
