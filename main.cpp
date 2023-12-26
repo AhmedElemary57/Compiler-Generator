@@ -98,7 +98,10 @@ int main()
     table.printTable(cfg.get_terminals_names());
     cout << endl;
 
-//    CodeParser parser(lex, &table, cfg.get_non_terminals_names()[0], "/home/mkhaled/Desktop/Compiler-Generator/drivation.txt");
-//    parser.startDrivation();
+    current_path = __FILE__;
+    current_path = current_path.substr(0, current_path.find_last_of('/')) ;
+    filepath = current_path + "/drivation.txt";
+    CodeParser parser(lex, &table, cfg.get_non_terminals_names()[0], filepath);
+    parser.startDrivation();
     cout << endl;
 }

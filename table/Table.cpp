@@ -227,7 +227,7 @@ pair<return_t,vector<CFGEntry *>> Table::getProduction(string nonTerminalName, s
         return make_pair(nonTerminalError,vector<CFGEntry*>());
     }
     if(table[nonTerminalName].find(terminalName) == table[nonTerminalName].end()){
-        cerr << "Error: No such terminal in the grammar" << endl;
+        cerr << "Error: No such terminal in the grammar: " << terminalName << endl;
         return make_pair(Error,vector<CFGEntry*>());
     }
     return table[nonTerminalName][terminalName];
