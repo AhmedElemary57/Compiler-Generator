@@ -40,12 +40,8 @@ void CodeParser::startDrivation()
         }
         else if (drivationStack.empty())
         {
-            drivationStack.push({"$", true});
-            drivationStack.push({startNonTerminalName, false});
-            left = "";
-            right = "";
-            editDrivationOutput(startNonTerminalName, 0, false);
-            outFile << left << right << endl;
+            cout << "Error: Drivation stack is empty and there is still some input tokens";
+            break;
         }
         else if ((currentToken.length() == 1 && isspace(currentToken[0])) || currentToken.length() == 0)
         {
