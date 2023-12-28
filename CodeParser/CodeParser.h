@@ -12,8 +12,10 @@ private:
     string startNonTerminalName;
     string outputFilePath;
     ofstream outFile;
+    string left;
+    string right;
 
-    void showDrivationOutput(string newProduction, int lengthToRemove, bool isTerminal);
+    void editDrivationOutput(string newProduction, int lengthToRemove, bool isTerminal);
 
 public:
     CodeParser(LexicalAnalyzer *lexicalAnalyzer, Table *table, string startNonTerminalName, string outputFilePath);

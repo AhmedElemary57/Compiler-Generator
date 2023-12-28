@@ -12,32 +12,22 @@ CodeParser::CodeParser(LexicalAnalyzer *lexicalAnalyzer, Table *table, string st
         cout << "Error opening the file" << endl;
         return;
     }
-    outFile.close();
 }
 
-void CodeParser::showDrivationOutput(string newProduction, int lengthToRemove, bool isTerminal)
+void CodeParser::editDrivationOutput(string newProduction, int lengthToRemove, bool isTerminal)
 {
-    outFile.open(outputFilePath, ios::app);
-    if (!outFile.is_open())
-    {
-        cout << "Error opening the file" << endl;
-        return;
-    }
-    static string left;
-    static string right;
     if (isTerminal)
         left += right.substr(0, lengthToRemove) + " ";
     right.erase(0, lengthToRemove == right.length() ? lengthToRemove : lengthToRemove + 1);
     right = newProduction + right;
-    outFile << left << right << endl;
-    outFile.close();
 }
 
 void CodeParser::startDrivation()
 {
     stack<pair<string, bool>> drivationStack;
     drivationStack.push({startNonTerminalName, false});
-    showDrivationOutput(startNonTerminalName, 0, false);
+    editDrivationOutput(startNonTerminalName, 0, false);
+    outFile << left << right << endl;
     string currentToken = lexicalAnalyzer->getNextToken().first;
     while (lexicalAnalyzer->hasNext() || !drivationStack.empty())
     {
@@ -70,20 +60,23 @@ void CodeParser::startDrivation()
                     newProduction = entry.second[i]->getName() + " " + newProduction;
                 }
                 cout << top.first << " --> " << newProduction << endl;
-                showDrivationOutput(newProduction, top.first.length(), false);
+                editDrivationOutput(newProduction, top.first.length(), false);
+                outFile << left << right << endl;
                 break;
             }
 
             case Epsilon:
                 cout << top.first << " --> \\L" << endl;
                 drivationStack.pop();
-                showDrivationOutput("", top.first.length(), false);
+                editDrivationOutput("", top.first.length(), false);
+                outFile << left << right << endl;
                 break;
 
             case Sync:
                 cout << "Error: illegal: \'" << top.first << "\', discarded nonterminal: \'" << top.first << "\'" << endl;
                 drivationStack.pop();
-                showDrivationOutput("", top.first.length(), false);
+                editDrivationOutput("", top.first.length(), false);
+                outFile << left << right << endl;
                 break;
 
             default:
@@ -104,7 +97,7 @@ void CodeParser::startDrivation()
             {
                 cout << "Error: missing token: \'" << top.first << "\', inserted" << endl;
             }
-            showDrivationOutput("", top.first.length(), true);
+            editDrivationOutput("", top.first.length(), true);
         }
     }
 }
