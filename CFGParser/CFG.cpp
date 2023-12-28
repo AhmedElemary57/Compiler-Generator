@@ -219,6 +219,7 @@ void CFG::immediate_left_recursion_elimination(int i){
     no->setProductions(new_A_dash_prod);
     
     A = this->namesNonTerminalsMap[A->getName()];
+    A->setHasEpsilonProduction(false);
     A->setProductions(new_A_prod);
 
 }
