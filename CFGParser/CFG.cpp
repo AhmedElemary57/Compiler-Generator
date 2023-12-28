@@ -196,7 +196,7 @@ void CFG::immediate_left_recursion_elimination(int i){
     no->setProductions(new_A_dash_prod);
     no->setHasEpsilonProduction(true) ;
     CFGEntry* cfgEntry = create_entry(new_non_terminal, false);
-    if(betas.size() == 0){
+    if(betas.size() == 0 || A->hasEpsilon()){
         
         new_A_prod.push_back({cfgEntry});
     }
@@ -390,6 +390,9 @@ void CFG::print_productions(){
             if (j != A_prod.size() -1 ){
                 prod += " | ";
             }
+        }
+        if(A->hasEpsilon()){
+            prod += " | epsilon";
         }
         cout << prod << endl;
         
