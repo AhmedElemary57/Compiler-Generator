@@ -25,7 +25,10 @@ void CodeParser::editDrivationOutput(string newProduction, int lengthToRemove, b
 void CodeParser::startDrivation()
 {
     stack<pair<string, bool>> drivationStack;
+    drivationStack.push({"$", true});
     drivationStack.push({startNonTerminalName, false});
+    left = "";
+    right = "";
     editDrivationOutput(startNonTerminalName, 0, false);
     outFile << left << right << endl;
     string currentToken = lexicalAnalyzer->getNextToken().first;
@@ -37,7 +40,12 @@ void CodeParser::startDrivation()
         }
         else if (drivationStack.empty())
         {
+            drivationStack.push({"$", true});
             drivationStack.push({startNonTerminalName, false});
+            left = "";
+            right = "";
+            editDrivationOutput(startNonTerminalName, 0, false);
+            outFile << left << right << endl;
         }
         else if ((currentToken.length() == 1 && isspace(currentToken[0])) || currentToken.length() == 0)
         {
